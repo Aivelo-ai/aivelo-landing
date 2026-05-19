@@ -1,0 +1,1496 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aivelo — Vos commerciaux ferment des deals. Aivelo s'occupe du reste.</title>
+<meta name="description" content="Le CRM immobilier nouvelle génération. 6 agents IA qualifient vos leads, rédigent vos annonces, relancent vos prospects et matchent vos biens — 24h/24. Pensé pour les agences ambitieuses.">
+<meta name="theme-color" content="#0A0A0F">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+  /* ==========================================================
+     DESIGN TOKENS
+     ========================================================== */
+  :root {
+    /* Surfaces */
+    --bg: #0A0A0F;
+    --bg-elevated: #0D0E15;
+    --surface: #0F1117;
+    --surface-2: #14161F;
+    --surface-hover: #1A1D28;
+
+    /* Borders */
+    --border: rgba(255, 255, 255, 0.06);
+    --border-strong: rgba(255, 255, 255, 0.12);
+    --border-accent: rgba(79, 126, 247, 0.3);
+
+    /* Text */
+    --text: #FFFFFF;
+    --text-soft: rgba(255, 255, 255, 0.78);
+    --text-dim: rgba(255, 255, 255, 0.58);
+    --text-mute: rgba(255, 255, 255, 0.38);
+
+    /* Brand */
+    --accent: #4F7EF7;
+    --accent-soft: #6B92FB;
+    --accent-glow: rgba(79, 126, 247, 0.35);
+    --success: #2EE19C;
+    --warning: #FFB547;
+    --danger: #FF5C7A;
+
+    /* Typography */
+    --font-sans: 'Plus Jakarta Sans', system-ui, sans-serif;
+    --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+
+    /* Spacing & radius */
+    --r-sm: 8px;
+    --r-md: 12px;
+    --r-lg: 18px;
+    --r-xl: 28px;
+
+    /* Easing */
+    --ease: cubic-bezier(0.16, 1, 0.3, 1);
+
+    /* Container */
+    --container: 1200px;
+    --gutter: 24px;
+  }
+
+  /* ==========================================================
+     RESET & BASE
+     ========================================================== */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-sans);
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 1.55;
+    letter-spacing: -0.01em;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+  }
+  a { color: inherit; text-decoration: none; }
+  button { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; }
+  img, svg { display: block; max-width: 100%; }
+  ul { list-style: none; }
+  ::selection { background: var(--accent); color: white; }
+
+  /* ==========================================================
+     GLOBAL ATMOSPHERE — grain + grid overlay
+     ========================================================== */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.5 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    opacity: 0.025;
+    mix-blend-mode: overlay;
+    pointer-events: none;
+    z-index: 1000;
+  }
+
+  /* ==========================================================
+     UTILITIES
+     ========================================================== */
+  .container {
+    width: 100%;
+    max-width: var(--container);
+    margin: 0 auto;
+    padding: 0 var(--gutter);
+  }
+
+  .eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    padding: 6px 12px;
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    background: var(--surface);
+  }
+  .eyebrow::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 12px var(--accent-glow);
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    height: 48px;
+    padding: 0 22px;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 15px;
+    letter-spacing: -0.01em;
+    transition: all 0.25s var(--ease);
+    white-space: nowrap;
+  }
+  .btn-primary {
+    background: var(--accent);
+    color: white;
+    box-shadow: 0 1px 0 rgba(255,255,255,0.18) inset, 0 8px 28px -8px var(--accent-glow);
+  }
+  .btn-primary:hover {
+    background: var(--accent-soft);
+    transform: translateY(-1px);
+    box-shadow: 0 1px 0 rgba(255,255,255,0.22) inset, 0 14px 36px -10px var(--accent-glow);
+  }
+  .btn-ghost {
+    background: var(--surface);
+    color: var(--text);
+    border: 1px solid var(--border-strong);
+  }
+  .btn-ghost:hover {
+    background: var(--surface-hover);
+    border-color: rgba(255,255,255,0.2);
+  }
+  .btn .arr { transition: transform 0.25s var(--ease); }
+  .btn:hover .arr { transform: translateX(3px); }
+
+  /* Scroll reveal */
+  .reveal {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.9s var(--ease), transform 0.9s var(--ease);
+  }
+  .reveal.in {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .reveal[data-delay="1"] { transition-delay: 0.08s; }
+  .reveal[data-delay="2"] { transition-delay: 0.16s; }
+  .reveal[data-delay="3"] { transition-delay: 0.24s; }
+  .reveal[data-delay="4"] { transition-delay: 0.32s; }
+
+  /* ==========================================================
+     NAV
+     ========================================================== */
+  .nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    padding: 16px 0;
+    transition: all 0.3s var(--ease);
+  }
+  .nav.scrolled {
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    background: rgba(10, 10, 15, 0.72);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+  }
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 800;
+    font-size: 19px;
+    letter-spacing: -0.03em;
+  }
+  .logo-mark {
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    background: linear-gradient(135deg, var(--accent) 0%, #2E5BD9 100%);
+    display: grid;
+    place-items: center;
+    box-shadow: 0 4px 12px -4px var(--accent-glow);
+    position: relative;
+    overflow: hidden;
+  }
+  .logo-mark::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(255,255,255,0.2), transparent 50%);
+  }
+  .logo-mark svg { position: relative; z-index: 1; }
+
+  .nav-links {
+    display: flex;
+    gap: 28px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-dim);
+  }
+  .nav-links a { transition: color 0.2s; }
+  .nav-links a:hover { color: var(--text); }
+
+  .nav-cta {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .nav-cta .btn { height: 38px; padding: 0 16px; font-size: 14px; }
+  .nav-login { font-size: 14px; font-weight: 500; color: var(--text-dim); transition: color 0.2s; }
+  .nav-login:hover { color: var(--text); }
+
+  @media (max-width: 768px) {
+    .nav-links { display: none; }
+  }
+
+  /* ==========================================================
+     HERO
+     ========================================================== */
+  .hero {
+    position: relative;
+    padding: 160px 0 100px;
+    overflow: hidden;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+  }
+  /* Grid overlay */
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(var(--border) 1px, transparent 1px),
+      linear-gradient(90deg, var(--border) 1px, transparent 1px);
+    background-size: 64px 64px;
+    mask-image: radial-gradient(ellipse 80% 60% at 50% 30%, black 30%, transparent 75%);
+    -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 30%, black 30%, transparent 75%);
+    opacity: 0.55;
+    pointer-events: none;
+  }
+  /* Gradient mesh */
+  .hero::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(600px 400px at 20% 30%, rgba(79, 126, 247, 0.18), transparent 60%),
+      radial-gradient(500px 400px at 80% 20%, rgba(79, 126, 247, 0.08), transparent 60%),
+      radial-gradient(700px 500px at 50% 100%, rgba(46, 225, 156, 0.05), transparent 60%);
+    pointer-events: none;
+  }
+  .hero-inner {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    max-width: 880px;
+    margin: 0 auto;
+  }
+  .hero h1 {
+    font-size: clamp(2.5rem, 6.5vw, 5.25rem);
+    font-weight: 800;
+    line-height: 0.98;
+    letter-spacing: -0.045em;
+    margin-top: 28px;
+    background: linear-gradient(180deg, #FFFFFF 0%, rgba(255,255,255,0.72) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .hero h1 .accent {
+    background: linear-gradient(135deg, var(--accent) 0%, var(--accent-soft) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .hero-sub {
+    margin-top: 28px;
+    font-size: clamp(1.05rem, 1.6vw, 1.25rem);
+    line-height: 1.55;
+    color: var(--text-dim);
+    max-width: 640px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .hero-cta {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 40px;
+    flex-wrap: wrap;
+  }
+  .hero-trust {
+    margin-top: 28px;
+    font-size: 13px;
+    color: var(--text-mute);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .hero-trust span { display: inline-flex; align-items: center; gap: 6px; }
+  .hero-trust svg { color: var(--success); }
+
+  /* Hero mock CRM */
+  .hero-mock {
+    margin-top: 80px;
+    position: relative;
+    z-index: 2;
+    max-width: 1080px;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 0 var(--gutter);
+  }
+  .mock-frame {
+    position: relative;
+    background: var(--surface);
+    border: 1px solid var(--border-strong);
+    border-radius: var(--r-xl);
+    overflow: hidden;
+    box-shadow:
+      0 1px 0 rgba(255,255,255,0.06) inset,
+      0 60px 120px -40px rgba(0,0,0,0.6),
+      0 30px 80px -20px var(--accent-glow);
+  }
+  .mock-frame::before {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    border-radius: var(--r-xl);
+    padding: 1px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.16), transparent 30%);
+    -webkit-mask: linear-gradient(black, black) content-box, linear-gradient(black, black);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+  }
+  .mock-topbar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg-elevated);
+  }
+  .mock-dot { width: 11px; height: 11px; border-radius: 50%; background: rgba(255,255,255,0.12); }
+  .mock-url {
+    margin-left: 16px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--text-mute);
+    padding: 4px 12px;
+    background: var(--surface-2);
+    border-radius: 6px;
+    flex: 1;
+    max-width: 320px;
+  }
+  .mock-body {
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    min-height: 480px;
+  }
+  .mock-sidebar {
+    background: var(--bg-elevated);
+    border-right: 1px solid var(--border);
+    padding: 20px 14px;
+  }
+  .mock-side-label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--text-mute);
+    padding: 0 8px;
+    margin-bottom: 8px;
+  }
+  .mock-side-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 10px;
+    border-radius: 8px;
+    font-size: 13px;
+    color: var(--text-dim);
+    margin-bottom: 2px;
+  }
+  .mock-side-item.active {
+    background: var(--surface-2);
+    color: var(--text);
+  }
+  .mock-side-item .ic {
+    width: 16px;
+    height: 16px;
+    color: var(--text-mute);
+  }
+  .mock-side-item.active .ic { color: var(--accent); }
+  .mock-content { padding: 24px; }
+  .mock-h {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 18px;
+  }
+  .mock-h h3 {
+    font-size: 17px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+  .mock-h-sub {
+    font-size: 11px;
+    color: var(--text-mute);
+    font-family: var(--font-mono);
+  }
+  .mock-stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    margin-bottom: 22px;
+  }
+  .mock-stat {
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px;
+  }
+  .mock-stat-l {
+    font-size: 10px;
+    color: var(--text-mute);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    font-family: var(--font-mono);
+  }
+  .mock-stat-v {
+    font-size: 20px;
+    font-weight: 700;
+    margin-top: 4px;
+    letter-spacing: -0.02em;
+  }
+  .mock-stat-d { font-size: 11px; color: var(--success); margin-top: 2px; }
+  .mock-leads { display: flex; flex-direction: column; gap: 8px; }
+  .mock-lead {
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    align-items: center;
+    gap: 14px;
+    padding: 12px 14px;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+  }
+  .mock-lead-name { font-size: 13px; font-weight: 600; }
+  .mock-lead-meta { font-size: 11px; color: var(--text-mute); margin-top: 2px; }
+  .mock-score {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 600;
+    padding: 4px 8px;
+    border-radius: 6px;
+  }
+  .mock-score.hot { background: rgba(255, 92, 122, 0.12); color: var(--danger); }
+  .mock-score.warm { background: rgba(255, 181, 71, 0.12); color: var(--warning); }
+  .mock-score.cold { background: rgba(79, 126, 247, 0.12); color: var(--accent-soft); }
+  .mock-tag {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-mute);
+  }
+
+  /* Floating mock chips */
+  .mock-float {
+    position: absolute;
+    background: var(--surface);
+    border: 1px solid var(--border-strong);
+    border-radius: 12px;
+    padding: 12px 14px;
+    box-shadow: 0 20px 60px -20px rgba(0,0,0,0.5);
+    backdrop-filter: blur(10px);
+    z-index: 3;
+  }
+  .mock-float-1 {
+    top: 14%;
+    right: -2%;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    animation: float 6s ease-in-out infinite;
+  }
+  .mock-float-2 {
+    bottom: 12%;
+    left: -3%;
+    animation: float 6s ease-in-out infinite 1.5s;
+  }
+  .mock-float-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    background: rgba(46, 225, 156, 0.12);
+    color: var(--success);
+    display: grid;
+    place-items: center;
+  }
+  .mock-float-1 .mock-float-icon {
+    background: rgba(79, 126, 247, 0.16);
+    color: var(--accent);
+  }
+  .mock-float-t { font-size: 12px; font-weight: 600; }
+  .mock-float-s { font-size: 10px; color: var(--text-mute); margin-top: 1px; font-family: var(--font-mono); }
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+  }
+  @media (max-width: 900px) {
+    .mock-float-1, .mock-float-2 { display: none; }
+    .mock-body { grid-template-columns: 1fr; }
+    .mock-sidebar { display: none; }
+    .mock-stats { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  /* ==========================================================
+     SECTION GENERICS
+     ========================================================== */
+  .section {
+    padding: 120px 0;
+    position: relative;
+  }
+  .section-head {
+    max-width: 720px;
+    margin: 0 auto 64px;
+    text-align: center;
+  }
+  .section-head h2 {
+    font-size: clamp(2rem, 4.2vw, 3.5rem);
+    font-weight: 800;
+    line-height: 1.04;
+    letter-spacing: -0.04em;
+    margin-top: 20px;
+  }
+  .section-head h2 .accent {
+    background: linear-gradient(135deg, var(--accent) 0%, var(--accent-soft) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .section-head p {
+    margin-top: 20px;
+    font-size: 1.05rem;
+    color: var(--text-dim);
+    line-height: 1.6;
+  }
+
+  /* ==========================================================
+     PROBLÈME — 3 pain points
+     ========================================================== */
+  .pain-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+  .pain-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-lg);
+    padding: 32px;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.4s var(--ease);
+  }
+  .pain-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    opacity: 0;
+    transition: opacity 0.4s;
+  }
+  .pain-card:hover {
+    border-color: var(--border-strong);
+    transform: translateY(-2px);
+    background: var(--surface-2);
+  }
+  .pain-card:hover::before { opacity: 1; }
+  .pain-num {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-mute);
+    letter-spacing: 0.12em;
+    margin-bottom: 24px;
+  }
+  .pain-stat {
+    font-size: 3rem;
+    font-weight: 800;
+    letter-spacing: -0.04em;
+    line-height: 1;
+    margin-bottom: 16px;
+    color: var(--text);
+  }
+  .pain-stat .unit { font-size: 1.25rem; color: var(--text-dim); font-weight: 600; }
+  .pain-h {
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin-bottom: 12px;
+  }
+  .pain-p {
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--text-dim);
+  }
+  .pain-solution {
+    margin-top: 24px;
+    padding-top: 20px;
+    border-top: 1px dashed var(--border-strong);
+    font-size: 13px;
+    color: var(--text-soft);
+  }
+  .pain-solution::before {
+    content: '→ ';
+    color: var(--accent);
+    font-weight: 700;
+  }
+  @media (max-width: 900px) {
+    .pain-grid { grid-template-columns: 1fr; }
+  }
+
+  /* ==========================================================
+     STATS BAR
+     ========================================================== */
+  .stats {
+    padding: 80px 0;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    background: var(--bg-elevated);
+  }
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 32px;
+  }
+  .stat-item { text-align: left; }
+  .stat-v {
+    font-size: clamp(2.4rem, 4.5vw, 3.6rem);
+    font-weight: 800;
+    letter-spacing: -0.04em;
+    line-height: 1;
+    background: linear-gradient(180deg, white, rgba(255,255,255,0.6));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .stat-v .unit { font-size: 0.5em; color: var(--accent); -webkit-text-fill-color: var(--accent); margin-left: 4px; }
+  .stat-l {
+    margin-top: 12px;
+    font-size: 13px;
+    color: var(--text-dim);
+    line-height: 1.45;
+  }
+  @media (max-width: 700px) {
+    .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 28px; }
+  }
+
+  /* ==========================================================
+     FEATURES — Bento grid 6 agents
+     ========================================================== */
+  .features {
+    padding: 120px 0;
+  }
+  .bento {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: auto auto;
+    gap: 20px;
+  }
+  .feat {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-lg);
+    padding: 28px;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.4s var(--ease);
+    min-height: 280px;
+    display: flex;
+    flex-direction: column;
+  }
+  .feat:hover {
+    border-color: var(--border-accent);
+    background: var(--surface-2);
+  }
+  .feat-large {
+    grid-column: span 2;
+    grid-row: span 1;
+    background: linear-gradient(135deg, var(--surface) 0%, rgba(79, 126, 247, 0.08) 100%);
+    min-height: 360px;
+  }
+  .feat-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    background: var(--surface-2);
+    border: 1px solid var(--border-strong);
+    display: grid;
+    place-items: center;
+    color: var(--accent);
+    margin-bottom: 22px;
+  }
+  .feat-large .feat-icon {
+    background: var(--accent);
+    color: white;
+    box-shadow: 0 8px 24px -8px var(--accent-glow);
+  }
+  .feat-tag {
+    position: absolute;
+    top: 24px;
+    right: 24px;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    color: var(--text-mute);
+    text-transform: uppercase;
+  }
+  .feat h3 {
+    font-size: 19px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin-bottom: 8px;
+  }
+  .feat-large h3 { font-size: 24px; }
+  .feat p {
+    font-size: 14px;
+    color: var(--text-dim);
+    line-height: 1.6;
+    flex: 1;
+  }
+  .feat-large p { font-size: 15px; max-width: 480px; }
+
+  /* Mini preview inside featured card */
+  .feat-preview {
+    margin-top: 22px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 16px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    line-height: 1.7;
+  }
+  .feat-preview .k { color: var(--text-mute); }
+  .feat-preview .v { color: var(--text); }
+  .feat-preview .score { color: var(--danger); font-weight: 700; }
+  .feat-preview .ok { color: var(--success); }
+
+  @media (max-width: 900px) {
+    .bento { grid-template-columns: 1fr 1fr; }
+    .feat-large { grid-column: span 2; }
+  }
+  @media (max-width: 600px) {
+    .bento { grid-template-columns: 1fr; }
+    .feat-large { grid-column: span 1; }
+  }
+
+  /* ==========================================================
+     PRICING
+     ========================================================== */
+  .pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    max-width: 1080px;
+    margin: 0 auto;
+  }
+  .price {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-lg);
+    padding: 36px 32px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    transition: all 0.3s var(--ease);
+  }
+  .price:hover {
+    border-color: var(--border-strong);
+    transform: translateY(-2px);
+  }
+  .price-featured {
+    background: linear-gradient(180deg, var(--surface-2) 0%, var(--surface) 100%);
+    border-color: var(--border-accent);
+    box-shadow: 0 0 0 1px var(--border-accent), 0 30px 60px -30px var(--accent-glow);
+  }
+  .price-featured::before {
+    content: 'Le plus choisi';
+    position: absolute;
+    top: -1px;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: var(--accent);
+    color: white;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 6px 14px;
+    border-radius: 100px;
+    box-shadow: 0 8px 20px -6px var(--accent-glow);
+  }
+  .price-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 14px;
+  }
+  .price-amount {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+    margin-bottom: 8px;
+  }
+  .price-amount .num {
+    font-size: 3.2rem;
+    font-weight: 800;
+    letter-spacing: -0.05em;
+    line-height: 1;
+  }
+  .price-amount .cur { font-size: 1.4rem; font-weight: 700; }
+  .price-amount .per { font-size: 0.95rem; color: var(--text-dim); }
+  .price-desc {
+    font-size: 14px;
+    color: var(--text-dim);
+    margin-bottom: 28px;
+    min-height: 42px;
+  }
+  .price ul {
+    margin-bottom: 32px;
+    flex: 1;
+  }
+  .price li {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 10px 0;
+    font-size: 14px;
+    color: var(--text-soft);
+    border-bottom: 1px dashed var(--border);
+  }
+  .price li:last-child { border-bottom: none; }
+  .price li svg { color: var(--accent); flex-shrink: 0; margin-top: 2px; }
+  .price .btn { width: 100%; }
+  @media (max-width: 900px) {
+    .pricing-grid { grid-template-columns: 1fr; max-width: 480px; }
+  }
+
+  /* ==========================================================
+     CTA FINAL
+     ========================================================== */
+  .cta {
+    padding: 120px 0;
+    position: relative;
+    overflow: hidden;
+  }
+  .cta-card {
+    position: relative;
+    background: linear-gradient(135deg, #0F1117 0%, #1A1D2F 100%);
+    border: 1px solid var(--border-strong);
+    border-radius: var(--r-xl);
+    padding: 80px 48px;
+    text-align: center;
+    overflow: hidden;
+  }
+  .cta-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(500px 300px at 30% 20%, rgba(79, 126, 247, 0.22), transparent 60%),
+      radial-gradient(400px 300px at 80% 90%, rgba(46, 225, 156, 0.06), transparent 60%);
+    pointer-events: none;
+  }
+  .cta-card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
+    background-size: 48px 48px;
+    mask-image: radial-gradient(ellipse 60% 80% at 50% 50%, black 20%, transparent 70%);
+    -webkit-mask-image: radial-gradient(ellipse 60% 80% at 50% 50%, black 20%, transparent 70%);
+    pointer-events: none;
+  }
+  .cta-card > * { position: relative; z-index: 1; }
+  .cta-card h2 {
+    font-size: clamp(2rem, 4vw, 3.4rem);
+    font-weight: 800;
+    line-height: 1.05;
+    letter-spacing: -0.04em;
+    margin-bottom: 20px;
+  }
+  .cta-card p {
+    font-size: 1.1rem;
+    color: var(--text-dim);
+    max-width: 520px;
+    margin: 0 auto 36px;
+  }
+  .cta-meta {
+    margin-top: 24px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--text-mute);
+    letter-spacing: 0.04em;
+  }
+
+  /* ==========================================================
+     FOOTER
+     ========================================================== */
+  .footer {
+    border-top: 1px solid var(--border);
+    padding: 60px 0 40px;
+    color: var(--text-mute);
+    font-size: 13px;
+  }
+  .footer-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 48px;
+    margin-bottom: 48px;
+  }
+  .footer-brand p {
+    margin-top: 16px;
+    max-width: 280px;
+    line-height: 1.6;
+  }
+  .footer-col h4 {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text);
+    margin-bottom: 16px;
+    font-weight: 700;
+  }
+  .footer-col a {
+    display: block;
+    padding: 6px 0;
+    color: var(--text-dim);
+    transition: color 0.2s;
+  }
+  .footer-col a:hover { color: var(--text); }
+  .footer-bottom {
+    padding-top: 32px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  @media (max-width: 700px) {
+    .footer-grid { grid-template-columns: 1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ============================ NAV ============================ -->
+<nav class="nav" id="nav">
+  <div class="container nav-inner">
+    <a href="#" class="logo">
+      <span class="logo-mark">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21V9l9-6 9 6v12"/><path d="M9 21V12h6v9"/></svg>
+      </span>
+      Aivelo
+    </a>
+    <ul class="nav-links">
+      <li><a href="#produit">Produit</a></li>
+      <li><a href="#agents">Agents IA</a></li>
+      <li><a href="#tarifs">Tarifs</a></li>
+      <li><a href="#demo">Démo</a></li>
+    </ul>
+    <div class="nav-cta">
+      <a href="#" class="nav-login">Connexion</a>
+      <a href="#demo" class="btn btn-primary">Réserver une démo</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ============================ HERO ============================ -->
+<section class="hero">
+  <div class="container hero-inner">
+    <span class="eyebrow reveal">CRM Immobilier · Nouvelle génération</span>
+    <h1 class="reveal" data-delay="1">
+      Vos commerciaux ferment des deals.<br>
+      <span class="accent">Aivelo s'occupe du reste.</span>
+    </h1>
+    <p class="hero-sub reveal" data-delay="2">
+      6 agents IA qualifient vos leads, rédigent vos annonces, relancent vos prospects et matchent vos biens — 24h/24. Pensé pour les agences immobilières qui veulent doubler leur chiffre sans doubler leurs équipes.
+    </p>
+    <div class="hero-cta reveal" data-delay="3">
+      <a href="#demo" class="btn btn-primary">Réserver une démo <svg class="arr" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg></a>
+      <a href="#produit" class="btn btn-ghost">Voir le produit</a>
+    </div>
+    <div class="hero-trust reveal" data-delay="4">
+      <span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg> RGPD conforme</span>
+      <span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg> Hébergement européen</span>
+      <span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg> Conçu en France</span>
+    </div>
+  </div>
+
+  <!-- Mock CRM -->
+  <div class="hero-mock reveal" data-delay="4">
+    <div class="mock-frame">
+      <div class="mock-topbar">
+        <span class="mock-dot"></span><span class="mock-dot"></span><span class="mock-dot"></span>
+        <span class="mock-url">aivelo.app / tableau-de-bord</span>
+      </div>
+      <div class="mock-body">
+        <aside class="mock-sidebar">
+          <div class="mock-side-label">Pilotage</div>
+          <div class="mock-side-item active">
+            <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+            Tableau de bord
+          </div>
+          <div class="mock-side-item">
+            <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+            Contacts
+          </div>
+          <div class="mock-side-item">
+            <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21V9l9-6 9 6v12"/></svg>
+            Biens
+          </div>
+          <div class="mock-side-item">
+            <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/></svg>
+            Annonces
+          </div>
+          <div class="mock-side-item">
+            <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+            Relances
+          </div>
+          <div class="mock-side-label" style="margin-top:18px">Agents IA</div>
+          <div class="mock-side-item">
+            <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+            Qualification
+          </div>
+          <div class="mock-side-item">
+            <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 01-9 8.5 8.5 8.5 0 01-7.6-4.7L3 21l1.9-5.7A8.38 8.38 0 0112 3a8.5 8.5 0 019 8.5z"/></svg>
+            Matching
+          </div>
+        </aside>
+
+        <div class="mock-content">
+          <div class="mock-h">
+            <div>
+              <h3>Pipeline aujourd'hui</h3>
+              <div class="mock-h-sub">Mis à jour il y a 12 sec</div>
+            </div>
+            <div class="mock-tag">14 leads · 3 chauds</div>
+          </div>
+
+          <div class="mock-stats">
+            <div class="mock-stat">
+              <div class="mock-stat-l">Leads</div>
+              <div class="mock-stat-v">47</div>
+              <div class="mock-stat-d">+12 cette semaine</div>
+            </div>
+            <div class="mock-stat">
+              <div class="mock-stat-l">Mandats</div>
+              <div class="mock-stat-v">23</div>
+              <div class="mock-stat-d">+3</div>
+            </div>
+            <div class="mock-stat">
+              <div class="mock-stat-l">Annonces</div>
+              <div class="mock-stat-v">18</div>
+              <div class="mock-stat-d">+5 ce mois</div>
+            </div>
+            <div class="mock-stat">
+              <div class="mock-stat-l">Visites</div>
+              <div class="mock-stat-v">31</div>
+              <div class="mock-stat-d">+8 prévues</div>
+            </div>
+          </div>
+
+          <div class="mock-leads">
+            <div class="mock-lead">
+              <div>
+                <div class="mock-lead-name">Sophie Mercier</div>
+                <div class="mock-lead-meta">T3 Bordeaux Chartrons · 380k€ · Accord bancaire ✓</div>
+              </div>
+              <span class="mock-score hot">87/100</span>
+              <span class="mock-tag">Chaud</span>
+            </div>
+            <div class="mock-lead">
+              <div>
+                <div class="mock-lead-name">Marc Dubois</div>
+                <div class="mock-lead-meta">Maison Mérignac · 450k€ · Délai 6 mois</div>
+              </div>
+              <span class="mock-score warm">64/100</span>
+              <span class="mock-tag">Tiède</span>
+            </div>
+            <div class="mock-lead">
+              <div>
+                <div class="mock-lead-name">Laura Vidal</div>
+                <div class="mock-lead-meta">Investissement locatif · 250k€ · LMNP</div>
+              </div>
+              <span class="mock-score hot">91/100</span>
+              <span class="mock-tag">Chaud</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="mock-float mock-float-1">
+      <div class="mock-float-icon">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 01-9 8.5 8.5 8.5 0 01-7.6-4.7L3 21l1.9-5.7A8.38 8.38 0 0112 3a8.5 8.5 0 019 8.5z"/></svg>
+      </div>
+      <div>
+        <div class="mock-float-t">Match détecté</div>
+        <div class="mock-float-s">Villa Bordeaux ↔ Mercier · 92%</div>
+      </div>
+    </div>
+
+    <div class="mock-float mock-float-2">
+      <div class="mock-float-icon">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+      </div>
+      <div>
+        <div class="mock-float-t">Annonce publiée</div>
+        <div class="mock-float-s">SeLoger · LeBonCoin · Bien'ici</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ PROBLÈME ============================ -->
+<section class="section" id="produit">
+  <div class="container">
+    <div class="section-head">
+      <span class="eyebrow reveal">Le vrai coût d'une agence en 2026</span>
+      <h2 class="reveal" data-delay="1">3 fuites silencieuses qui<br><span class="accent">vous coûtent un agent à plein temps.</span></h2>
+      <p class="reveal" data-delay="2">Pas de magie. Pas de buzzword. Des heures précises perdues chaque semaine, des leads qui partent chez la concurrence, des ventes qu'on ne fait jamais. Voilà ce qu'Aivelo répare.</p>
+    </div>
+
+    <div class="pain-grid">
+      <div class="pain-card reveal">
+        <div class="pain-num">PAIN 01</div>
+        <div class="pain-stat">78<span class="unit">%</span></div>
+        <h3 class="pain-h">Le lead qui part en 5 minutes</h3>
+        <p class="pain-p">78% des prospects choisissent l'agence qui répond en premier. Vos commerciaux sont en visite, en RDV, sur la route. Pendant ce temps, un concurrent décroche.</p>
+        <div class="pain-solution">Aivelo qualifie chaque lead en 30 secondes, 24h/24. Score 0–100. Votre commercial rappelle uniquement les leads chauds.</div>
+      </div>
+
+      <div class="pain-card reveal" data-delay="1">
+        <div class="pain-num">PAIN 02</div>
+        <div class="pain-stat">12<span class="unit">h / sem</span></div>
+        <h3 class="pain-h">Le temps gaspillé en rédaction</h3>
+        <p class="pain-p">Chaque agent passe 12h par semaine à rédiger des annonces pour SeLoger, LeBonCoin, Bien'ici. Multiplié par 5 commerciaux : un mi-temps complet payé à écrire.</p>
+        <div class="pain-solution">Aivelo génère vos annonces multi-portails en 30 secondes. Texte optimisé, ton ajusté, prêt à publier.</div>
+      </div>
+
+      <div class="pain-card reveal" data-delay="2">
+        <div class="pain-num">PAIN 03</div>
+        <div class="pain-stat">1<span class="unit">/4 ventes</span></div>
+        <h3 class="pain-h">La vente ratée par oubli</h3>
+        <p class="pain-p">Un nouveau bien rentre. Vous oubliez d'appeler le bon acheteur. Il achète ailleurs. Combien de fois par an ? Personne ne le calcule jamais.</p>
+        <div class="pain-solution">Aivelo croise vos 200+ candidats actifs avec chaque nouveau bien en temps réel. Plus aucune opportunité ratée.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ STATS ============================ -->
+<section class="stats">
+  <div class="container">
+    <div class="stats-grid">
+      <div class="stat-item reveal">
+        <div class="stat-v" data-count="30">0<span class="unit">sec</span></div>
+        <div class="stat-l">Pour qualifier un lead avec score 0–100<br>(vs 20 min à la main)</div>
+      </div>
+      <div class="stat-item reveal" data-delay="1">
+        <div class="stat-v" data-count="6">0</div>
+        <div class="stat-l">Agents IA qui travaillent pour vous<br>en parallèle, 24h/24</div>
+      </div>
+      <div class="stat-item reveal" data-delay="2">
+        <div class="stat-v" data-count="0">0</div>
+        <div class="stat-l">Lead qui passe entre les mailles.<br>Tout est qualifié, tracé, relancé.</div>
+      </div>
+      <div class="stat-item reveal" data-delay="3">
+        <div class="stat-v" data-count="15">0<span class="unit">h</span></div>
+        <div class="stat-l">Économisées par agent et par semaine.<br>Multiplié par votre équipe.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ FEATURES ============================ -->
+<section class="features section" id="agents">
+  <div class="container">
+    <div class="section-head">
+      <span class="eyebrow reveal">6 agents IA · 1 plateforme</span>
+      <h2 class="reveal" data-delay="1">Une équipe d'agents IA<br><span class="accent">à temps plein, sans charges sociales.</span></h2>
+      <p class="reveal" data-delay="2">Chaque agent prend en charge un pan métier. Ils travaillent ensemble, partagent les données, s'orchestrent automatiquement. Vous gardez le contrôle.</p>
+    </div>
+
+    <div class="bento">
+      <div class="feat feat-large reveal">
+        <span class="feat-tag">Agent 01</span>
+        <div class="feat-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+        </div>
+        <h3>Qualification automatique en 30 secondes</h3>
+        <p>L'agent analyse chaque nouveau lead — projet, budget, délai, financement, motivation — et lui attribue un score 0–100 chaud/tiède/froid. Votre commercial rappelle uniquement les leads à fort potentiel. Plus aucun temps perdu sur des contacts non solvables.</p>
+        <div class="feat-preview">
+          <div><span class="k">lead</span> &nbsp;&nbsp;<span class="v">Sophie Mercier</span></div>
+          <div><span class="k">projet</span> <span class="v">T3 Chartrons · 380k€ · 3 mois</span></div>
+          <div><span class="k">banque</span> <span class="ok">accord_principe ✓</span></div>
+          <div><span class="k">score</span> <span class="score">87 / 100 — CHAUD</span></div>
+        </div>
+      </div>
+
+      <div class="feat reveal" data-delay="1">
+        <span class="feat-tag">Agent 02</span>
+        <div class="feat-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8"/></svg>
+        </div>
+        <h3>Annonces multi-portails</h3>
+        <p>Texte optimisé pour SeLoger, LeBonCoin et Bien'ici, généré en 30 secondes. Adapté à chaque portail.</p>
+      </div>
+
+      <div class="feat reveal" data-delay="2">
+        <span class="feat-tag">Agent 03</span>
+        <div class="feat-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/><path d="M12 7v5l3 3"/></svg>
+        </div>
+        <h3>Relances orchestrées</h3>
+        <p>Séquence J+1 / J+7 / J+14 automatique. Chaque prospect est suivi sans effort, par email personnalisé.</p>
+      </div>
+
+      <div class="feat reveal" data-delay="2">
+        <span class="feat-tag">Agent 04</span>
+        <div class="feat-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>
+        </div>
+        <h3>Matching temps réel</h3>
+        <p>Nouveau bien rentré ? L'IA croise instantanément vos candidats actifs et vous propose les meilleurs matchs.</p>
+      </div>
+
+      <div class="feat feat-large reveal" data-delay="3">
+        <span class="feat-tag">Agent 05 · Exclusif</span>
+        <div class="feat-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"/><path d="M19 10v2a7 7 0 01-14 0v-2M12 19v4M8 23h8"/></svg>
+        </div>
+        <h3>Voice note de visite → résumé IA</h3>
+        <p>Enregistrez 2 minutes après une visite depuis votre mobile. Aivelo transcrit, identifie les points clés, l'intérêt acheteur, les objections et les actions à mener. Sauvegardé dans le dossier bien et la fiche candidat. <strong style="color:var(--text)">Aucun autre CRM immobilier ne le fait.</strong></p>
+        <div class="feat-preview">
+          <div><span class="k">visite</span> <span class="v">19 mai · Villa Pessac · Mercier</span></div>
+          <div><span class="k">interet</span> <span class="ok">élevé · couple convaincu</span></div>
+          <div><span class="k">objection</span> <span class="v">cuisine à refaire</span></div>
+          <div><span class="k">action</span> <span class="v">envoyer devis cuisine sous 48h</span></div>
+        </div>
+      </div>
+
+      <div class="feat reveal" data-delay="4">
+        <span class="feat-tag">Agent 06</span>
+        <div class="feat-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>
+        </div>
+        <h3>Import par scan ou photo</h3>
+        <p>Scannez un mandat, photographiez une fiche, collez un email. L'IA extrait tout et remplit le dossier.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ PRICING ============================ -->
+<section class="section" id="tarifs">
+  <div class="container">
+    <div class="section-head">
+      <span class="eyebrow reveal">Tarifs</span>
+      <h2 class="reveal" data-delay="1">Un seul commercial qui vend mieux<br><span class="accent">rembourse Aivelo en 3 jours.</span></h2>
+      <p class="reveal" data-delay="2">Sans engagement. Annulation en un clic. Premier client onboardé en 24h.</p>
+    </div>
+
+    <div class="pricing-grid">
+      <div class="price reveal">
+        <div class="price-name">Starter</div>
+        <div class="price-amount"><span class="num">149</span><span class="cur">€</span><span class="per">/mois</span></div>
+        <p class="price-desc">Pour démarrer avec l'essentiel et tester la valeur.</p>
+        <ul>
+          <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg> Agent Qualification (illimité)</li>
+          <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg> 20 annonces / mois</li>
+          <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg> Dashboard complet</li>
+          <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg> 1 utilisateur</li>
+        </ul>
+        <a href="#demo" class="btn btn-ghost">Commencer</a>
+      </div>
+
+      <div class="price price-featured reveal" data-delay="1">
+        <div class="price-name">Pro</div>
+        <div class="price-amount"><span class="num">249</span><span class="cur">€</span><span class="per">/mois</span></div>
+        <p class="price-desc">La formule choisie par 80% des agences. Tous les agents IA débridés.</p>
+        <ul>
+          <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg> <strong>Les 6 agents IA</strong> illimités</li>
+          <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg> Relances J+1 / J+7 / J+14 auto</li>
+          <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg> Voice note visite + résumé IA</li>
+          <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg> Matching temps réel</li>
+          <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg> Jusqu'à 5 utilisateurs</li>
+        </ul>
+        <a href="#demo" class="btn btn-primary">Réserver une démo <svg class="arr" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg></a>
+      </div>
+
+      <div class="price reveal" data-delay="2">
+        <div class="price-name">Agency</div>
+        <div class="price-amount"><span class="num">499</span><span class="cur">€</span><span class="per">/mois</span></div>
+        <p class="price-desc">Pour les groupes multi-agences avec besoins avancés.</p>
+        <ul>
+          <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg> Tout le plan Pro</li>
+          <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg> Multi-agences illimité</li>
+          <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg> <strong>Ubiflow inclus</strong> (50+ portails)</li>
+          <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg> Support prioritaire 24/7</li>
+          <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg> Utilisateurs illimités</li>
+        </ul>
+        <a href="#demo" class="btn btn-ghost">Nous contacter</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ CTA ============================ -->
+<section class="cta" id="demo">
+  <div class="container">
+    <div class="cta-card reveal">
+      <span class="eyebrow">Démo personnalisée · 15 minutes</span>
+      <h2>Voyez Aivelo tourner sur<br><span style="background:linear-gradient(135deg,var(--accent),var(--accent-soft));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent">vos vrais dossiers.</span></h2>
+      <p>On vous montre comment l'IA qualifie un de vos leads, génère une annonce sur un de vos biens, et match vos acheteurs en temps réel. Vous repartez avec une démo enregistrée.</p>
+      <a href="mailto:contact@aivelo.fr" class="btn btn-primary" style="height:54px;padding:0 28px;font-size:16px">Réserver ma démo <svg class="arr" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg></a>
+      <div class="cta-meta">SANS ENGAGEMENT · DONNÉES PRIVÉES · RGPD</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ FOOTER ============================ -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="#" class="logo">
+          <span class="logo-mark">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21V9l9-6 9 6v12"/><path d="M9 21V12h6v9"/></svg>
+          </span>
+          Aivelo
+        </a>
+        <p>Le CRM immobilier nouvelle génération. Conçu en France, pour les agences ambitieuses.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Produit</h4>
+        <a href="#agents">Agents IA</a>
+        <a href="#tarifs">Tarifs</a>
+        <a href="#demo">Démo</a>
+        <a href="#">Roadmap</a>
+      </div>
+      <div class="footer-col">
+        <h4>Société</h4>
+        <a href="#">À propos</a>
+        <a href="mailto:contact@aivelo.fr">Contact</a>
+        <a href="#">Blog</a>
+        <a href="#">Partenaires</a>
+      </div>
+      <div class="footer-col">
+        <h4>Légal</h4>
+        <a href="#">CGU</a>
+        <a href="#">Confidentialité</a>
+        <a href="#">RGPD</a>
+        <a href="#">Mentions légales</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 Aivelo. Tous droits réservés.</span>
+      <span>Hébergé en Europe · Données chiffrées · Conçu à Bordeaux 🇫🇷</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // ============================================================
+  // FUNCTION 1 — Nav scroll state
+  // ============================================================
+  function initNav() {
+    const nav = document.getElementById('nav');
+    const onScroll = () => {
+      nav.classList.toggle('scrolled', window.scrollY > 20);
+    };
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+  }
+
+  // ============================================================
+  // FUNCTION 2 — Scroll reveal via IntersectionObserver
+  // ============================================================
+  function initReveal() {
+    const els = document.querySelectorAll('.reveal');
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('in');
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -50px 0px' });
+    els.forEach(el => io.observe(el));
+  }
+
+  // ============================================================
+  // FUNCTION 3 — Animated counters in stats section
+  // ============================================================
+  function initCounters() {
+    const counters = document.querySelectorAll('[data-count]');
+    const animate = (el) => {
+      const target = parseInt(el.dataset.count, 10);
+      const unit = el.querySelector('.unit') ? el.querySelector('.unit').outerHTML : '';
+      const duration = 1400;
+      const start = performance.now();
+      const step = (now) => {
+        const progress = Math.min((now - start) / duration, 1);
+        const eased = 1 - Math.pow(1 - progress, 3);
+        const value = Math.round(target * eased);
+        el.innerHTML = value + unit;
+        if (progress < 1) requestAnimationFrame(step);
+      };
+      requestAnimationFrame(step);
+    };
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          animate(entry.target);
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.5 });
+    counters.forEach(c => io.observe(c));
+  }
+
+  // Boot
+  initNav();
+  initReveal();
+  initCounters();
+</script>
+
+</body>
+</html>
