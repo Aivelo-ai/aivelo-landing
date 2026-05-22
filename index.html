@@ -806,8 +806,69 @@
   }
 
   /* ==========================================================
-     PRICING
+     PRICING — Toggle + Cards + Add-ons + Founding
      ========================================================== */
+
+  /* Billing toggle */
+  .billing-toggle {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 48px;
+  }
+  .billing-toggle-inner {
+    display: inline-flex;
+    background: var(--surface);
+    border: 1px solid var(--border-strong);
+    border-radius: 14px;
+    padding: 4px;
+    gap: 2px;
+  }
+  .billing-btn {
+    padding: 10px 20px;
+    border-radius: 10px;
+    border: none;
+    background: transparent;
+    color: var(--text-mute);
+    font-family: var(--font-sans);
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.22s var(--ease);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .billing-btn.active {
+    background: var(--accent);
+    color: white;
+    box-shadow: 0 4px 20px -4px var(--accent-glow);
+  }
+  .billing-chip {
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 100px;
+    letter-spacing: 0.04em;
+    background: rgba(46,225,156,0.12);
+    color: var(--success);
+    transition: all 0.22s var(--ease);
+  }
+  .billing-btn.active .billing-chip {
+    background: rgba(255,255,255,0.2);
+    color: white;
+  }
+  .savings-banner {
+    text-align: center;
+    margin-bottom: 28px;
+    color: var(--success);
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    min-height: 20px;
+    transition: opacity 0.3s;
+  }
+
+  /* Cards */
   .pricing-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -825,10 +886,7 @@
     flex-direction: column;
     transition: all 0.3s var(--ease);
   }
-  .price:hover {
-    border-color: var(--border-strong);
-    transform: translateY(-2px);
-  }
+  .price:hover { border-color: var(--border-strong); transform: translateY(-2px); }
   .price-featured {
     background: linear-gradient(180deg, var(--surface-2) 0%, var(--surface) 100%);
     border-color: var(--border-accent);
@@ -837,58 +895,55 @@
   .price-featured::before {
     content: 'Le plus choisi';
     position: absolute;
-    top: -1px;
-    left: 50%;
+    top: -1px; left: 50%;
     transform: translate(-50%, -50%);
     background: var(--accent);
     color: white;
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    padding: 6px 14px;
-    border-radius: 100px;
+    font-size: 11px; font-weight: 700;
+    letter-spacing: 0.06em; text-transform: uppercase;
+    padding: 6px 14px; border-radius: 100px;
     box-shadow: 0 8px 20px -6px var(--accent-glow);
   }
   .price-name {
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--text-dim);
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    margin-bottom: 14px;
+    font-size: 14px; font-weight: 600;
+    color: var(--text-dim); text-transform: uppercase;
+    letter-spacing: 0.08em; margin-bottom: 14px;
   }
   .price-amount {
-    display: flex;
-    align-items: baseline;
-    gap: 6px;
-    margin-bottom: 8px;
+    display: flex; align-items: baseline;
+    gap: 6px; margin-bottom: 4px;
   }
   .price-amount .num {
-    font-size: 3.2rem;
-    font-weight: 800;
-    letter-spacing: -0.05em;
-    line-height: 1;
+    font-size: 3.2rem; font-weight: 800;
+    letter-spacing: -0.05em; line-height: 1;
+    transition: all 0.3s var(--ease);
   }
   .price-amount .cur { font-size: 1.4rem; font-weight: 700; }
   .price-amount .per { font-size: 0.95rem; color: var(--text-dim); }
+  .price-billing-sub {
+    font-size: 11px; color: var(--text-mute);
+    font-family: var(--font-mono); margin-bottom: 8px;
+    min-height: 16px; transition: opacity 0.3s;
+  }
+  .price-saving {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: rgba(46,225,156,0.1);
+    border: 1px solid rgba(46,225,156,0.25);
+    border-radius: 100px; padding: 4px 10px;
+    font-size: 11px; font-weight: 700; color: var(--success);
+    margin-bottom: 12px; opacity: 0;
+    transition: opacity 0.3s var(--ease);
+  }
+  .price-saving.visible { opacity: 1; }
   .price-desc {
-    font-size: 14px;
-    color: var(--text-dim);
-    margin-bottom: 28px;
-    min-height: 42px;
+    font-size: 14px; color: var(--text-dim);
+    margin-bottom: 24px; margin-top: 8px; min-height: 42px;
   }
-  .price ul {
-    margin-bottom: 32px;
-    flex: 1;
-  }
+  .price ul { margin-bottom: 32px; flex: 1; }
   .price li {
-    display: flex;
-    align-items: flex-start;
-    gap: 10px;
-    padding: 10px 0;
-    font-size: 14px;
-    color: var(--text-soft);
+    display: flex; align-items: flex-start;
+    gap: 10px; padding: 10px 0;
+    font-size: 14px; color: var(--text-soft);
     border-bottom: 1px dashed var(--border);
   }
   .price li:last-child { border-bottom: none; }
@@ -896,7 +951,66 @@
   .price .btn { width: 100%; }
   @media (max-width: 900px) {
     .pricing-grid { grid-template-columns: 1fr; max-width: 480px; }
+    .billing-btn { padding: 10px 14px; font-size: 13px; }
   }
+
+  /* Add-ons grid */
+  .addons-section { margin-top: 64px; max-width: 1080px; margin-left: auto; margin-right: auto; }
+  .addons-head { text-align: center; margin-bottom: 32px; }
+  .addons-head h3 { font-size: 1.4rem; font-weight: 700; letter-spacing: -0.02em; }
+  .addons-head p { color: var(--text-dim); font-size: 14px; margin-top: 8px; }
+  .addons-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+  }
+  .addon-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+    padding: 22px 20px;
+    display: flex; flex-direction: column; gap: 10px;
+    transition: border-color 0.3s var(--ease);
+  }
+  .addon-card:hover { border-color: var(--border-strong); }
+  .addon-icon { font-size: 24px; }
+  .addon-name { font-weight: 700; font-size: 14px; }
+  .addon-sub { font-size: 11px; font-weight: 600; margin-top: 2px; }
+  .addon-desc { font-size: 12px; color: var(--text-dim); line-height: 1.5; flex: 1; }
+  .addon-price { font-size: 13px; font-weight: 700; font-family: var(--font-mono); }
+  @media (max-width: 900px) { .addons-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 500px) { .addons-grid { grid-template-columns: 1fr; } }
+
+  /* Founding member banner */
+  .founding-banner {
+    max-width: 1080px;
+    margin: 40px auto 0;
+    background: linear-gradient(135deg, #0F1829, #1A1D2F);
+    border: 1px solid var(--border-accent);
+    border-radius: var(--r-lg);
+    padding: 28px 36px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+  .founding-tag {
+    font-size: 11px; font-weight: 700;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--warning); margin-bottom: 8px;
+  }
+  .founding-title { font-weight: 700; font-size: 1.1rem; }
+  .founding-desc { color: var(--text-dim); font-size: 13px; margin-top: 4px; }
+  .founding-cta {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 12px 24px; border-radius: 12px;
+    background: var(--warning); color: #0A0A0F;
+    font-weight: 700; font-size: 14px;
+    text-decoration: none; white-space: nowrap;
+    flex-shrink: 0; transition: all 0.25s var(--ease);
+  }
+  .founding-cta:hover { transform: translateY(-1px); filter: brightness(1.05); }
 
   /* ==========================================================
      CTA FINAL
@@ -1327,23 +1441,51 @@
       <p class="reveal" data-delay="2">Sans engagement. Annulation en un clic. Premier client onboardé en 24h.</p>
     </div>
 
+    <!-- Billing toggle -->
+    <div class="billing-toggle reveal">
+      <div class="billing-toggle-inner">
+        <button class="billing-btn active" data-period="monthly" onclick="setBilling('monthly')">Mensuel</button>
+        <button class="billing-btn" data-period="semi" onclick="setBilling('semi')">
+          6 mois <span class="billing-chip">−1 mois</span>
+        </button>
+        <button class="billing-btn" data-period="annual" onclick="setBilling('annual')">
+          Annuel <span class="billing-chip">−2 mois</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Savings banner -->
+    <div class="savings-banner" id="savings-banner"></div>
+
+    <!-- Cards -->
     <div class="pricing-grid">
+
+      <!-- STARTER -->
       <div class="price reveal">
         <div class="price-name">Starter</div>
-        <div class="price-amount"><span class="num">149</span><span class="cur">€</span><span class="per">/mois</span></div>
+        <div class="price-amount">
+          <span class="num" id="price-starter">149</span><span class="cur">€</span><span class="per">/mois</span>
+        </div>
+        <div class="price-billing-sub" id="sub-starter"></div>
+        <div class="price-saving" id="saving-starter">✓ Économie de 149€</div>
         <p class="price-desc">Pour démarrer avec l'essentiel et tester la valeur.</p>
         <ul>
-          <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg> Agent Qualification (illimité)</li>
+          <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg> Agent Qualification illimité</li>
           <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg> 20 annonces / mois</li>
           <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg> Dashboard complet</li>
           <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg> 1 utilisateur</li>
         </ul>
-        <a href="#demo" class="btn btn-ghost">Commencer</a>
+        <a href="https://calendar.app.google/uFepKqQYgaG9t9Hf6" target="_blank" rel="noreferrer" class="btn btn-ghost">Commencer</a>
       </div>
 
+      <!-- PRO -->
       <div class="price price-featured reveal" data-delay="1">
         <div class="price-name">Pro</div>
-        <div class="price-amount"><span class="num">249</span><span class="cur">€</span><span class="per">/mois</span></div>
+        <div class="price-amount">
+          <span class="num" id="price-pro">249</span><span class="cur">€</span><span class="per">/mois</span>
+        </div>
+        <div class="price-billing-sub" id="sub-pro"></div>
+        <div class="price-saving" id="saving-pro">✓ Économie de 249€</div>
         <p class="price-desc">La formule complète. Tous les agents IA débridés.</p>
         <ul>
           <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg> <strong>Les 6 agents IA</strong> illimités</li>
@@ -1352,23 +1494,87 @@
           <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg> Matching temps réel</li>
           <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg> Jusqu'à 5 utilisateurs</li>
         </ul>
-        <a href="#demo" class="btn btn-primary">Réserver une démo <svg class="arr" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg></a>
+        <a href="https://calendar.app.google/uFepKqQYgaG9t9Hf6" target="_blank" rel="noreferrer" class="btn btn-primary">Réserver une démo <svg class="arr" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg></a>
       </div>
 
+      <!-- AGENCY -->
       <div class="price reveal" data-delay="2">
         <div class="price-name">Agency</div>
-        <div class="price-amount"><span class="num">499</span><span class="cur">€</span><span class="per">/mois</span></div>
+        <div class="price-amount">
+          <span class="num" id="price-agency">499</span><span class="cur">€</span><span class="per">/mois</span>
+        </div>
+        <div class="price-billing-sub" id="sub-agency"></div>
+        <div class="price-saving" id="saving-agency">✓ Économie de 499€</div>
         <p class="price-desc">Pour les groupes multi-agences avec besoins avancés.</p>
         <ul>
           <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg> Tout le plan Pro</li>
           <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg> Multi-agences illimité</li>
-          <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg> <strong>Ubiflow inclus</strong> (50+ portails)</li>
+          <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg> Multidiffusion incluse (SeLoger, LBC, BI)</li>
           <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg> Support prioritaire 24/7</li>
           <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg> Utilisateurs illimités</li>
         </ul>
-        <a href="#demo" class="btn btn-ghost">Nous contacter</a>
+        <a href="https://calendar.app.google/uFepKqQYgaG9t9Hf6" target="_blank" rel="noreferrer" class="btn btn-ghost">Nous contacter</a>
       </div>
     </div>
+
+    <!-- ADD-ONS -->
+    <div class="addons-section reveal">
+      <div class="addons-head">
+        <h3>Enrichissez votre plan avec des add-ons</h3>
+        <p>Activez uniquement ce dont vous avez besoin, quand vous en avez besoin.</p>
+      </div>
+      <div class="addons-grid">
+        <div class="addon-card">
+          <div class="addon-icon">✍️</div>
+          <div>
+            <div class="addon-name">Signature électronique</div>
+            <div class="addon-sub" style="color:#2EE19C">YouSign eIDAS</div>
+          </div>
+          <p class="addon-desc">Mandats, compromis, baux signés en ligne. Valeur légale totale, zéro aller-retour postal.</p>
+          <div class="addon-price" style="color:#2EE19C">+39€/mois</div>
+        </div>
+        <div class="addon-card">
+          <div class="addon-icon">⚖️</div>
+          <div>
+            <div class="addon-name">Analyse Juridique IA</div>
+            <div class="addon-sub" style="color:#4F7EF7">Conformité documents</div>
+          </div>
+          <p class="addon-desc">Scan mandat/compromis → score conformité + extraction automatique. Alertes en temps réel.</p>
+          <div class="addon-price" style="color:#4F7EF7">+49€/mois</div>
+        </div>
+        <div class="addon-card">
+          <div class="addon-icon">📡</div>
+          <div>
+            <div class="addon-name">Multidiffusion native</div>
+            <div class="addon-sub" style="color:#FFB547">Portails principaux</div>
+          </div>
+          <p class="addon-desc">SeLoger · LeBonCoin · Bien'ici · Site web vitrine de votre agence. Diffusion en un clic.</p>
+          <div class="addon-price" style="color:#FFB547">+89€/mois</div>
+        </div>
+        <div class="addon-card">
+          <div class="addon-icon">🎙️</div>
+          <div>
+            <div class="addon-name">Agent vocal Vapi.ai</div>
+            <div class="addon-sub" style="color:#FF5C7A">Qualification 24h/24</div>
+          </div>
+          <p class="addon-desc">Qualification téléphonique automatique. 200 min incluses, puis 0,15€/min supplémentaire.</p>
+          <div class="addon-price" style="color:#FF5C7A">+79€/mois</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FOUNDING MEMBER -->
+    <div class="founding-banner reveal">
+      <div>
+        <div class="founding-tag">⭐ Offre Founding Member — Places limitées</div>
+        <div class="founding-title">Premier client : Pro à 199€/mois en annuel, bloqué à vie.</div>
+        <div class="founding-desc">+ Site vitrine agence offert (valeur 2 000€) &nbsp;·&nbsp; + Signature électronique YouSign offerte 6 mois.</div>
+      </div>
+      <a href="https://calendar.app.google/uFepKqQYgaG9t9Hf6" target="_blank" rel="noreferrer" class="founding-cta">
+        Je veux cette offre <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+      </a>
+    </div>
+
   </div>
 </section>
 
@@ -1378,8 +1584,11 @@
     <div class="cta-card reveal">
       <span class="eyebrow">Démo personnalisée · 15 minutes</span>
       <h2>Voyez Aivelo tourner sur<br><span style="background:linear-gradient(135deg,var(--accent),var(--accent-soft));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent">vos vrais dossiers.</span></h2>
-      <p>On vous montre comment les agents IA qualifient un de vos leads, génèrent une annonce sur un de vos biens, et matchent vos acheteurs en temps réel. Vous repartez avec une démo enregistrée et un audit de vos pertes de temps actuelles.</p>
-      <a href="mailto:contact@aivelo.fr" class="btn btn-primary" style="height:54px;padding:0 28px;font-size:16px">Réserver ma démo <svg class="arr" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg></a>
+      <p>On qualifie un de vos leads, on génère une annonce sur un de vos biens, on matche vos acheteurs en temps réel. Vous repartez avec une démo enregistrée et un audit de vos pertes de temps actuelles.</p>
+      <div style="display:flex;justify-content:center;gap:12px;flex-wrap:wrap;">
+        <a href="https://calendar.app.google/uFepKqQYgaG9t9Hf6" target="_blank" rel="noreferrer" class="btn btn-primary" style="height:54px;padding:0 28px;font-size:16px">📅 Réserver ma démo <svg class="arr" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg></a>
+        <a href="mailto:arthur.s@aivelo.fr" class="btn btn-ghost" style="height:54px;padding:0 24px;font-size:15px">✉️ arthur.s@aivelo.fr</a>
+      </div>
       <div class="cta-meta">SANS ENGAGEMENT · DONNÉES PRIVÉES · RGPD</div>
     </div>
   </div>
@@ -1484,6 +1693,39 @@
       });
     }, { threshold: 0.5 });
     counters.forEach(c => io.observe(c));
+  }
+
+  // ============================================================
+  // FUNCTION 4 — Billing toggle
+  // ============================================================
+  const pricingData = {
+    monthly:  { starter: [149, '', ''],       pro: [249, '', ''],         agency: [499, '', ''] },
+    semi:     { starter: [124, '745€ facturés en une fois', '149'],  pro: [207, '1 245€ facturés en une fois', '249'],  agency: [416, '2 495€ facturés en une fois', '499'] },
+    annual:   { starter: [124, '1 490€ facturés en une fois', '298'], pro: [207, '2 490€ facturés en une fois', '498'], agency: [416, '4 990€ facturés en une fois', '998'] },
+  };
+  const savingsMsg = {
+    monthly: '',
+    semi: '✦ Économisez l\'équivalent d\'1 mois d\'abonnement avec cet engagement',
+    annual: '✦ Économisez l\'équivalent de 2 mois d\'abonnement avec cet engagement',
+  };
+
+  function setBilling(period) {
+    document.querySelectorAll('.billing-btn').forEach(b => b.classList.toggle('active', b.dataset.period === period));
+    const d = pricingData[period];
+    const plans = ['starter', 'pro', 'agency'];
+    plans.forEach(p => {
+      const [price, sub, saving] = d[p];
+      document.getElementById(`price-${p}`).textContent = price;
+      document.getElementById(`sub-${p}`).textContent = sub;
+      const savEl = document.getElementById(`saving-${p}`);
+      if (saving) {
+        savEl.textContent = `✓ Économie de ${saving}€`;
+        savEl.classList.add('visible');
+      } else {
+        savEl.classList.remove('visible');
+      }
+    });
+    document.getElementById('savings-banner').textContent = savingsMsg[period];
   }
 
   // Boot
