@@ -37,3 +37,7 @@ Si les CDN ne répondent pas, ou si le visiteur a activé « réduire les animat
 - **Variante du hero**, désactivée par défaut : le visuel du hero devient le logo en verre. Elle s'active en ajoutant `#logo-3d` à l'adresse (pour comparer) ou avec `data-hero="3d"` sur `<html>` (pour l'adopter).
 
 Les contours du logo sont tracés depuis `assets/img/aivelo-logo.png` (constante `LOGO` en tête du fichier).
+
+## Méthode : filet d'eau (test)
+
+`assets/js/water.js` transforme la ligne des 5 étapes en tube de verre qui se remplit d'eau au défilement ; chaque point d'étape se remplit avec une onde, puis l'eau coule dans une vasque « Projet livré ». Actif seulement avec la variante verre 3D (`#logo-3d` ou `data-hero="3d"`) ; ailleurs, la ligne classique reste en place.
