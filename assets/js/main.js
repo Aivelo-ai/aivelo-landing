@@ -405,12 +405,14 @@
       onEnter: (batch) => batch.forEach((card, i) => blueprintReveal(card, i * .09)),
     });
 
-    /* Hero parallax on scroll (desktop pins the hero instead, see initLiveSite) */
-    mm.add('(max-width: 1023px)', () => {
-      gsap.to('.hero-copy', {
-        yPercent: -18, opacity: .2, ease: 'none',
-        scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true },
-      });
+    /* Hero parallax on scroll */
+    gsap.to('.hero-copy', {
+      yPercent: -18, opacity: .2, ease: 'none',
+      scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true },
+    });
+    gsap.to('.hero-visual', {
+      yPercent: -8, ease: 'none',
+      scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true },
     });
 
     /* Hero pointer parallax */
@@ -551,9 +553,7 @@
     window.addEventListener('load', refresh);
   }
 
-  /* ---------- Hero "live site": wireframe → design → code → live ----------
-     Desktop: the hero is pinned and the build follows the scroll (both ways).
-     Smaller screens: the build plays on a loop while the hero is visible. */
+  /* ---------- Hero "live site": wireframe → design → code → live, on a loop ---------- */
   function initLiveSite() {
     const root = $('.live-site');
     if (!root) return null;
@@ -593,7 +593,7 @@
 
     // One timeline describes the whole build; the phase is derived from its time,
     // so it reads correctly whether it plays forward, loops or is scrubbed backwards.
-    const build = (vars, { fadePointer = true } = {}) => {
+    const build = (vars) => {
       const tl = gsap.timeline(vars);
       const typing = { n: 0 };
       const starts = [];
@@ -610,7 +610,7 @@
         if (p.id === 'live') {
           tl.fromTo(pointer, { left: '86%', top: '96%', opacity: 0 }, { left: '19%', top: '63%', opacity: 1, duration: 1.3, ease: 'power3.inOut', immediateRender: false }, t + .5)
             .to(pointer, { scale: .8, duration: .12, yoyo: true, repeat: 1, transformOrigin: '20% 15%' }, t + 1.85);
-          if (fadePointer) tl.to(pointer, { opacity: 0, duration: .5 }, t + p.d - .6);
+          tl.to(pointer, { opacity: 0, duration: .5 }, t + p.d - .6);
         }
         t += p.d;
       });
@@ -626,36 +626,14 @@
       return tl;
     };
 
-    let play = () => {};
-    const mm = gsap.matchMedia();
-
-    mm.add('(min-width: 1024px)', () => {
-      root.classList.add('is-scrub');
-      const tl = build({ paused: true }, { fadePointer: false });
-      ScrollTrigger.create({
-        trigger: '.hero', start: 'top top', end: '+=160%',
-        pin: true, scrub: .8, anticipatePin: 1, animation: tl,
-      });
-      return () => root.classList.remove('is-scrub');
-    });
-
-    mm.add('(max-width: 1023px)', () => {
-      const tl = build({ repeat: -1, paused: true });
-      let wanted = false;
-      let visible = true;
-      const sync = () => (wanted && visible && !document.hidden ? tl.play() : tl.pause());
-      const io = new IntersectionObserver(([e]) => { visible = e.isIntersecting; sync(); });
-      io.observe(root);
-      document.addEventListener('visibilitychange', sync);
-      play = () => { wanted = true; sync(); };
-      return () => {
-        io.disconnect();
-        document.removeEventListener('visibilitychange', sync);
-        play = () => {};
-      };
-    });
-
-    return { play: () => play() };
+    // Play on a loop, only while the hero is on screen
+    const tl = build({ repeat: -1, paused: true });
+    let wanted = false;
+    let visible = true;
+    const sync = () => (wanted && visible && !document.hidden ? tl.play() : tl.pause());
+    new IntersectionObserver(([e]) => { visible = e.isIntersecting; sync(); }).observe(root);
+    document.addEventListener('visibilitychange', sync);
+    return { play: () => { wanted = true; sync(); } };
   }
 
   function blueprintReveal(card, delay) {
