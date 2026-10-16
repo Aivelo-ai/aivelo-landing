@@ -6,6 +6,8 @@ Site statique (HTML/CSS/JS, aucun build) : ouvrir `index.html` ou servir le doss
 index.html            contenu et structure des sections
 assets/css/main.css   design system (tokens en tête de fichier), layout, responsive
 assets/js/main.js     interactions et motion design
+assets/css/sections.css  styles des sections Réalisations, Démo, Témoignages et effets associés
+assets/js/sections.js    interactions de ces sections (curseur avant/après, démo, compteurs, lentille…)
 ```
 
 ## Librairies (CDN, versions figées)
@@ -17,6 +19,9 @@ Si les CDN ne répondent pas, ou si le visiteur a activé « réduire les animat
 
 ## Modifier le contenu
 
+- **Réalisations** : cartes `.work` dans `#realisations`. Captures dans `assets/img/real-*.webp` (pleine page ordinateur + mobile) ; le curseur « Maquette / Site livré » compare `real-carnot-wire.webp` et `real-carnot-top.webp`.
+- **Témoignages** : `#temoignages`. Les trois avis sont des exemples marqués « à remplacer ».
+- **Démo** : contenus par métier dans l'objet `DEMO` de `assets/js/sections.js`.
 - **Tarifs sites / formation** : directement dans les cartes `.plan` des panneaux `#panel-sites` et `#panel-formation` (`index.html`).
 - **Tarifs CRM** : prix mensuels dans `#panel-crm`, remises 6 mois / annuel dans `pricingData` (`assets/js/main.js`).
 - **Add-ons** : cartes `.addon` dans `#addons`. L'attribut `data-cat` (`site`, `formation`, `crm`, séparés par des espaces) détermine les filtres où la carte apparaît.
@@ -43,3 +48,11 @@ Les contours du logo sont tracés depuis `assets/img/aivelo-logo.png` (constante
 `assets/js/water.js` raconte un trajet A → B au défilement, en respectant la gravité : une goutte se forme en haut de la section (A), glisse le long des étapes en s'étirant quand elle accélère et en vibrant quand elle freine, marque une pause dans le cercle de chaque étape et y laisse une perle, puis se dépose en lentille dans le cercle final (B) : « Projet livré ». L'eau ne remonte jamais : la scène se réinitialise seulement quand la section est sortie de l'écran par le bas.
 
 Rendu WebGL2 en deux passes (metaballs dans une texture flottante, puis ombrage « verre liquide »). Sans WebGL2 ou avec « réduire les animations », la ligne classique reste en place.
+
+## Sections ajoutées après l'audit
+
+- **Réalisations** (fond sombre) : vrais sites clients, captures qui défilent au survol, curseur maquette / site livré.
+- **Démo « esquisse d'ambiance »** (fond violet) : métier, ambiance et couleur transforment l'aperçu ; le bouton envoie l'esquisse par e-mail comme point de départ de l'atelier.
+- **Fondu de fond** : la page passe au sombre puis au violet en traversant ces deux sections.
+- **Effets** : prix en compteur mécanique (texte normal au repos), ondulation des photos « Pour qui », lentille de verre sur le site du hero, vidéo de leçon (`assets/img/lecon.*`) dans la carte Formation.
+- **Nettoyage** : add-ons repliés à 6, liens légaux en fenêtre (texte provisoire à compléter), three.js non chargé sur mobile et en économie de données.

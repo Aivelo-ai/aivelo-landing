@@ -15,6 +15,12 @@
   const heroVariant = !!slot && (location.hash === '#logo-3d' || html.dataset.hero === '3d');
   const footerLogo = document.querySelector('[data-footer-word] img');
   if (!heroVariant && !footerLogo) return;
+  // three.js weighs ~600 kB: phones, data-saver and low-memory devices keep the flat logo
+  const conn = navigator.connection || {};
+  const lite = conn.saveData || /(^|-)2g$/.test(conn.effectiveType || '') ||
+    window.matchMedia('(max-width: 760px), (pointer: coarse)').matches ||
+    (navigator.deviceMemory && navigator.deviceMemory < 4);
+  if (lite && !heroVariant) return;
   if (heroVariant) html.dataset.hero = '3d';
 
   /* Logo geometry, traced from assets/img/aivelo-logo.png (471 × 471 px):

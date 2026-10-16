@@ -199,7 +199,9 @@
     ['starter', 'pro', 'agency'].forEach((p) => {
       const [price, sub, saving] = d[p];
       const priceEl = document.getElementById('price-' + p);
-      if (motion) {
+      if (window.labOdo) {
+        window.labOdo(priceEl, String(price));
+      } else if (motion) {
         const obj = { v: parseInt(priceEl.textContent, 10) || price };
         gsap.to(obj, { v: price, duration: .7, ease: 'power3.out', onUpdate: () => { priceEl.textContent = Math.round(obj.v); } });
       } else {
@@ -218,16 +220,27 @@
      5. Add-ons filter
      ------------------------------------------------------------------ */
   const addons = $$('.addon');
-  $$('.filter').forEach((btn) => {
-    btn.addEventListener('click', () => {
-      const f = btn.dataset.filter;
-      $$('.filter').forEach((b) => {
-        const on = b === btn;
-        b.classList.toggle('active', on);
-        b.setAttribute('aria-pressed', String(on));
-      });
+  // « Tous » shows the first 6 only, until « Voir tous les add-ons »
+  const FOLD = 6;
+  let folded = addons.length > FOLD;
+  let currentFilter = 'all';
+  const moreBtn = $('#addons-more');
+  const moreWrap = moreBtn && moreBtn.parentElement;
+  const matches = (a, f) => (f === 'all' ? !(folded && addons.indexOf(a) >= FOLD) : a.dataset.cat.split(' ').includes(f));
+  const syncMore = () => {
+    if (!moreBtn) return;
+    moreWrap.hidden = currentFilter !== 'all' || addons.length <= FOLD;
+    moreBtn.setAttribute('aria-expanded', String(!folded));
+    $('.btn-roll', moreBtn).textContent = folded ? 'Voir tous les add-ons' : 'Réduire la liste';
+    $('#addons-more-n').textContent = folded ? '+' + (addons.length - FOLD) : '';
+  };
+  addons.forEach((a) => a.classList.toggle('is-hidden', !matches(a, 'all')));
+  syncMore();
+  const runFilter = (f) => {
+      currentFilter = f;
+      syncMore();
       const apply = () => addons.forEach((a) => {
-        const show = f === 'all' || a.dataset.cat.split(' ').includes(f);
+        const show = matches(a, f);
         a.classList.toggle('is-hidden', !show);
       });
 
@@ -236,7 +249,7 @@
         // glide to their new slot (FLIP), new cards rise in, the grid height eases.
         const grid = $('#addons-grid');
         const shown = (a) => !a.classList.contains('is-hidden');
-        const willShow = (a) => f === 'all' || a.dataset.cat.split(' ').includes(f);
+        const willShow = (a) => matches(a, f);
         const visible = addons.filter(shown);
         const leaving = visible.filter((a) => !willShow(a));
         const staying = visible.filter(willShow);
@@ -267,7 +280,21 @@
       } else {
         apply();
       }
+  };
+  $$('.filter').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      $$('.filter').forEach((b) => {
+        const on = b === btn;
+        b.classList.toggle('active', on);
+        b.setAttribute('aria-pressed', String(on));
+      });
+      runFilter(btn.dataset.filter);
     });
+  });
+  if (moreBtn) moreBtn.addEventListener('click', () => {
+    folded = !folded;
+    runFilter('all');
+    if (folded && lenis) lenis.scrollTo('#addons', { duration: 1.2 });
   });
 
   /* ------------------------------------------------------------------
@@ -523,9 +550,9 @@
 
     /* Expertises: copy slides up, visuals float in */
     $$('.stack-card').forEach((card) => {
-      const tl = gsap.timeline({ scrollTrigger: { trigger: card, start: 'top 78%', once: true } });
-      tl.from($$('.stack-copy > *', card), { y: 50, opacity: 0, duration: 1.2, stagger: .07 })
-        .from($$('.stack-visual > *', card), { y: 80, opacity: 0, rotate: -2, duration: 1.4, stagger: .12 }, '-=1.1');
+      const tl = gsap.timeline({ scrollTrigger: { trigger: card, start: 'top 105%', once: true } });
+      tl.from($$('.stack-copy > *', card), { y: 40, opacity: 0, duration: 1, stagger: .05 })
+        .from($$('.stack-visual > *', card), { y: 60, opacity: 0, rotate: -2, duration: 1.1, stagger: .08 }, '-=.95');
       $$('.ticks li', card).forEach((li, i) => tl.from(li, { x: -16, opacity: 0, duration: .8 }, .35 + i * .06));
     });
 
@@ -653,12 +680,15 @@
       if (id === 'wire') codeEl.textContent = '';
       cta.classList.remove('is-click');
     };
-    setPhase('wire');
+    setPhase('live');
+    codeEl.textContent = code;
 
     const typing = { n: 0 };
     const tl = gsap.timeline({ repeat: -1, paused: true });
     let t = 0;
+    let liveAt = 0;
     phases.forEach((p) => {
+      if (p.id === 'live') liveAt = t;
       tl.call(setPhase, [p.id], t);
       tl.fromTo('#ls-progress', { scaleX: 0 }, { scaleX: 1, duration: p.d, ease: 'none', immediateRender: false }, t);
       if (p.id === 'dev') {
@@ -682,7 +712,8 @@
     const sync = () => (wanted && visible && !document.hidden ? tl.play() : tl.pause());
     new IntersectionObserver(([e]) => { visible = e.isIntersecting; sync(); }).observe(root);
     document.addEventListener('visibilitychange', sync);
-    return { play: () => { wanted = true; sync(); } };
+    let first = true;
+    return { play: () => { if (first) { first = false; tl.time(liveAt + .01); } wanted = true; sync(); } };
   }
 
   /* ---------- Cursor, magnetic buttons, tilt cards ---------- */

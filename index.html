@@ -17,6 +17,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" />
 <link rel="stylesheet" href="assets/css/main.css" />
+<link rel="stylesheet" href="assets/css/sections.css" />
 
 <script>
   (function (d) {
@@ -66,14 +67,14 @@
 
     <nav class="nav-links" aria-label="Navigation principale">
       <a href="#expertises" class="roll"><span>Expertises</span></a>
+      <a href="#realisations" class="roll"><span>Réalisations</span></a>
       <a href="#secteurs" class="roll"><span>Pour qui</span></a>
       <a href="#methode" class="roll"><span>Méthode</span></a>
       <a href="#offres" class="roll"><span>Offres</span></a>
-      <a href="#addons" class="roll"><span>Add-ons</span></a>
-    </nav>
+          </nav>
 
     <div class="nav-cta">
-      <a href="#" class="nav-login">Connexion CRM</a>
+      <a href="#offres" class="nav-login" data-tab-link="crm">CRM immobilier</a>
       <a href="#contact" class="btn btn-primary btn-sm magnetic nav-btn"><span class="btn-roll">Démarrer un projet</span></a>
       <button class="burger" id="burger" aria-label="Ouvrir le menu" aria-expanded="false" aria-controls="mobile-menu"><span></span><span></span></button>
     </div>
@@ -83,11 +84,12 @@
 <div class="mobile-menu" id="mobile-menu" aria-hidden="true">
   <nav class="mobile-menu-links" aria-label="Navigation mobile">
     <a href="#expertises"><span>01</span>Expertises</a>
-    <a href="#secteurs"><span>02</span>Pour qui</a>
-    <a href="#methode"><span>03</span>Méthode</a>
-    <a href="#offres"><span>04</span>Offres</a>
-    <a href="#addons"><span>05</span>Add-ons</a>
-    <a href="#contact"><span>06</span>Contact</a>
+    <a href="#realisations"><span>02</span>Réalisations</a>
+    <a href="#secteurs"><span>03</span>Pour qui</a>
+    <a href="#demo"><span>04</span>Essayer</a>
+    <a href="#offres"><span>05</span>Offres</a>
+    <a href="#addons"><span>06</span>Add-ons</a>
+    <a href="#contact"><span>07</span>Contact</a>
   </nav>
   <div class="mobile-menu-foot">
     <a href="mailto:arthur.s@aivelo.fr">arthur.s@aivelo.fr</a>
@@ -95,6 +97,27 @@
   </div>
 </div>
 
+
+
+<div class="bg-fade" id="bg-fade" aria-hidden="true"></div>
+<svg class="fx-defs" width="0" height="0" aria-hidden="true" focusable="false">
+  <filter id="fx-lens" x="0" y="0" width="100%" height="100%" color-interpolation-filters="sRGB">
+    <feFlood flood-color="rgb(128,128,128)" result="flat" />
+    <feImage id="fx-lens-map" result="lens" preserveAspectRatio="none" />
+    <feComposite in="lens" in2="flat" operator="over" result="map" />
+    <feDisplacementMap id="fx-lens-disp" in="SourceGraphic" in2="map" scale="0" xChannelSelector="R" yChannelSelector="G" />
+  </filter>
+  <filter id="fx-ripple" x="-5%" y="-5%" width="110%" height="110%" color-interpolation-filters="sRGB">
+    <feTurbulence id="fx-ripple-noise" type="fractalNoise" baseFrequency="0.012 0.02" numOctaves="2" seed="4" result="noise" />
+    <feDisplacementMap id="fx-ripple-map" in="SourceGraphic" in2="noise" scale="0" xChannelSelector="R" yChannelSelector="G" />
+  </filter>
+</svg>
+<dialog class="legal" id="legal" aria-labelledby="legal-title">
+  <form method="dialog"><button class="legal-close" aria-label="Fermer">×</button></form>
+  <h2 id="legal-title">Mentions légales</h2>
+  <div class="legal-body" id="legal-body"></div>
+  <p class="legal-todo">Texte provisoire · à compléter avant la mise en ligne</p>
+</dialog>
 <main id="main">
 
 <!-- ============================ HERO ============================ -->
@@ -171,6 +194,7 @@
           <div class="bk ls-card" style="--d:0.62s"><img class="ls-thumb" src="assets/img/bien-2.webp" alt="" width="260" height="160" loading="lazy" decoding="async" /><b><span>T3 · Chartrons</span></b><small><span>380 000 €</span></small></div>
           <div class="bk ls-card" style="--d:0.69s"><img class="ls-thumb" src="assets/img/bien-3.webp" alt="" width="260" height="160" loading="lazy" decoding="async" /><b><span>Loft · Bastide</span></b><small><span>455 000 €</span></small></div>
           </div>
+          <span class="ls-lens" id="ls-lens" aria-hidden="true"></span>
           <svg class="ls-pointer" id="ls-pointer" width="22" height="22" viewBox="0 0 24 24"><path d="M5 3l14 7.5-6.2 1.6L10 18.5z" fill="#0B0D17" stroke="#fff" stroke-width="1.6" stroke-linejoin="round"/></svg>
         </div>
       </div>
@@ -284,7 +308,7 @@
         </div>
         <div class="stack-visual vis-learn" aria-hidden="true">
           <div class="vl-card">
-            <div class="vl-video"><span class="vl-play"></span><i class="vl-time"></i></div>
+            <div class="vl-video"><video class="vl-clip" muted loop playsinline preload="none" poster="assets/img/lecon-poster.webp" width="880" height="340"><source src="assets/img/lecon.webm" type="video/webm" /><source src="assets/img/lecon.mp4" type="video/mp4" /></video><span class="vl-play"></span><i class="vl-time"></i></div>
             <div class="vl-meta"><b>Module 3 · Traiter les objections</b><small>12 min · Vidéo + quiz</small></div>
           </div>
           <div class="vl-quiz">
@@ -336,10 +360,107 @@
           <a href="#offres" class="link-arrow" data-tab-link="crm">Voir les offres CRM <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg></a>
         </div>
         <div class="stack-visual vis-crm" aria-hidden="true">
+          <div class="vc-head"><b>Leads qualifiés par l'IA</b><span><i></i>En direct</span></div>
           <div class="vc-lead"><span class="avatar">LV</span><div><b>Laura Vidal</b><small>Investissement locatif · 250k€</small></div><em>91</em></div>
           <div class="vc-lead"><span class="avatar avatar-2">SM</span><div><b>Sophie Mercier</b><small>T3 Chartrons · 380k€</small></div><em>87</em></div>
           <div class="vc-lead dim"><span class="avatar avatar-3">MD</span><div><b>Marc Dubois</b><small>Maison Mérignac · 450k€</small></div><em class="warm">64</em></div>
           <div class="vc-match"><span class="dot dot-green"></span>Match détecté · Villa Bordeaux ↔ Mercier · 92%</div>
+          <div class="vc-week">
+            <div class="vc-kpis"><span><b>38</b><small>leads cette semaine</small></span><span><b>30 s</b><small>pour qualifier</small></span><span><b>+12</b><small>visites calées</small></span></div>
+            <div class="vc-bars" aria-hidden="true"><i style="--h:.42"></i><i style="--h:.58"></i><i style="--h:.36"></i><i style="--h:.72"></i><i style="--h:.64"></i><i style="--h:.88"></i><i style="--h:.5"></i></div>
+          </div>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+
+<!-- ============================ RÉALISATIONS ============================ -->
+<section class="section works" id="realisations" data-bg="ink">
+  <div class="container">
+    <header class="section-head works-head">
+      <p class="eyebrow eyebrow--dark" data-reveal>Réalisations</p>
+      <h2 class="section-title" data-split>De vrais sites, pour de <em class="serif">vrais</em> métiers.</h2>
+      <p class="section-lead" data-reveal>Agences et maisons immobilières, immobilier de commerce, organisme de formation : chaque projet part d'un métier et d'une marque, jamais d'un modèle.</p>
+    </header>
+
+    <ul class="works-logos" data-reveal aria-label="Clients">
+      <li class="wl wl-carnot"><b>L'Avenue Carnot</b><small>Immobilier</small></li>
+      <li class="wl wl-lysim"><b>LYSIM</b><small>Real Estate</small></li>
+      <li class="wl wl-vendome"><b>VENDÔME</b><small>Immobilier</small></li>
+      <li class="wl wl-ekkout"><b>EKKOUT</b><small>Immobilier de commerce</small></li>
+      <li class="wl wl-opsform"><b>OpsForm</b><small>Learning</small></li>
+    </ul>
+
+    <!-- Featured: maquette / site livré -->
+    <article class="work work--featured" data-reveal>
+      <div class="ba" data-ba style="--pos:50%">
+        <div class="ba-bar"><i></i><i></i><i></i><span>L'Avenue Carnot</span></div>
+        <div class="ba-stage" data-cursor="Glisser">
+          <img class="ba-after" src="assets/img/real-carnot-top.webp" alt="Page d'accueil du site L'Avenue Carnot Immobilier" width="1200" height="750" loading="lazy" decoding="async" />
+          <div class="ba-before"><img src="assets/img/real-carnot-wire.webp" alt="" width="1200" height="750" loading="lazy" decoding="async" /></div>
+          <span class="ba-tag ba-tag--l">Maquette</span>
+          <span class="ba-tag ba-tag--r">Site livré</span>
+          <span class="ba-line" aria-hidden="true"><span class="ba-handle"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6-6 6 6 6M15 6l6 6-6 6"/></svg></span></span>
+          <input class="ba-range" type="range" min="0" max="100" value="50" aria-label="Comparer la maquette et le site livré" />
+        </div>
+      </div>
+      <div class="work-copy">
+        <small class="work-kind">Agence immobilière · Bordeaux &amp; Bassin d'Arcachon</small>
+        <h3>L'Avenue Carnot Immobilier</h3>
+        <p>Refonte complète : une marque éditoriale, un catalogue de biens en grandes cartes avec galeries et un atelier d'administration pour que l'agence gère seule ses biens, ses photos et son référencement.</p>
+        <ul class="work-results">
+          <li><b data-count="34">34</b><span>pages générées</span></li>
+          <li><b data-count="22">22</b><span>fiches biens avec galerie</span></li>
+          <li><b>100 %</b><span>autonome : biens, photos, SEO</span></li>
+        </ul>
+      </div>
+    </article>
+
+    <div class="works-grid">
+      <article class="work" data-reveal>
+        <div class="work-shot" data-cursor="Survoler">
+          <div class="ws-bar"><i></i><i></i><i></i><span>Lysim Real Estate</span></div>
+          <div class="ws-screen"><img src="assets/img/real-lysim.webp" alt="Page d'accueil du site Lysim Real Estate" width="960" height="2800" loading="lazy" decoding="async" /></div>
+          <div class="ws-phone"><img src="assets/img/real-lysim-m.webp" alt="" width="390" height="2600" loading="lazy" decoding="async" /></div>
+        </div>
+        <div class="work-copy">
+          <small class="work-kind">Immobilier, construction &amp; investissement · Paris · Beverly Hills</small>
+          <h3>Lysim Real Estate</h3>
+          <p>Une maison immobilière entre la France et les États-Unis : une direction artistique éditoriale, de grandes typographies et un motion design qui accompagne chaque scroll.</p>
+          <ul class="work-tags"><li>Motion design</li><li>Éditorial</li><li>International</li></ul>
+        </div>
+      </article>
+
+      <article class="work" data-reveal>
+        <div class="work-shot" data-cursor="Survoler">
+          <div class="ws-bar"><i></i><i></i><i></i><span>EKKOUT</span></div>
+          <div class="ws-screen"><img src="assets/img/real-ekkout2.webp" alt="Page d'accueil du site EKKOUT" width="960" height="2407" loading="lazy" decoding="async" /></div>
+          <div class="ws-phone"><img src="assets/img/real-ekkout2-m.webp" alt="" width="390" height="2600" loading="lazy" decoding="async" /></div>
+        </div>
+        <div class="work-copy">
+          <small class="work-kind">Immobilier de commerce · Bordeaux</small>
+          <h3>EKKOUT</h3>
+          <p>L'immobilier de commerce rendu accessible : programmes en ligne, e-books et kits de démarches vendus sur le site, avec un espace client et un certificat de réussite.</p>
+          <ul class="work-tags"><li>Programmes en ligne</li><li>E-books</li><li>Espace client</li></ul>
+        </div>
+      </article>
+
+      <article class="work" data-reveal>
+        <div class="work-shot" data-cursor="Survoler">
+          <div class="ws-bar"><i></i><i></i><i></i><span>OpsForm Learning</span></div>
+          <div class="ws-screen"><img src="assets/img/real-opsform.webp" alt="Page d'accueil de la plateforme OpsForm Learning" width="960" height="1687" loading="lazy" decoding="async" /></div>
+          <div class="ws-phone"><img src="assets/img/real-opsform-m.webp" alt="" width="390" height="2600" loading="lazy" decoding="async" /></div>
+        </div>
+        <div class="work-copy">
+          <small class="work-kind">Formation aéronautique · Bordeaux &amp; Paris</small>
+          <h3>OpsForm Learning</h3>
+          <p>Plateforme e-learning complète : catalogue par métier, modules achetables à l'unité, panier, paiement et simulateur de parcours.</p>
+          <ul class="work-results work-results--sm">
+            <li><b data-count="443">443</b><span>modules en ligne</span></li>
+            <li><b data-count="17">17</b><span>fiches métier</span></li>
+          </ul>
         </div>
       </article>
     </div>
@@ -420,6 +541,86 @@
   </div>
 </section>
 
+
+<!-- ============================ DÉMO INTERACTIVE ============================ -->
+<section class="section demo" id="demo" data-bg="indigo">
+  <div class="container">
+    <header class="section-head section-head--center demo-head">
+      <p class="eyebrow eyebrow--dark" data-reveal>Essayez</p>
+      <h2 class="section-title" data-split>Esquissez l'ambiance de votre site en <em class="serif">10 secondes.</em></h2>
+      <p class="section-lead" data-reveal>Choisissez un métier, une ambiance et une couleur pour poser une première intention. Ce n'est pas un modèle : votre vrai site naîtra de l'atelier, de votre histoire et de vos clients.</p>
+    </header>
+
+    <div class="demo-grid">
+      <form class="demo-panel" id="demo-form" data-reveal onsubmit="return false">
+        <fieldset class="demo-field">
+          <legend><span>1</span>Votre métier</legend>
+          <div class="demo-chips" role="radiogroup" aria-label="Métier">
+            <label class="chip"><input type="radio" name="metier" value="immo" checked /><span>Immobilier</span></label>
+            <label class="chip"><input type="radio" name="metier" value="formation" /><span>Formation</span></label>
+            <label class="chip"><input type="radio" name="metier" value="coach" /><span>Coach</span></label>
+            <label class="chip"><input type="radio" name="metier" value="finance" /><span>Patrimoine</span></label>
+            <label class="chip"><input type="radio" name="metier" value="artisan" /><span>Artisan</span></label>
+            <label class="chip"><input type="radio" name="metier" value="liberal" /><span>Cabinet</span></label>
+          </div>
+        </fieldset>
+        <fieldset class="demo-field">
+          <legend><span>2</span>L'ambiance</legend>
+          <div class="demo-moods" role="radiogroup" aria-label="Ambiance">
+            <label class="mood"><input type="radio" name="mood" value="elegant" checked /><span><b class="mood-aa mood-aa--serif">Aa</b>Élégante</span></label>
+            <label class="mood"><input type="radio" name="mood" value="modern" /><span><b class="mood-aa">Aa</b>Moderne</span></label>
+            <label class="mood"><input type="radio" name="mood" value="bold" /><span><b class="mood-aa mood-aa--bold">Aa</b>Audacieuse</span></label>
+          </div>
+        </fieldset>
+        <fieldset class="demo-field">
+          <legend><span>3</span>La couleur</legend>
+          <div class="demo-swatches" role="radiogroup" aria-label="Couleur">
+            <label class="sw" style="--sw:#2E5BD9"><input type="radio" name="color" value="#2E5BD9" checked /><span></span><em>Bleu</em></label>
+            <label class="sw" style="--sw:#0F766E"><input type="radio" name="color" value="#0F766E" /><span></span><em>Sapin</em></label>
+            <label class="sw" style="--sw:#B4532A"><input type="radio" name="color" value="#B4532A" /><span></span><em>Terracotta</em></label>
+            <label class="sw" style="--sw:#A0812F"><input type="radio" name="color" value="#A0812F" /><span></span><em>Or</em></label>
+            <label class="sw" style="--sw:#7B3FA0"><input type="radio" name="color" value="#7B3FA0" /><span></span><em>Prune</em></label>
+            <label class="sw" style="--sw:#1F2937"><input type="radio" name="color" value="#1F2937" /><span></span><em>Encre</em></label>
+          </div>
+        </fieldset>
+        <label class="demo-name"><span>Le nom de votre structure <em>(facultatif)</em></span><input type="text" id="demo-name" maxlength="28" placeholder="Maison Lumière" autocomplete="organization" /></label>
+        <a href="#contact" class="btn btn-primary btn-block magnetic" id="demo-cta"><span class="btn-roll">Partir de cette esquisse</span></a>
+        <p class="demo-note">Votre choix nous est envoyé comme point de départ de l'atelier.</p>
+      </form>
+
+      <div class="demo-preview" data-reveal>
+        <div class="dp-win" id="dp" data-metier="immo" data-mood="elegant" style="--c:#2E5BD9">
+          <div class="dp-bar"><i></i><i></i><i></i><span class="dp-url" id="dp-url">maison-lumiere.fr</span><em class="dp-time" id="dp-time">Aperçu en direct</em></div>
+          <div class="dp-site">
+            <div class="dp-nav"><b class="dp-brand" id="dp-brand">Maison Lumière</b><span class="dp-links" id="dp-links"><span>Acheter</span><span>Vendre</span><span>L'agence</span></span><span class="dp-navbtn" id="dp-navbtn">Contact</span></div>
+            <div class="dp-hero">
+              <div class="dp-copy">
+                <small class="dp-line"><span id="dp-eyebrow">Agence immobilière · Bordeaux</span></small>
+                <strong class="dp-title dp-line"><span id="dp-title">Vendre avec exigence.</span></strong>
+                <p class="dp-line"><span id="dp-sub">Estimation offerte sous 48 h, accompagnement jusqu'à la signature.</span></p>
+                <div class="dp-ctas"><span class="dp-cta" id="dp-cta">Estimer mon bien</span><span class="dp-cta2" id="dp-cta2">Nos biens</span></div>
+              </div>
+              <div class="dp-media"><img id="dp-img" src="assets/img/secteur-immobilier.webp" alt="" width="440" height="270" decoding="async" /></div>
+            </div>
+            <div class="dp-cards" id="dp-cards">
+              <div class="dp-card"><i></i><b>Villa · Pessac</b><small>620 000 €</small></div>
+              <div class="dp-card"><i></i><b>T3 · Chartrons</b><small>380 000 €</small></div>
+              <div class="dp-card"><i></i><b>Loft · Bastide</b><small>455 000 €</small></div>
+            </div>
+            <span class="dp-sweep" aria-hidden="true"></span>
+          </div>
+        </div>
+        <span class="dp-stamp">Esquisse d'ambiance · pas un modèle</span>
+        <ol class="demo-path">
+          <li><b>01</b><span><strong>Cette esquisse</strong>Une intention de style, pour parler le même langage.</span></li>
+          <li><b>02</b><span><strong>L'atelier découverte</strong>On audite votre présence et on écoute vos besoins, vos clients, vos contenus.</span></li>
+          <li><b>03</b><span><strong>Votre maquette sur-mesure</strong>Dessinée pour vous, présentée sous 7 jours.</span></li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- ============================ METHODE ============================ -->
 <section class="section methode" id="methode">
   <div class="container methode-grid">
@@ -478,12 +679,17 @@
 
     <div class="bento">
       <article class="bento-card bento-perf" data-tilt>
-        <div class="bento-gauge">
-          <svg viewBox="0 0 120 120"><circle cx="60" cy="60" r="52" class="g-bg"/><circle cx="60" cy="60" r="52" class="g-fg" data-gauge="0.95"/></svg>
-          <b><span data-count="95">95</span><small>+</small></b>
+        <div class="bento-gauge perf-live" id="perf-live">
+          <svg viewBox="0 0 120 120"><circle cx="60" cy="60" r="52" class="g-bg"/><circle cx="60" cy="60" r="52" class="g-fg" id="perf-ring"/></svg>
+          <b><span id="perf-score">…</span></b>
         </div>
-        <h3>Performance</h3>
-        <p>Objectif Lighthouse 95+ sur chaque page. Un site rapide, c'est un client qui reste, et Google qui vous aime.</p>
+        <h3>Performance <span class="live-pill">Objectif Lighthouse</span></h3>
+        <p>Notre objectif sur chaque site livré : un score Lighthouse de 98 ou plus. Un site rapide, c'est un client qui reste, et Google qui vous aime.</p>
+        <ul class="perf-metrics">
+          <li><small>Affichage</small><b>&lt; 1,2 s</b></li>
+          <li><small>Stabilité</small><b>&lt; 0,1</b></li>
+          <li><small>Réactivité</small><b>&lt; 150 ms</b></li>
+        </ul>
       </article>
       <article class="bento-card" data-tilt>
         <span class="bento-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="4.5" r="1.8"/><path d="M5 8.5l7 1.5 7-1.5M12 10v4.5M8.5 21l3.5-6.5 3.5 6.5"/></svg></span>
@@ -517,6 +723,34 @@
   </div>
 </section>
 
+
+<!-- ============================ TÉMOIGNAGES ============================ -->
+<section class="section quotes" id="temoignages">
+  <div class="container">
+    <header class="section-head section-head--center">
+      <p class="eyebrow" data-reveal>Ils en parlent</p>
+      <h2 class="section-title" data-split>Ce qu'en disent <em class="serif">nos clients.</em></h2>
+    </header>
+    <div class="quotes-grid">
+      <figure class="quote" data-tilt data-reveal>
+        <span class="quote-sample">Exemple · à remplacer</span>
+        <blockquote>« On a enfin un site qui ressemble à l'agence. Les clients nous disent qu'ils nous ont choisis en le voyant, et on ajoute nos biens nous-mêmes en deux minutes. »</blockquote>
+        <figcaption><span class="avatar">AC</span><span><b>Direction</b><small>L'Avenue Carnot Immobilier</small></span></figcaption>
+      </figure>
+      <figure class="quote quote--accent" data-tilt data-reveal>
+        <span class="quote-sample">Exemple · à remplacer</span>
+        <blockquote>« 443 modules, un panier, le paiement : la plateforme a absorbé tout notre catalogue sans qu'on change nos habitudes. Nos apprenants s'y retrouvent tout seuls. »</blockquote>
+        <figcaption><span class="avatar avatar-2">OF</span><span><b>Responsable pédagogique</b><small>OpsForm Learning</small></span></figcaption>
+      </figure>
+      <figure class="quote" data-tilt data-reveal>
+        <span class="quote-sample">Exemple · à remplacer</span>
+        <blockquote>« Un interlocuteur unique, des délais tenus et un rendu au-dessus de ce qu'on imaginait. On recommande sans hésiter. »</blockquote>
+        <figcaption><span class="avatar avatar-3">EK</span><span><b>Associé</b><small>EKKOUT</small></span></figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
 <!-- ============================ OFFRES ============================ -->
 <section class="section offres" id="offres">
   <div class="container">
@@ -541,7 +775,7 @@
         <article class="plan">
           <h3>Essentiel</h3>
           <p class="plan-desc">Un site vitrine élégant pour être trouvé et rassurer.</p>
-          <div class="plan-price"><small>à partir de</small><b>1 490</b><span>€ HT</span></div>
+          <div class="plan-price"><small>à partir de</small><b>2 000</b><span>€ HT</span></div>
           <ul class="ticks">
             <li>Jusqu'à 5 pages</li>
             <li>Design personnalisé &amp; responsive</li>
@@ -555,7 +789,7 @@
           <span class="plan-badge">Le plus choisi</span>
           <h3>Signature</h3>
           <p class="plan-desc">Le site qui vous distingue : design sur-mesure et motion design.</p>
-          <div class="plan-price"><small>à partir de</small><b>3 490</b><span>€ HT</span></div>
+          <div class="plan-price"><small>à partir de</small><b>3 500</b><span>€ HT</span></div>
           <ul class="ticks">
             <li>Jusqu'à 12 pages + blog</li>
             <li>Direction artistique &amp; animations</li>
@@ -754,6 +988,7 @@
         <b class="addon-price">dès 490€<small>/pack</small></b>
       </article>
     </div>
+    <div class="addons-more"><button type="button" class="btn btn-ghost" id="addons-more" aria-expanded="false" aria-controls="addons-grid"><span class="btn-roll">Voir tous les add-ons</span><em id="addons-more-n"></em></button></div>
 
   </div>
 </section>
@@ -851,10 +1086,9 @@
       <div>
         <h4>Légal</h4>
         <ul>
-          <li><a href="#">CGU</a></li>
-          <li><a href="#">Confidentialité</a></li>
-          <li><a href="#">RGPD</a></li>
-          <li><a href="#">Mentions légales</a></li>
+          <li><button type="button" class="link-btn" data-legal="mentions">Mentions légales</button></li>
+          <li><button type="button" class="link-btn" data-legal="confidentialite">Confidentialité &amp; RGPD</button></li>
+          <li><button type="button" class="link-btn" data-legal="cgv">Conditions générales</button></li>
         </ul>
       </div>
     </div>
@@ -874,5 +1108,6 @@
 <script src="assets/js/hero-3d.js" defer></script>
 <script src="assets/js/main.js" defer></script>
 <script src="assets/js/water.js" defer></script>
+<script src="assets/js/sections.js" defer></script>
 </body>
 </html>
