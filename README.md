@@ -40,4 +40,4 @@ Les contours du logo sont tracés depuis `assets/img/aivelo-logo.png` (constante
 
 ## Méthode : liquide (test)
 
-`assets/js/water.js` dessine en WebGL (shader, champs de distance fusionnés) un liquide brillant qui coule le long des 5 étapes au défilement : une goutte mène la coulée, chaque étape se gonfle en perle avec une éclaboussure, puis le liquide forme une flaque et « Projet livré » apparaît. Actif seulement avec la variante verre 3D (`#logo-3d` ou `data-hero="3d"`) ; ailleurs, la ligne classique reste en place.
+`assets/js/water.js` dessine en WebGL (shader, champs de distance fusionnés) un liquide brillant qui part d'une perle-source en haut de la section et serpente entre la colonne du titre et les étapes au défilement : une goutte mène la coulée, chaque étape se gonfle en perle avec une éclaboussure, puis le liquide forme une flaque et « Projet livré » apparaît. Actif seulement avec la variante verre 3D (`#logo-3d` ou `data-hero="3d"`) ; ailleurs, la ligne classique reste en place.

@@ -3,7 +3,8 @@
    A glossy liquid stream, drawn in a WebGL fragment shader (signed distance
    fields merged with smooth-min, shaded with specular, fresnel rim, moving
    caustics and a soft glow). Driven by the scroll, both ways:
-   - the stream flows down the timeline, a drop leading its front;
+   - a liquid pearl at the top is the source; the river meanders down the
+     free corridor beside the steps, a drop leading its front;
    - reaching a step, it swells into a bead with a splash;
    - at the end it pools, and « Projet livré » appears.
    Active only with <html data-hero="3d"> (or #logo-3d), motion allowed,
@@ -34,6 +35,7 @@
 
   const steps = Array.from(timeline.querySelectorAll('.step'));
   const MAX_DOTS = 6;
+  const MAX_K = 16; // path control points
 
   /* ---------- shader ---------- */
   const vert = 'attribute vec2 a; void main(){ gl_Position = vec4(a, 0.0, 1.0); }';
@@ -46,24 +48,55 @@
     uniform float uCx;      // x of the stream axis
     uniform vec4 uDots[${MAX_DOTS}]; // x, y, wet 0..1, splash age 0..1 (>=1 = none)
     uniform vec3 uPool;     // x, y, amount 0..1
+    uniform vec3 uSrc;      // source x, y, presence 0..1
+    uniform vec2 uK[${MAX_K}]; // path control points (x, y), y increasing
+    uniform int uKn;
+
+    // The river's x for a given y: smooth (cosine) interpolation between control points
+    float pathX(float y, out float slope){
+      float x = uK[0].x; slope = 0.;
+      for (int i = 0; i < ${MAX_K - 1}; i++) {
+        if (i >= uKn - 1) break;
+        vec2 a = uK[i], b = uK[i + 1];
+        if (y >= a.y && y <= b.y) {
+          float t = (y - a.y) / max(b.y - a.y, .001);
+          x = mix(a.x, b.x, (1. - cos(t * 3.14159265)) * .5);
+          slope = (b.x - a.x) * 1.5707963 * sin(t * 3.14159265) / max(b.y - a.y, .001);
+        }
+        if (i == uKn - 2 && y > b.y) x = b.x;
+      }
+      return x;
+    }
 
     float smin(float a, float b, float k){ float h = clamp(.5 + .5 * (b - a) / k, 0., 1.); return mix(b, a, h) - k * h * (1. - h); }
 
     float scene(vec2 p){
       float t = uTime;
       float d = 1e4;
-      if (uFront > -10.) {
-        float yy = clamp(p.y, -30., uFront);
-        float r = 6.4 + 1.1 * sin(yy * .07 - t * 3.1) + .6 * sin(yy * .021 + t * 1.3);
-        vec2 q = vec2(uCx + sin(yy * .04 - t * 1.8) * 2.2, yy);
-        d = length(p - q) - r;
+      // source: a liquid pearl that breathes, and drips while the river has not started
+      if (uSrc.z > .001) {
+        float sr = (22. + 1.2 * sin(t * 2.1)) * uSrc.z;
+        d = length((p - uSrc.xy) * vec2(1., 1. - .05 * sin(t * 2.1))) - sr;
+        float k = fract(t * .5);
+        float idle = 1. - step(uSrc.y + 6., uFront);
+        d = smin(d, length(p - uSrc.xy - vec2(0., 26. + k * k * 50.)) - 4. * (1. - k) + (1. - idle) * 60., 8.);
+      }
+      if (uFront > uSrc.y) {
+        float yy = clamp(p.y, uSrc.y, uFront);
+        float s;
+        float px = pathX(yy, s);
+        float r = 6.2 + 1. * sin(yy * .07 - t * 3.1) + .5 * sin(yy * .021 + t * 1.3);
+        px += sin(yy * .05 - t * 1.8) * 1.6;
+        float ds = (p.y >= uSrc.y && p.y <= uFront) ? abs(p.x - px) / sqrt(1. + s * s) : length(p - vec2(px, yy));
+        d = smin(d, ds - r, 8.);
         // leading drop
-        vec2 head = vec2(uCx + sin(uFront * .04 - t * 1.8) * 2.2, uFront + 4. + sin(t * 3.4) * 1.4);
+        float hs;
+        vec2 head = vec2(pathX(uFront, hs), uFront + 4. + sin(t * 3.4) * 1.4);
         d = smin(d, length((p - head) * vec2(1., .84)) - 10.5, 10.);
         // a drip falling ahead of the front, until the pool is reached
         float k = fract(t * .55);
-        float drip = step(4., uFront) * step(uFront, uPool.y - 50.);
-        d = smin(d, length(p - vec2(uCx, uFront + 14. + k * k * 70.)) - 3.4 * (1. - k) * drip - (1. - drip) * -50., 7.);
+        float drip = step(uSrc.y + 20., uFront) * step(uFront, uPool.y - 50.);
+        d = smin(d, length(p - vec2(head.x, uFront + 14. + k * k * 70.)) - 3.4 * (1. - k) + (1. - drip) * 60., 7.);
       }
       for (int i = 0; i < ${MAX_DOTS}; i++) {
         vec4 dt = uDots[i];
@@ -153,7 +186,7 @@
   gl.enableVertexAttribArray(loc);
   gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
   const U = (n) => gl.getUniformLocation(prog, n);
-  const u = { res: U('uRes'), dpr: U('uDpr'), time: U('uTime'), front: U('uFront'), cx: U('uCx'), dots: U('uDots'), pool: U('uPool') };
+  const u = { res: U('uRes'), dpr: U('uDpr'), time: U('uTime'), front: U('uFront'), cx: U('uCx'), dots: U('uDots'), pool: U('uPool'), src: U('uSrc'), k: U('uK'), kn: U('uKn') };
   gl.enable(gl.BLEND);
   gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
 
@@ -176,6 +209,23 @@
     L.cx = L.dots.length ? L.dots[0].x : cr.width / 2;
     L.poolY = basin.offsetTop + oy + 70;
     L.h = cr.height;
+    // The river meanders in the free corridor left of the steps (never over text):
+    // through every dot, swinging out between them, from the source to the pool.
+    const amp = Math.min(54, Math.max(8, L.cx - 30));
+    const pts = [];
+    L.src = { x: L.cx - amp * .7, y: 40 };
+    pts.push([L.src.x, L.src.y]);
+    L.dots.forEach((d, i) => {
+      if (i) pts.push([L.cx - amp * (i % 2 ? 1 : .55), (L.dots[i - 1].y + d.y) / 2]);
+      pts.push([d.x, d.y]);
+    });
+    const lastY = L.dots.length ? L.dots[L.dots.length - 1].y : L.src.y;
+    pts.push([L.cx - amp * .8, (lastY + L.poolY) / 2]);
+    pts.push([L.cx - amp * .35, L.poolY]);
+    L.path = pts.slice(0, MAX_K);
+    L.kArr = new Float32Array(MAX_K * 2);
+    L.path.forEach(([x, y], i) => L.kArr.set([x, y], i * 2));
+    L.poolX = L.path[L.path.length - 1][0];
     void tr;
   };
   layout();
@@ -184,13 +234,13 @@
   ScrollTrigger.addEventListener('refresh', layout);
 
   /* ---------- scroll → target front ---------- */
-  let target = -40;
+  let target = 0;
   ScrollTrigger.create({
     trigger: timeline, start: 'top 62%', end: 'bottom 62%',
-    onUpdate: (self) => { target = -40 + self.progress * (L.poolY + 40); },
+    onUpdate: (self) => { target = L.src.y + self.progress * (L.poolY - L.src.y); },
   });
 
-  const state = { front: -40, wet: steps.map(() => 0), splashAt: steps.map(() => -1e9), pool: 0 };
+  const state = { src: 0, front: L.src.y, wet: steps.map(() => 0), splashAt: steps.map(() => -1e9), pool: 0 };
   const done = basin.querySelector('.w-done');
   const dotArr = new Float32Array(MAX_DOTS * 4);
 
@@ -205,7 +255,8 @@
     last = now;
     if (!visible || document.hidden) return;
 
-    // fluid, slightly lagging front
+    // source appears with the section, then the fluid, slightly lagging front
+    state.src += (1 - state.src) * (1 - Math.pow(0.02, dt));
     state.front += (target - state.front) * (1 - Math.pow(0.0025, dt));
 
     L.dots.forEach((d, i) => {
@@ -216,7 +267,7 @@
       if (reached && !was && state.wet[i] > 0.5) state.splashAt[i] = now;
       steps[i].classList.toggle('is-wet', reached);
     });
-    const poolGoal = gsap.utils.clamp(0, 1, (state.front - (L.poolY - 70)) / 62);
+    const poolGoal = gsap.utils.clamp(0, 1, (state.front - (L.poolY - 40)) / 36);
     state.pool += (poolGoal - state.pool) * (1 - Math.pow(0.01, dt));
     done.classList.toggle('is-on', state.pool > 0.85);
 
@@ -232,7 +283,10 @@
     gl.uniform1f(u.front, state.front);
     gl.uniform1f(u.cx, L.cx);
     gl.uniform4fv(u.dots, dotArr);
-    gl.uniform3f(u.pool, L.cx, L.poolY, state.pool);
+    gl.uniform3f(u.pool, L.poolX, L.poolY, state.pool);
+    gl.uniform3f(u.src, L.src.x, L.src.y, state.src);
+    gl.uniform2fv(u.k, L.kArr);
+    gl.uniform1i(u.kn, L.path.length);
     gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
   };
   requestAnimationFrame(frame);

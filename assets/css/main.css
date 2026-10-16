@@ -748,7 +748,7 @@ html.js .preloader {
 
 /* ---------- Méthode : liquide WebGL (assets/js/water.js, variante verre 3D) ---------- */
 html.water .timeline-rail { display: none; }
-.w-canvas { position: absolute; left: -64px; top: -40px; width: 116px; height: calc(100% + 40px); z-index: 2; pointer-events: none; }
+.w-canvas { position: absolute; left: -120px; top: -160px; width: 172px; height: calc(100% + 160px); z-index: 2; pointer-events: none; }
 html.water .step-dot {
   z-index: 1; width: 22px; height: 22px; left: -52px; top: 1px;
   background: rgba(255,255,255,.85); border: 1.5px solid rgba(58,103,236,.25);
@@ -759,7 +759,7 @@ html.water .step h3 { transition: color .6s var(--ease); }
 html.water .step:not(.is-wet) h3 { color: rgba(11,13,23,.55); }
 .w-basin { position: relative; height: 130px; }
 .w-done {
-  position: absolute; left: 22px; top: 52px; display: inline-flex; align-items: center; gap: 8px;
+  position: absolute; left: 30px; top: 58px; display: inline-flex; align-items: center; gap: 8px;
   font-size: 14px; font-weight: 700; color: var(--success); padding: 8px 14px; border-radius: 100px;
   background: rgba(255,255,255,.88); border: 1px solid rgba(15,168,116,.25); box-shadow: 0 10px 24px -14px rgba(15,168,116,.6);
   opacity: 0; transform: translateX(-10px) scale(.96); transition: opacity .6s var(--ease), transform .8s var(--ease);
