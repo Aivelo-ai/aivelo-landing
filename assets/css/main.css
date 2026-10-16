@@ -440,8 +440,8 @@ html.js .preloader {
 .glass3d { position: relative; display: grid; place-items: center; padding: 0; }
 .g3-stage {
   position: relative; width: 100%; aspect-ratio: 1 / 1; max-height: 620px; max-width: 100%;
-  -webkit-mask-image: radial-gradient(closest-side, #000 50%, transparent 100%);
-  mask-image: radial-gradient(closest-side, #000 50%, transparent 100%);
+  -webkit-mask-image: radial-gradient(closest-side, #000 66%, transparent 100%);
+  mask-image: radial-gradient(closest-side, #000 66%, transparent 100%);
 }
 .g3-canvas { display: block; width: 100%; height: 100%; opacity: 0; transition: opacity 1.2s var(--ease); }
 .g3-stage.is-ready .g3-canvas { opacity: 1; }
@@ -457,6 +457,16 @@ html.js .preloader {
 .g3-chip--a { left: 0; top: 12%; }
 .g3-chip--b { right: -2%; top: 46%; }
 .g3-chip--c { left: 4%; bottom: 5%; }
+/* the same logo, large and quiet, behind « Parlons de votre projet » */
+.g3-bg {
+  position: absolute; right: -6%; top: 50%; translate: 0 -50%;
+  width: min(60vw, 820px); aspect-ratio: 1 / 1; max-width: none; opacity: 0; pointer-events: none;
+  transition: opacity 1.6s var(--ease);
+  -webkit-mask-image: radial-gradient(closest-side, #000 60%, transparent 100%);
+  mask-image: radial-gradient(closest-side, #000 60%, transparent 100%);
+}
+.g3-bg.is-ready { opacity: .2; }
+.g3-bg .g3-canvas { opacity: 1; }
 
 /* floating cards around the window */
 .ls-code, .ls-chip, .ls-score { position: absolute; transition: opacity .6s var(--ease), transform .8s var(--ease); }
@@ -965,6 +975,8 @@ html.motion:not(.motion-ready) .hero-title .line > span { animation: failsafe-up
   .ls-score b { font-size: 22px; }
   .g3-chip { font-size: 11.5px; padding: 7px 11px; }
   .g3-chip--b { right: 0; }
+  .g3-bg { right: 50%; translate: 50% -50%; width: 130vw; }
+  .g3-bg.is-ready { opacity: .12; }
   .scroll-cue { display: none; }
   .bento { grid-template-columns: 1fr; }
   .bento-perf, .bento-own { grid-column: auto; }
