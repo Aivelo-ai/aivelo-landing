@@ -1,1634 +1,834 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="fr" class="no-js">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Aivelo — Vos agents immobiliers ferment des deals. Aivelo s'occupe du reste.</title>
-<meta name="description" content="Le CRM immobilier nouvelle génération. 6 agents IA qualifient vos leads, rédigent vos annonces, relancent vos prospects et matchent vos biens — 24h/24. Pensé pour les agences ambitieuses.">
-<meta name="theme-color" content="#0A0A0F">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Aivelo — Studio digital & IA · Sites web, plateformes de formation, CRM immobilier</title>
+<meta name="description" content="Aivelo conçoit, développe et gère des sites web sur-mesure, des plateformes de formation et un CRM immobilier propulsé par l'IA. Un digital qui valorise votre métier et vos valeurs." />
+<meta name="theme-color" content="#0A0A0F" />
+<meta property="og:type" content="website" />
+<meta property="og:title" content="Aivelo — Le digital qui valorise votre métier" />
+<meta property="og:description" content="Sites web sur-mesure, plateformes de formation, gestion & maintenance, CRM IA immobilier. Conçu en France." />
+<meta property="og:locale" content="fr_FR" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%234F7EF7'/%3E%3Cpath d='M9 23V13.5l7-4.7 7 4.7V23' fill='none' stroke='white' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E" />
 
-<style>
-  /* ==========================================================
-     DESIGN TOKENS
-     ========================================================== */
-  :root {
-    /* Surfaces */
-    --bg: #0A0A0F;
-    --bg-elevated: #0D0E15;
-    --surface: #0F1117;
-    --surface-2: #14161F;
-    --surface-hover: #1A1D28;
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" />
+<link rel="stylesheet" href="assets/css/main.css" />
 
-    /* Borders */
-    --border: rgba(255, 255, 255, 0.06);
-    --border-strong: rgba(255, 255, 255, 0.12);
-    --border-accent: rgba(79, 126, 247, 0.3);
+<script>
+  (function (d) {
+    d.classList.replace('no-js', 'js');
+    if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) d.classList.add('motion');
+  })(document.documentElement);
+</script>
 
-    /* Text */
-    --text: #FFFFFF;
-    --text-soft: rgba(255, 255, 255, 0.78);
-    --text-dim: rgba(255, 255, 255, 0.58);
-    --text-mute: rgba(255, 255, 255, 0.38);
-
-    /* Brand */
-    --accent: #4F7EF7;
-    --accent-soft: #6B92FB;
-    --accent-glow: rgba(79, 126, 247, 0.35);
-    --success: #2EE19C;
-    --warning: #FFB547;
-    --danger: #FF5C7A;
-
-    /* Typography */
-    --font-sans: 'Plus Jakarta Sans', system-ui, sans-serif;
-    --font-mono: 'JetBrains Mono', ui-monospace, monospace;
-
-    /* Spacing & radius */
-    --r-sm: 8px;
-    --r-md: 12px;
-    --r-lg: 18px;
-    --r-xl: 28px;
-
-    /* Easing */
-    --ease: cubic-bezier(0.16, 1, 0.3, 1);
-
-    /* Container */
-    --container: 1200px;
-    --gutter: 24px;
-  }
-
-  /* ==========================================================
-     RESET & BASE
-     ========================================================== */
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: var(--font-sans);
-    font-weight: 400;
-    font-size: 16px;
-    line-height: 1.55;
-    letter-spacing: -0.01em;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    overflow-x: hidden;
-  }
-  a { color: inherit; text-decoration: none; }
-  button { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; }
-  img, svg { display: block; max-width: 100%; }
-  ul { list-style: none; }
-  ::selection { background: var(--accent); color: white; }
-
-  /* ==========================================================
-     GLOBAL ATMOSPHERE — grain + grid overlay
-     ========================================================== */
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.5 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-    opacity: 0.025;
-    mix-blend-mode: overlay;
-    pointer-events: none;
-    z-index: 1000;
-  }
-
-  /* ==========================================================
-     UTILITIES
-     ========================================================== */
-  .container {
-    width: 100%;
-    max-width: var(--container);
-    margin: 0 auto;
-    padding: 0 var(--gutter);
-  }
-
-  .eyebrow {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    font-family: var(--font-mono);
-    font-size: 12px;
-    font-weight: 500;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--text-dim);
-    padding: 6px 12px;
-    border: 1px solid var(--border);
-    border-radius: 100px;
-    background: var(--surface);
-  }
-  .eyebrow::before {
-    content: '';
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: var(--accent);
-    box-shadow: 0 0 12px var(--accent-glow);
-  }
-
-  .btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    height: 48px;
-    padding: 0 22px;
-    border-radius: 12px;
-    font-weight: 600;
-    font-size: 15px;
-    letter-spacing: -0.01em;
-    transition: all 0.25s var(--ease);
-    white-space: nowrap;
-  }
-  .btn-primary {
-    background: var(--accent);
-    color: white;
-    box-shadow: 0 1px 0 rgba(255,255,255,0.18) inset, 0 8px 28px -8px var(--accent-glow);
-  }
-  .btn-primary:hover {
-    background: var(--accent-soft);
-    transform: translateY(-1px);
-    box-shadow: 0 1px 0 rgba(255,255,255,0.22) inset, 0 14px 36px -10px var(--accent-glow);
-  }
-  .btn-ghost {
-    background: var(--surface);
-    color: var(--text);
-    border: 1px solid var(--border-strong);
-  }
-  .btn-ghost:hover {
-    background: var(--surface-hover);
-    border-color: rgba(255,255,255,0.2);
-  }
-  .btn .arr { transition: transform 0.25s var(--ease); }
-  .btn:hover .arr { transform: translateX(3px); }
-
-  /* Scroll reveal */
-  .reveal {
-    opacity: 0;
-    transform: translateY(24px);
-    transition: opacity 0.9s var(--ease), transform 0.9s var(--ease);
-  }
-  .reveal.in {
-    opacity: 1;
-    transform: translateY(0);
-  }
-  .reveal[data-delay="1"] { transition-delay: 0.08s; }
-  .reveal[data-delay="2"] { transition-delay: 0.16s; }
-  .reveal[data-delay="3"] { transition-delay: 0.24s; }
-  .reveal[data-delay="4"] { transition-delay: 0.32s; }
-
-  /* ==========================================================
-     NAV
-     ========================================================== */
-  .nav {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    z-index: 100;
-    padding: 16px 0;
-    transition: all 0.3s var(--ease);
-  }
-  .nav.scrolled {
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    background: rgba(10, 10, 15, 0.72);
-    border-bottom: 1px solid var(--border);
-  }
-  .nav-inner {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 24px;
-  }
-  .logo {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-weight: 800;
-    font-size: 19px;
-    letter-spacing: -0.03em;
-  }
-  .logo-mark {
-    width: 28px;
-    height: 28px;
-    border-radius: 8px;
-    background: linear-gradient(135deg, var(--accent) 0%, #2E5BD9 100%);
-    display: grid;
-    place-items: center;
-    box-shadow: 0 4px 12px -4px var(--accent-glow);
-    position: relative;
-    overflow: hidden;
-  }
-  .logo-mark::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(180deg, rgba(255,255,255,0.2), transparent 50%);
-  }
-  .logo-mark svg { position: relative; z-index: 1; }
-
-  .nav-links {
-    display: flex;
-    gap: 28px;
-    font-size: 14px;
-    font-weight: 500;
-    color: var(--text-dim);
-  }
-  .nav-links a { transition: color 0.2s; }
-  .nav-links a:hover { color: var(--text); }
-
-  .nav-cta {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
-  .nav-cta .btn { height: 38px; padding: 0 16px; font-size: 14px; }
-  .nav-login { font-size: 14px; font-weight: 500; color: var(--text-dim); transition: color 0.2s; }
-  .nav-login:hover { color: var(--text); }
-
-  @media (max-width: 768px) {
-    .nav-links { display: none; }
-  }
-
-  /* ==========================================================
-     HERO
-     ========================================================== */
-  .hero {
-    position: relative;
-    padding: 160px 0 100px;
-    overflow: hidden;
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-  }
-  /* Grid overlay */
-  .hero::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background-image:
-      linear-gradient(var(--border) 1px, transparent 1px),
-      linear-gradient(90deg, var(--border) 1px, transparent 1px);
-    background-size: 64px 64px;
-    mask-image: radial-gradient(ellipse 80% 60% at 50% 30%, black 30%, transparent 75%);
-    -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 30%, black 30%, transparent 75%);
-    opacity: 0.55;
-    pointer-events: none;
-  }
-  /* Gradient mesh */
-  .hero::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background:
-      radial-gradient(600px 400px at 20% 30%, rgba(79, 126, 247, 0.18), transparent 60%),
-      radial-gradient(500px 400px at 80% 20%, rgba(79, 126, 247, 0.08), transparent 60%),
-      radial-gradient(700px 500px at 50% 100%, rgba(46, 225, 156, 0.05), transparent 60%);
-    pointer-events: none;
-  }
-  .hero-inner {
-    position: relative;
-    z-index: 2;
-    text-align: center;
-    max-width: 880px;
-    margin: 0 auto;
-  }
-  .hero h1 {
-    font-size: clamp(2.5rem, 6.5vw, 5.25rem);
-    font-weight: 800;
-    line-height: 0.98;
-    letter-spacing: -0.045em;
-    margin-top: 28px;
-    background: linear-gradient(180deg, #FFFFFF 0%, rgba(255,255,255,0.72) 100%);
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-  }
-  .hero h1 .accent {
-    background: linear-gradient(135deg, var(--accent) 0%, var(--accent-soft) 100%);
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-  }
-  .hero-sub {
-    margin-top: 28px;
-    font-size: clamp(1.05rem, 1.6vw, 1.25rem);
-    line-height: 1.55;
-    color: var(--text-dim);
-    max-width: 640px;
-    margin-left: auto;
-    margin-right: auto;
-  }
-  .hero-cta {
-    display: flex;
-    justify-content: center;
-    gap: 12px;
-    margin-top: 40px;
-    flex-wrap: wrap;
-  }
-  .hero-trust {
-    margin-top: 28px;
-    font-size: 13px;
-    color: var(--text-mute);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 16px;
-    flex-wrap: wrap;
-  }
-  .hero-trust span { display: inline-flex; align-items: center; gap: 6px; }
-  .hero-trust svg { color: var(--success); }
-
-  /* Hero mock CRM */
-  .hero-mock {
-    margin-top: 80px;
-    position: relative;
-    z-index: 2;
-    max-width: 1080px;
-    margin-left: auto;
-    margin-right: auto;
-    padding: 0 var(--gutter);
-  }
-  .mock-frame {
-    position: relative;
-    background: var(--surface);
-    border: 1px solid var(--border-strong);
-    border-radius: var(--r-xl);
-    overflow: hidden;
-    box-shadow:
-      0 1px 0 rgba(255,255,255,0.06) inset,
-      0 60px 120px -40px rgba(0,0,0,0.6),
-      0 30px 80px -20px var(--accent-glow);
-  }
-  .mock-frame::before {
-    content: '';
-    position: absolute;
-    inset: -1px;
-    border-radius: var(--r-xl);
-    padding: 1px;
-    background: linear-gradient(180deg, rgba(255,255,255,0.16), transparent 30%);
-    -webkit-mask: linear-gradient(black, black) content-box, linear-gradient(black, black);
-    -webkit-mask-composite: xor;
-    mask-composite: exclude;
-    pointer-events: none;
-  }
-  .mock-topbar {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 14px 18px;
-    border-bottom: 1px solid var(--border);
-    background: var(--bg-elevated);
-  }
-  .mock-dot { width: 11px; height: 11px; border-radius: 50%; background: rgba(255,255,255,0.12); }
-  .mock-url {
-    margin-left: 16px;
-    font-family: var(--font-mono);
-    font-size: 12px;
-    color: var(--text-mute);
-    padding: 4px 12px;
-    background: var(--surface-2);
-    border-radius: 6px;
-    flex: 1;
-    max-width: 320px;
-  }
-  .mock-body {
-    display: grid;
-    grid-template-columns: 220px 1fr;
-    min-height: 480px;
-  }
-  .mock-sidebar {
-    background: var(--bg-elevated);
-    border-right: 1px solid var(--border);
-    padding: 20px 14px;
-  }
-  .mock-side-label {
-    font-family: var(--font-mono);
-    font-size: 10px;
-    text-transform: uppercase;
-    letter-spacing: 0.12em;
-    color: var(--text-mute);
-    padding: 0 8px;
-    margin-bottom: 8px;
-  }
-  .mock-side-item {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 8px 10px;
-    border-radius: 8px;
-    font-size: 13px;
-    color: var(--text-dim);
-    margin-bottom: 2px;
-  }
-  .mock-side-item.active {
-    background: var(--surface-2);
-    color: var(--text);
-  }
-  .mock-side-item .ic {
-    width: 16px;
-    height: 16px;
-    color: var(--text-mute);
-  }
-  .mock-side-item.active .ic { color: var(--accent); }
-  .mock-content { padding: 24px; }
-  .mock-h {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 18px;
-  }
-  .mock-h h3 {
-    font-size: 17px;
-    font-weight: 700;
-    letter-spacing: -0.02em;
-  }
-  .mock-h-sub {
-    font-size: 11px;
-    color: var(--text-mute);
-    font-family: var(--font-mono);
-  }
-  .mock-stats {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 10px;
-    margin-bottom: 22px;
-  }
-  .mock-stat {
-    background: var(--surface-2);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 12px;
-  }
-  .mock-stat-l {
-    font-size: 10px;
-    color: var(--text-mute);
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    font-family: var(--font-mono);
-  }
-  .mock-stat-v {
-    font-size: 20px;
-    font-weight: 700;
-    margin-top: 4px;
-    letter-spacing: -0.02em;
-  }
-  .mock-stat-d { font-size: 11px; color: var(--success); margin-top: 2px; }
-  .mock-leads { display: flex; flex-direction: column; gap: 8px; }
-  .mock-lead {
-    display: grid;
-    grid-template-columns: 1fr auto auto;
-    align-items: center;
-    gap: 14px;
-    padding: 12px 14px;
-    background: var(--surface-2);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-  }
-  .mock-lead-name { font-size: 13px; font-weight: 600; }
-  .mock-lead-meta { font-size: 11px; color: var(--text-mute); margin-top: 2px; }
-  .mock-score {
-    font-family: var(--font-mono);
-    font-size: 12px;
-    font-weight: 600;
-    padding: 4px 8px;
-    border-radius: 6px;
-  }
-  .mock-score.hot { background: rgba(255, 92, 122, 0.12); color: var(--danger); }
-  .mock-score.warm { background: rgba(255, 181, 71, 0.12); color: var(--warning); }
-  .mock-score.cold { background: rgba(79, 126, 247, 0.12); color: var(--accent-soft); }
-  .mock-tag {
-    font-family: var(--font-mono);
-    font-size: 10px;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: var(--text-mute);
-  }
-
-  /* Floating mock chips */
-  .mock-float {
-    position: absolute;
-    background: var(--surface);
-    border: 1px solid var(--border-strong);
-    border-radius: 12px;
-    padding: 12px 14px;
-    box-shadow: 0 20px 60px -20px rgba(0,0,0,0.5);
-    backdrop-filter: blur(10px);
-    z-index: 3;
-  }
-  .mock-float-1 {
-    top: 14%;
-    right: -2%;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    animation: float 6s ease-in-out infinite;
-  }
-  .mock-float-2 {
-    bottom: 12%;
-    left: -3%;
-    animation: float 6s ease-in-out infinite 1.5s;
-  }
-  .mock-float-icon {
-    width: 32px;
-    height: 32px;
-    border-radius: 8px;
-    background: rgba(46, 225, 156, 0.12);
-    color: var(--success);
-    display: grid;
-    place-items: center;
-  }
-  .mock-float-1 .mock-float-icon {
-    background: rgba(79, 126, 247, 0.16);
-    color: var(--accent);
-  }
-  .mock-float-t { font-size: 12px; font-weight: 600; }
-  .mock-float-s { font-size: 10px; color: var(--text-mute); margin-top: 1px; font-family: var(--font-mono); }
-  @keyframes float {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-8px); }
-  }
-  @media (max-width: 900px) {
-    .mock-float-1, .mock-float-2 { display: none; }
-    .mock-body { grid-template-columns: 1fr; }
-    .mock-sidebar { display: none; }
-    .mock-stats { grid-template-columns: repeat(2, 1fr); }
-  }
-
-  /* ==========================================================
-     SECTION GENERICS
-     ========================================================== */
-  .section {
-    padding: 120px 0;
-    position: relative;
-  }
-  .section-head {
-    max-width: 720px;
-    margin: 0 auto 64px;
-    text-align: center;
-  }
-  .section-head h2 {
-    font-size: clamp(2rem, 4.2vw, 3.5rem);
-    font-weight: 800;
-    line-height: 1.04;
-    letter-spacing: -0.04em;
-    margin-top: 20px;
-  }
-  .section-head h2 .accent {
-    background: linear-gradient(135deg, var(--accent) 0%, var(--accent-soft) 100%);
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-  }
-  .section-head p {
-    margin-top: 20px;
-    font-size: 1.05rem;
-    color: var(--text-dim);
-    line-height: 1.6;
-  }
-
-  /* ==========================================================
-     PROBLÈME — 3 pain points
-     ========================================================== */
-  .pain-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 20px;
-  }
-  .pain-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--r-lg);
-    padding: 32px;
-    position: relative;
-    overflow: hidden;
-    transition: all 0.4s var(--ease);
-  }
-  .pain-card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, var(--accent), transparent);
-    opacity: 0;
-    transition: opacity 0.4s;
-  }
-  .pain-card:hover {
-    border-color: var(--border-strong);
-    transform: translateY(-2px);
-    background: var(--surface-2);
-  }
-  .pain-card:hover::before { opacity: 1; }
-  .pain-num {
-    font-family: var(--font-mono);
-    font-size: 11px;
-    color: var(--text-mute);
-    letter-spacing: 0.12em;
-    margin-bottom: 24px;
-  }
-  .pain-stat {
-    font-size: 3rem;
-    font-weight: 800;
-    letter-spacing: -0.04em;
-    line-height: 1;
-    margin-bottom: 16px;
-    color: var(--text);
-  }
-  .pain-stat .unit { font-size: 1.25rem; color: var(--text-dim); font-weight: 600; }
-  .pain-h {
-    font-size: 18px;
-    font-weight: 700;
-    letter-spacing: -0.02em;
-    margin-bottom: 12px;
-  }
-  .pain-p {
-    font-size: 14px;
-    line-height: 1.6;
-    color: var(--text-dim);
-  }
-  .pain-solution {
-    margin-top: 24px;
-    padding-top: 20px;
-    border-top: 1px dashed var(--border-strong);
-    font-size: 13px;
-    color: var(--text-soft);
-  }
-  .pain-solution::before {
-    content: '→ ';
-    color: var(--accent);
-    font-weight: 700;
-  }
-  @media (max-width: 900px) {
-    .pain-grid { grid-template-columns: 1fr; }
-  }
-
-  /* ==========================================================
-     STATS BAR
-     ========================================================== */
-  .stats {
-    padding: 80px 0;
-    border-top: 1px solid var(--border);
-    border-bottom: 1px solid var(--border);
-    background: var(--bg-elevated);
-  }
-  .stats-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 32px;
-  }
-  .stat-item { text-align: left; }
-  .stat-v {
-    font-size: clamp(2.4rem, 4.5vw, 3.6rem);
-    font-weight: 800;
-    letter-spacing: -0.04em;
-    line-height: 1;
-    background: linear-gradient(180deg, white, rgba(255,255,255,0.6));
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-  }
-  .stat-v .unit { font-size: 0.5em; color: var(--accent); -webkit-text-fill-color: var(--accent); margin-left: 4px; }
-  .stat-l {
-    margin-top: 12px;
-    font-size: 13px;
-    color: var(--text-dim);
-    line-height: 1.45;
-  }
-  @media (max-width: 700px) {
-    .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 28px; }
-  }
-
-  /* ==========================================================
-     FEATURES — Bento grid 6 agents
-     ========================================================== */
-  .features {
-    padding: 120px 0;
-  }
-  .bento {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    grid-template-rows: auto auto;
-    gap: 20px;
-  }
-  .feat {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--r-lg);
-    padding: 28px;
-    position: relative;
-    overflow: hidden;
-    transition: all 0.4s var(--ease);
-    min-height: 280px;
-    display: flex;
-    flex-direction: column;
-  }
-  .feat:hover {
-    border-color: var(--border-accent);
-    background: var(--surface-2);
-  }
-  .feat-large {
-    grid-column: span 2;
-    grid-row: span 1;
-    background: linear-gradient(135deg, var(--surface) 0%, rgba(79, 126, 247, 0.08) 100%);
-    min-height: 360px;
-  }
-  .feat-icon {
-    width: 44px;
-    height: 44px;
-    border-radius: 12px;
-    background: var(--surface-2);
-    border: 1px solid var(--border-strong);
-    display: grid;
-    place-items: center;
-    color: var(--accent);
-    margin-bottom: 22px;
-  }
-  .feat-large .feat-icon {
-    background: var(--accent);
-    color: white;
-    box-shadow: 0 8px 24px -8px var(--accent-glow);
-  }
-  .feat-tag {
-    position: absolute;
-    top: 24px;
-    right: 24px;
-    font-family: var(--font-mono);
-    font-size: 10px;
-    letter-spacing: 0.1em;
-    color: var(--text-mute);
-    text-transform: uppercase;
-  }
-  .feat h3 {
-    font-size: 19px;
-    font-weight: 700;
-    letter-spacing: -0.02em;
-    margin-bottom: 8px;
-  }
-  .feat-large h3 { font-size: 24px; }
-  .feat p {
-    font-size: 14px;
-    color: var(--text-dim);
-    line-height: 1.6;
-    flex: 1;
-  }
-  .feat-large p { font-size: 15px; max-width: 480px; }
-
-  /* Mini preview inside featured card */
-  .feat-preview {
-    margin-top: 22px;
-    background: var(--bg);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 14px 16px;
-    font-family: var(--font-mono);
-    font-size: 12px;
-    line-height: 1.7;
-  }
-  .feat-preview .k { color: var(--text-mute); }
-  .feat-preview .v { color: var(--text); }
-  .feat-preview .score { color: var(--danger); font-weight: 700; }
-  .feat-preview .ok { color: var(--success); }
-
-  @media (max-width: 900px) {
-    .bento { grid-template-columns: 1fr 1fr; }
-    .feat-large { grid-column: span 2; }
-  }
-  @media (max-width: 600px) {
-    .bento { grid-template-columns: 1fr; }
-    .feat-large { grid-column: span 1; }
-  }
-
-  /* ==========================================================
-     PRICING — Toggle + Cards + Add-ons + Founding
-     ========================================================== */
-
-  /* Billing toggle */
-  .billing-toggle {
-    display: flex;
-    justify-content: center;
-    margin-bottom: 48px;
-  }
-  .billing-toggle-inner {
-    display: inline-flex;
-    background: var(--surface);
-    border: 1px solid var(--border-strong);
-    border-radius: 14px;
-    padding: 4px;
-    gap: 2px;
-  }
-  .billing-btn {
-    padding: 10px 20px;
-    border-radius: 10px;
-    border: none;
-    background: transparent;
-    color: var(--text-mute);
-    font-family: var(--font-sans);
-    font-weight: 600;
-    font-size: 14px;
-    cursor: pointer;
-    transition: all 0.22s var(--ease);
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-  .billing-btn.active {
-    background: var(--accent);
-    color: white;
-    box-shadow: 0 4px 20px -4px var(--accent-glow);
-  }
-  .billing-chip {
-    font-size: 10px;
-    font-weight: 700;
-    padding: 2px 7px;
-    border-radius: 100px;
-    letter-spacing: 0.04em;
-    background: rgba(46,225,156,0.12);
-    color: var(--success);
-    transition: all 0.22s var(--ease);
-  }
-  .billing-btn.active .billing-chip {
-    background: rgba(255,255,255,0.2);
-    color: white;
-  }
-  .savings-banner {
-    text-align: center;
-    margin-bottom: 28px;
-    color: var(--success);
-    font-size: 13px;
-    font-weight: 600;
-    letter-spacing: 0.02em;
-    min-height: 20px;
-    transition: opacity 0.3s;
-  }
-
-  /* Cards */
-  .pricing-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 20px;
-    max-width: 1080px;
-    margin: 0 auto;
-  }
-  .price {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--r-lg);
-    padding: 36px 32px;
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    transition: all 0.3s var(--ease);
-  }
-  .price:hover { border-color: var(--border-strong); transform: translateY(-2px); }
-  .price-featured {
-    background: linear-gradient(180deg, var(--surface-2) 0%, var(--surface) 100%);
-    border-color: var(--border-accent);
-    box-shadow: 0 0 0 1px var(--border-accent), 0 30px 60px -30px var(--accent-glow);
-  }
-  .price-featured::before {
-    content: 'Le plus choisi';
-    position: absolute;
-    top: -1px; left: 50%;
-    transform: translate(-50%, -50%);
-    background: var(--accent);
-    color: white;
-    font-size: 11px; font-weight: 700;
-    letter-spacing: 0.06em; text-transform: uppercase;
-    padding: 6px 14px; border-radius: 100px;
-    box-shadow: 0 8px 20px -6px var(--accent-glow);
-  }
-  .price-name {
-    font-size: 14px; font-weight: 600;
-    color: var(--text-dim); text-transform: uppercase;
-    letter-spacing: 0.08em; margin-bottom: 14px;
-  }
-  .price-amount {
-    display: flex; align-items: baseline;
-    gap: 6px; margin-bottom: 4px;
-  }
-  .price-amount .num {
-    font-size: 3.2rem; font-weight: 800;
-    letter-spacing: -0.05em; line-height: 1;
-    transition: all 0.3s var(--ease);
-  }
-  .price-amount .cur { font-size: 1.4rem; font-weight: 700; }
-  .price-amount .per { font-size: 0.95rem; color: var(--text-dim); }
-  .price-billing-sub {
-    font-size: 11px; color: var(--text-mute);
-    font-family: var(--font-mono); margin-bottom: 8px;
-    min-height: 16px; transition: opacity 0.3s;
-  }
-  .price-saving {
-    display: inline-flex; align-items: center; gap: 6px;
-    background: rgba(46,225,156,0.1);
-    border: 1px solid rgba(46,225,156,0.25);
-    border-radius: 100px; padding: 4px 10px;
-    font-size: 11px; font-weight: 700; color: var(--success);
-    margin-bottom: 12px; opacity: 0;
-    transition: opacity 0.3s var(--ease);
-  }
-  .price-saving.visible { opacity: 1; }
-  .price-desc {
-    font-size: 14px; color: var(--text-dim);
-    margin-bottom: 24px; margin-top: 8px; min-height: 42px;
-  }
-  .price ul { margin-bottom: 32px; flex: 1; }
-  .price li {
-    display: flex; align-items: flex-start;
-    gap: 10px; padding: 10px 0;
-    font-size: 14px; color: var(--text-soft);
-    border-bottom: 1px dashed var(--border);
-  }
-  .price li:last-child { border-bottom: none; }
-  .price li svg { color: var(--accent); flex-shrink: 0; margin-top: 2px; }
-  .price .btn { width: 100%; }
-  @media (max-width: 900px) {
-    .pricing-grid { grid-template-columns: 1fr; max-width: 480px; }
-    .billing-btn { padding: 10px 14px; font-size: 13px; }
-  }
-
-  /* Add-ons grid */
-  .addons-section { margin-top: 64px; max-width: 1080px; margin-left: auto; margin-right: auto; }
-  .addons-head { text-align: center; margin-bottom: 32px; }
-  .addons-head h3 { font-size: 1.4rem; font-weight: 700; letter-spacing: -0.02em; }
-  .addons-head p { color: var(--text-dim); font-size: 14px; margin-top: 8px; }
-  .addons-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 14px;
-  }
-  .addon-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--r-md);
-    padding: 22px 20px;
-    display: flex; flex-direction: column; gap: 10px;
-    transition: border-color 0.3s var(--ease);
-  }
-  .addon-card:hover { border-color: var(--border-strong); }
-  .addon-icon { font-size: 24px; }
-  .addon-name { font-weight: 700; font-size: 14px; }
-  .addon-sub { font-size: 11px; font-weight: 600; margin-top: 2px; }
-  .addon-desc { font-size: 12px; color: var(--text-dim); line-height: 1.5; flex: 1; }
-  .addon-price { font-size: 13px; font-weight: 700; font-family: var(--font-mono); }
-  @media (max-width: 900px) { .addons-grid { grid-template-columns: repeat(2, 1fr); } }
-  @media (max-width: 500px) { .addons-grid { grid-template-columns: 1fr; } }
-
-  /* Founding member banner */
-  .founding-banner {
-    max-width: 1080px;
-    margin: 40px auto 0;
-    background: linear-gradient(135deg, #0F1829, #1A1D2F);
-    border: 1px solid var(--border-accent);
-    border-radius: var(--r-lg);
-    padding: 28px 36px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 24px;
-    flex-wrap: wrap;
-  }
-  .founding-tag {
-    font-size: 11px; font-weight: 700;
-    letter-spacing: 0.1em; text-transform: uppercase;
-    color: var(--warning); margin-bottom: 8px;
-  }
-  .founding-title { font-weight: 700; font-size: 1.1rem; }
-  .founding-desc { color: var(--text-dim); font-size: 13px; margin-top: 4px; }
-  .founding-cta {
-    display: inline-flex; align-items: center; gap: 8px;
-    padding: 12px 24px; border-radius: 12px;
-    background: var(--warning); color: #0A0A0F;
-    font-weight: 700; font-size: 14px;
-    text-decoration: none; white-space: nowrap;
-    flex-shrink: 0; transition: all 0.25s var(--ease);
-  }
-  .founding-cta:hover { transform: translateY(-1px); filter: brightness(1.05); }
-
-  /* ==========================================================
-     CTA FINAL
-     ========================================================== */
-  .cta {
-    padding: 120px 0;
-    position: relative;
-    overflow: hidden;
-  }
-  .cta-card {
-    position: relative;
-    background: linear-gradient(135deg, #0F1117 0%, #1A1D2F 100%);
-    border: 1px solid var(--border-strong);
-    border-radius: var(--r-xl);
-    padding: 80px 48px;
-    text-align: center;
-    overflow: hidden;
-  }
-  .cta-card::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background:
-      radial-gradient(500px 300px at 30% 20%, rgba(79, 126, 247, 0.22), transparent 60%),
-      radial-gradient(400px 300px at 80% 90%, rgba(46, 225, 156, 0.06), transparent 60%);
-    pointer-events: none;
-  }
-  .cta-card::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background-image:
-      linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
-    background-size: 48px 48px;
-    mask-image: radial-gradient(ellipse 60% 80% at 50% 50%, black 20%, transparent 70%);
-    -webkit-mask-image: radial-gradient(ellipse 60% 80% at 50% 50%, black 20%, transparent 70%);
-    pointer-events: none;
-  }
-  .cta-card > * { position: relative; z-index: 1; }
-  .cta-card h2 {
-    font-size: clamp(2rem, 4vw, 3.4rem);
-    font-weight: 800;
-    line-height: 1.05;
-    letter-spacing: -0.04em;
-    margin-bottom: 20px;
-  }
-  .cta-card p {
-    font-size: 1.1rem;
-    color: var(--text-dim);
-    max-width: 520px;
-    margin: 0 auto 36px;
-  }
-  .cta-meta {
-    margin-top: 24px;
-    font-family: var(--font-mono);
-    font-size: 12px;
-    color: var(--text-mute);
-    letter-spacing: 0.04em;
-  }
-
-  /* ==========================================================
-     FOOTER
-     ========================================================== */
-  .footer {
-    border-top: 1px solid var(--border);
-    padding: 60px 0 40px;
-    color: var(--text-mute);
-    font-size: 13px;
-  }
-  .footer-grid {
-    display: grid;
-    grid-template-columns: 2fr 1fr 1fr 1fr;
-    gap: 48px;
-    margin-bottom: 48px;
-  }
-  .footer-brand p {
-    margin-top: 16px;
-    max-width: 280px;
-    line-height: 1.6;
-  }
-  .footer-col h4 {
-    font-size: 12px;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    color: var(--text);
-    margin-bottom: 16px;
-    font-weight: 700;
-  }
-  .footer-col a {
-    display: block;
-    padding: 6px 0;
-    color: var(--text-dim);
-    transition: color 0.2s;
-  }
-  .footer-col a:hover { color: var(--text); }
-  .footer-bottom {
-    padding-top: 32px;
-    border-top: 1px solid var(--border);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 16px;
-  }
-  @media (max-width: 700px) {
-    .footer-grid { grid-template-columns: 1fr 1fr; }
-  }
-</style>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "ProfessionalService",
+  "name": "Aivelo",
+  "description": "Studio digital & IA : sites web sur-mesure, plateformes de formation, gestion & maintenance, CRM immobilier IA.",
+  "email": "arthur.s@aivelo.fr",
+  "areaServed": "FR",
+  "address": { "@type": "PostalAddress", "addressLocality": "Bordeaux", "addressCountry": "FR" }
+}
+</script>
 </head>
 <body>
 
+<a class="skip-link" href="#main">Aller au contenu</a>
+
+<!-- ============================ PRELOADER ============================ -->
+<div class="preloader" id="preloader" aria-hidden="true">
+  <div class="preloader-inner">
+    <span class="logo-mark logo-mark--lg">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21V9l9-6 9 6v12"/><path d="M9 21V12h6v9"/></svg>
+    </span>
+    <div class="preloader-word"><span>A</span><span>i</span><span>v</span><span>e</span><span>l</span><span>o</span></div>
+    <div class="preloader-bar"><i id="preloader-bar"></i></div>
+  </div>
+</div>
+
+<!-- ============================ CURSOR + PROGRESS ============================ -->
+<div class="cursor" id="cursor" aria-hidden="true"><span class="cursor-label" id="cursor-label"></span></div>
+<div class="scroll-progress" aria-hidden="true"><i id="scroll-progress"></i></div>
+
 <!-- ============================ NAV ============================ -->
-<nav class="nav" id="nav">
+<header class="nav" id="nav">
   <div class="container nav-inner">
-    <a href="#" class="logo">
+    <a href="#top" class="logo" aria-label="Aivelo — accueil">
       <span class="logo-mark">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21V9l9-6 9 6v12"/><path d="M9 21V12h6v9"/></svg>
       </span>
       Aivelo
     </a>
-    <ul class="nav-links">
-      <li><a href="#produit">Produit</a></li>
-      <li><a href="#agents">Agents IA</a></li>
-      <li><a href="#tarifs">Tarifs</a></li>
-      <li><a href="#demo">Démo</a></li>
-    </ul>
+
+    <nav class="nav-links" aria-label="Navigation principale">
+      <a href="#expertises" class="roll"><span>Expertises</span></a>
+      <a href="#secteurs" class="roll"><span>Pour qui</span></a>
+      <a href="#methode" class="roll"><span>Méthode</span></a>
+      <a href="#offres" class="roll"><span>Offres</span></a>
+      <a href="#addons" class="roll"><span>Add-ons</span></a>
+    </nav>
+
     <div class="nav-cta">
-      <a href="#" class="nav-login">Connexion</a>
-      <a href="#demo" class="btn btn-primary">Réserver une démo</a>
+      <a href="#" class="nav-login">Connexion CRM</a>
+      <a href="#contact" class="btn btn-primary btn-sm magnetic nav-btn"><span class="btn-roll">Démarrer un projet</span></a>
+      <button class="burger" id="burger" aria-label="Ouvrir le menu" aria-expanded="false" aria-controls="mobile-menu"><span></span><span></span></button>
     </div>
   </div>
-</nav>
+</header>
+
+<div class="mobile-menu" id="mobile-menu" aria-hidden="true">
+  <nav class="mobile-menu-links" aria-label="Navigation mobile">
+    <a href="#expertises"><span>01</span>Expertises</a>
+    <a href="#secteurs"><span>02</span>Pour qui</a>
+    <a href="#methode"><span>03</span>Méthode</a>
+    <a href="#offres"><span>04</span>Offres</a>
+    <a href="#addons"><span>05</span>Add-ons</a>
+    <a href="#contact"><span>06</span>Contact</a>
+  </nav>
+  <div class="mobile-menu-foot">
+    <a href="mailto:arthur.s@aivelo.fr">arthur.s@aivelo.fr</a>
+    <span>Conçu à Bordeaux</span>
+  </div>
+</div>
+
+<main id="main">
 
 <!-- ============================ HERO ============================ -->
-<section class="hero">
-  <div class="container hero-inner">
-    <span class="eyebrow reveal">CRM Immobilier · Nouvelle génération</span>
-    <h1 class="reveal" data-delay="1">
-      Vos agents ferment des deals.<br>
-      <span class="accent">Aivelo s'occupe du reste.</span>
-    </h1>
-    <p class="hero-sub reveal" data-delay="2">
-      6 agents IA travaillent 24h/24 aux côtés de vos agents immobiliers. Ils qualifient les leads, rédigent les annonces, relancent les prospects, matchent vos biens. Vos agents reprennent leur vrai métier : conseiller, visiter, signer.
-    </p>
-    <div class="hero-cta reveal" data-delay="3">
-      <a href="#demo" class="btn btn-primary">Réserver une démo <svg class="arr" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg></a>
-      <a href="#produit" class="btn btn-ghost">Voir le produit</a>
-    </div>
-    <div class="hero-trust reveal" data-delay="4">
-      <span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg> RGPD conforme</span>
-      <span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg> Hébergement européen</span>
-      <span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg> Conçu en France</span>
-    </div>
+<section class="hero" id="top">
+  <div class="hero-bg" aria-hidden="true">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+    <div class="grid-lines"></div>
   </div>
 
-  <!-- Mock CRM -->
-  <div class="hero-mock reveal" data-delay="4">
-    <div class="mock-frame">
-      <div class="mock-topbar">
-        <span class="mock-dot"></span><span class="mock-dot"></span><span class="mock-dot"></span>
-        <span class="mock-url">aivelo.app / tableau-de-bord</span>
+  <div class="container hero-inner">
+    <div class="hero-copy">
+      <p class="eyebrow hero-eyebrow" data-hero-fade><span class="pulse"></span>Studio digital &amp; IA · Bordeaux</p>
+
+      <h1 class="hero-title" data-hero-title>
+        <span class="line"><span>Votre <span class="nowrap">savoir-faire</span></span></span>
+        <span class="line"><span>mérite un digital</span></span>
+        <span class="line"><span><em class="serif">à sa hauteur.</em></span></span>
+      </h1>
+
+      <p class="hero-sub" data-hero-fade>
+        Sites web sur-mesure, plateformes de formation et CRM propulsé par l'IA.
+        On conçoit, on développe et on gère des outils qui mettent en lumière votre travail,
+        vos valeurs — et qui font revenir vos clients.
+      </p>
+
+      <div class="hero-ctas" data-hero-fade>
+        <a href="#contact" class="btn btn-primary btn-lg magnetic"><span class="btn-roll">Démarrer un projet</span>
+          <svg class="arr" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg></a>
+        <a href="#expertises" class="btn btn-ghost btn-lg magnetic"><span class="btn-roll">Nos expertises</span></a>
       </div>
-      <div class="mock-body">
-        <aside class="mock-sidebar">
-          <div class="mock-side-label">Pilotage</div>
-          <div class="mock-side-item active">
-            <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
-            Tableau de bord
-          </div>
-          <div class="mock-side-item">
-            <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
-            Contacts
-          </div>
-          <div class="mock-side-item">
-            <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21V9l9-6 9 6v12"/></svg>
-            Biens
-          </div>
-          <div class="mock-side-item">
-            <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/></svg>
-            Annonces
-          </div>
-          <div class="mock-side-item">
-            <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
-            Relances
-          </div>
-          <div class="mock-side-label" style="margin-top:18px">Agents IA</div>
-          <div class="mock-side-item">
-            <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
-            Qualification
-          </div>
-          <div class="mock-side-item">
-            <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 01-9 8.5 8.5 8.5 0 01-7.6-4.7L3 21l1.9-5.7A8.38 8.38 0 0112 3a8.5 8.5 0 019 8.5z"/></svg>
-            Matching
-          </div>
-        </aside>
 
-        <div class="mock-content">
-          <div class="mock-h">
-            <div>
-              <h3>Pipeline aujourd'hui</h3>
-              <div class="mock-h-sub">Mis à jour il y a 12 sec</div>
-            </div>
-            <div class="mock-tag">14 leads · 3 chauds</div>
-          </div>
+      <ul class="hero-trust" data-hero-fade>
+        <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>RGPD &amp; hébergement européen</li>
+        <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>Première maquette en 7 jours</li>
+        <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Vous êtes propriétaire de tout</li>
+      </ul>
+    </div>
 
-          <div class="mock-stats">
-            <div class="mock-stat">
-              <div class="mock-stat-l">Leads</div>
-              <div class="mock-stat-v">47</div>
-              <div class="mock-stat-d">+12 cette semaine</div>
-            </div>
-            <div class="mock-stat">
-              <div class="mock-stat-l">Mandats</div>
-              <div class="mock-stat-v">23</div>
-              <div class="mock-stat-d">+3</div>
-            </div>
-            <div class="mock-stat">
-              <div class="mock-stat-l">Annonces</div>
-              <div class="mock-stat-v">18</div>
-              <div class="mock-stat-d">+5 ce mois</div>
-            </div>
-            <div class="mock-stat">
-              <div class="mock-stat-l">Visites</div>
-              <div class="mock-stat-v">31</div>
-              <div class="mock-stat-d">+8 prévues</div>
+    <!-- Hero composition: three product windows -->
+    <div class="hero-visual" aria-hidden="true">
+      <div class="win win-site" data-depth="0.6">
+        <div class="win-bar"><i></i><i></i><i></i><span>maison-lumiere.fr</span></div>
+        <div class="site-mock">
+          <div class="site-nav"><b>Maison Lumière</b><span></span><span></span><span></span></div>
+          <div class="site-hero">
+            <div class="site-hero-txt">
+              <small>Agence immobilière · Bordeaux</small>
+              <strong>Vendre avec <em class="serif">exigence</em>.</strong>
+              <span class="site-btn">Estimer mon bien</span>
             </div>
           </div>
-
-          <div class="mock-leads">
-            <div class="mock-lead">
-              <div>
-                <div class="mock-lead-name">Sophie Mercier</div>
-                <div class="mock-lead-meta">T3 Bordeaux Chartrons · 380k€ · Accord bancaire ✓</div>
-              </div>
-              <span class="mock-score hot">87/100</span>
-              <span class="mock-tag">Chaud</span>
-            </div>
-            <div class="mock-lead">
-              <div>
-                <div class="mock-lead-name">Marc Dubois</div>
-                <div class="mock-lead-meta">Maison Mérignac · 450k€ · Délai 6 mois</div>
-              </div>
-              <span class="mock-score warm">64/100</span>
-              <span class="mock-tag">Tiède</span>
-            </div>
-            <div class="mock-lead">
-              <div>
-                <div class="mock-lead-name">Laura Vidal</div>
-                <div class="mock-lead-meta">Investissement locatif · 250k€ · LMNP</div>
-              </div>
-              <span class="mock-score hot">91/100</span>
-              <span class="mock-tag">Chaud</span>
-            </div>
+          <div class="site-cards">
+            <div><i></i><b>Villa · Pessac</b><small>620 000 €</small></div>
+            <div><i></i><b>T3 · Chartrons</b><small>380 000 €</small></div>
+            <div><i></i><b>Loft · Bastide</b><small>455 000 €</small></div>
           </div>
         </div>
       </div>
-    </div>
 
-    <div class="mock-float mock-float-1">
-      <div class="mock-float-icon">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 01-9 8.5 8.5 8.5 0 01-7.6-4.7L3 21l1.9-5.7A8.38 8.38 0 0112 3a8.5 8.5 0 019 8.5z"/></svg>
+      <div class="win win-learn" data-depth="1.1">
+        <div class="learn-head">
+          <span class="learn-ico"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10 12 5 2 10l10 5 10-5z"/><path d="M6 12v5c3 2 9 2 12 0v-5"/></svg></span>
+          <div><small>Parcours</small><b>Négociation avancée</b></div>
+        </div>
+        <div class="learn-progress"><span>Progression</span><b>68%</b><div><i></i></div></div>
+        <ul class="learn-list">
+          <li class="done">Module 1 · Préparer l'entretien</li>
+          <li class="done">Module 2 · Écoute active</li>
+          <li class="now">Module 3 · Traiter les objections</li>
+          <li>Module 4 · Conclure</li>
+        </ul>
+        <div class="learn-cert"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="6"/><path d="M15.5 13 17 22l-5-3-5 3 1.5-9"/></svg>Attestation générée automatiquement</div>
       </div>
-      <div>
-        <div class="mock-float-t">Match détecté</div>
-        <div class="mock-float-s">Villa Bordeaux ↔ Mercier · 92%</div>
-      </div>
-    </div>
 
-    <div class="mock-float mock-float-2">
-      <div class="mock-float-icon">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+      <div class="win win-crm" data-depth="1.6">
+        <div class="crm-row">
+          <span class="avatar">SM</span>
+          <div><b>Sophie Mercier</b><small>T3 Chartrons · 380k€ · Financement ✓</small></div>
+        </div>
+        <div class="crm-score"><span>Score IA</span><b>87</b><small>/100</small><em>Chaud</em></div>
       </div>
-      <div>
-        <div class="mock-float-t">Annonce publiée</div>
-        <div class="mock-float-s">SeLoger · LeBonCoin · Bien'ici</div>
+
+      <div class="chip chip-a" data-depth="2"><span class="dot dot-green"></span>Site en ligne · 0,8 s</div>
+      <div class="chip chip-b" data-depth="2.4"><span class="dot dot-blue"></span>12 apprenants actifs</div>
+    </div>
+  </div>
+
+  <a href="#manifeste" class="scroll-cue" aria-label="Faire défiler">
+    <span>Défiler</span><i></i>
+  </a>
+</section>
+
+<!-- ============================ MARQUEE ============================ -->
+<div class="marquee" aria-hidden="true">
+  <div class="marquee-track">
+    <span>Sites vitrines</span><b>✦</b><span>Plateformes e-learning</span><b>✦</b><span>CRM IA immobilier</span><b>✦</b><span>SEO local</span><b>✦</b><span>Maintenance</span><b>✦</b><span>Accessibilité</span><b>✦</b><span>Éco-conception</span><b>✦</b><span>Motion design</span><b>✦</b>
+    <span>Sites vitrines</span><b>✦</b><span>Plateformes e-learning</span><b>✦</b><span>CRM IA immobilier</span><b>✦</b><span>SEO local</span><b>✦</b><span>Maintenance</span><b>✦</b><span>Accessibilité</span><b>✦</b><span>Éco-conception</span><b>✦</b><span>Motion design</span><b>✦</b>
+  </div>
+</div>
+
+<!-- ============================ MANIFESTE ============================ -->
+<section class="manifesto" id="manifeste">
+  <div class="container">
+    <p class="eyebrow eyebrow--light" data-reveal>Manifeste</p>
+    <p class="manifesto-text" data-scrub-words>
+      Derrière chaque site, il y a un métier, des années de pratique et des valeurs.
+      Notre travail : les rendre visibles. Sans artifice, sans jargon — avec un design
+      précis, un code propre et une technologie qui sert vos clients avant de servir nos egos.
+    </p>
+    <div class="manifesto-sign" data-reveal>
+      <span class="manifesto-line"></span>
+      <span>Arthur · Fondateur d'Aivelo</span>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ EXPERTISES ============================ -->
+<section class="section expertises" id="expertises">
+  <div class="container">
+    <header class="section-head">
+      <p class="eyebrow" data-reveal>4 expertises · 1 interlocuteur</p>
+      <h2 class="section-title" data-split>Tout ce qu'il faut pour <em class="serif">exister,</em> convaincre et durer en ligne.</h2>
+      <p class="section-lead" data-reveal>Un seul partenaire, de la première maquette à la maintenance. Chaque brique parle aux autres : votre site alimente votre CRM, votre plateforme de formation prolonge votre marque.</p>
+    </header>
+
+    <div class="stack">
+      <!-- 01 -->
+      <article class="stack-card" style="--hue: 222">
+        <div class="stack-copy">
+          <span class="stack-num">01</span>
+          <h3>Sites web sur-mesure</h3>
+          <p>Vitrines, sites immobiliers, catalogues, pages de conversion. Un design unique qui raconte votre histoire, un chargement en moins d'une seconde et un référencement local pensé dès le premier jour.</p>
+          <ul class="ticks">
+            <li>Direction artistique &amp; maquettes Figma</li>
+            <li>Développement performant &amp; accessible</li>
+            <li>SEO local &amp; fiche Google Business</li>
+            <li>Back-office simple, vous restez autonome</li>
+          </ul>
+          <a href="#offres" class="link-arrow" data-tab-link="sites">Voir les offres sites <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg></a>
+        </div>
+        <div class="stack-visual vis-site" aria-hidden="true">
+          <div class="vs-frame">
+            <div class="vs-top"><i></i><i></i><i></i></div>
+            <div class="vs-hero"><span></span><span></span><span class="vs-cta"></span></div>
+            <div class="vs-grid"><i></i><i></i><i></i><i></i></div>
+          </div>
+          <div class="vs-gauge"><svg viewBox="0 0 120 120"><circle cx="60" cy="60" r="50" class="g-bg"/><circle cx="60" cy="60" r="50" class="g-fg" data-gauge="0.98"/></svg><b>98</b><small>Performance</small></div>
+        </div>
+      </article>
+
+      <!-- 02 -->
+      <article class="stack-card" style="--hue: 262">
+        <div class="stack-copy">
+          <span class="stack-num">02</span>
+          <h3>Plateformes de formation</h3>
+          <p>Votre expertise transformée en parcours : vidéos, quiz, attestations, suivi des apprenants et paiement en ligne. Une expérience d'apprentissage fluide, à vos couleurs, pensée pour faciliter vos démarches qualité.</p>
+          <ul class="ticks">
+            <li>Parcours, modules &amp; classes virtuelles</li>
+            <li>Quiz, évaluations &amp; attestations auto</li>
+            <li>Inscriptions, paiement &amp; relances</li>
+            <li>Indicateurs de suivi pour vos audits</li>
+          </ul>
+          <a href="#offres" class="link-arrow" data-tab-link="formation">Voir les offres formation <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg></a>
+        </div>
+        <div class="stack-visual vis-learn" aria-hidden="true">
+          <div class="vl-card">
+            <div class="vl-video"><span class="vl-play"></span><i class="vl-time"></i></div>
+            <div class="vl-meta"><b>Module 3 · Traiter les objections</b><small>12 min · Vidéo + quiz</small></div>
+          </div>
+          <div class="vl-quiz">
+            <small>Quiz · Question 2/5</small>
+            <b>Quelle est la première étape face à une objection ?</b>
+            <span class="ok">Reformuler pour valider la compréhension</span>
+            <span>Proposer immédiatement une remise</span>
+          </div>
+        </div>
+      </article>
+
+      <!-- 03 -->
+      <article class="stack-card" style="--hue: 160">
+        <div class="stack-copy">
+          <span class="stack-num">03</span>
+          <h3>Gestion &amp; maintenance</h3>
+          <p>Hébergement européen, sauvegardes, mises à jour, sécurité et petites évolutions. Vous vous concentrez sur votre métier, on veille sur le reste — avec un rapport clair chaque mois.</p>
+          <ul class="ticks">
+            <li>Hébergement EU, SSL &amp; CDN</li>
+            <li>Sauvegardes quotidiennes</li>
+            <li>Mises à jour &amp; surveillance 24/7</li>
+            <li>Modifications incluses chaque mois</li>
+          </ul>
+          <a href="#addons" class="link-arrow">Voir l'add-on maintenance <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg></a>
+        </div>
+        <div class="stack-visual vis-ops" aria-hidden="true">
+          <div class="vo-panel">
+            <div class="vo-row"><span class="dot dot-green"></span><b>Disponibilité</b><em>99,98 %</em></div>
+            <div class="vo-row"><span class="dot dot-green"></span><b>Sauvegarde</b><em>il y a 3 h</em></div>
+            <div class="vo-row"><span class="dot dot-blue"></span><b>Mises à jour</b><em>à jour</em></div>
+            <div class="vo-row"><span class="dot dot-green"></span><b>Certificat SSL</b><em>valide</em></div>
+          </div>
+          <div class="vo-spark"><svg viewBox="0 0 300 80" preserveAspectRatio="none"><path data-draw d="M0 60 C30 55 40 30 70 35 S110 60 140 45 S190 15 220 25 S270 40 300 12"/></svg><small>Visites ce mois</small></div>
+        </div>
+      </article>
+
+      <!-- 04 -->
+      <article class="stack-card" style="--hue: 200">
+        <div class="stack-copy">
+          <span class="stack-num">04</span>
+          <h3>Aivelo CRM <em class="serif">IA</em> immobilier</h3>
+          <p>Six agents IA travaillent 24h/24 aux côtés de vos agents : qualification des leads en 30 secondes, annonces multi-portails, relances J+1/J+7/J+14, matching en temps réel, résumé de visite par note vocale et import par scan.</p>
+          <ul class="ticks">
+            <li>Score 0–100 de chaque lead, 24h/24</li>
+            <li>Annonces SeLoger · LeBonCoin · Bien'ici</li>
+            <li>Voice note de visite → résumé IA</li>
+            <li>Connecté nativement à votre site vitrine</li>
+          </ul>
+          <a href="#offres" class="link-arrow" data-tab-link="crm">Voir les offres CRM <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg></a>
+        </div>
+        <div class="stack-visual vis-crm" aria-hidden="true">
+          <div class="vc-lead"><span class="avatar">LV</span><div><b>Laura Vidal</b><small>Investissement locatif · 250k€</small></div><em>91</em></div>
+          <div class="vc-lead"><span class="avatar avatar-2">SM</span><div><b>Sophie Mercier</b><small>T3 Chartrons · 380k€</small></div><em>87</em></div>
+          <div class="vc-lead dim"><span class="avatar avatar-3">MD</span><div><b>Marc Dubois</b><small>Maison Mérignac · 450k€</small></div><em class="warm">64</em></div>
+          <div class="vc-match"><span class="dot dot-green"></span>Match détecté · Villa Bordeaux ↔ Mercier · 92%</div>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ SECTEURS (horizontal) ============================ -->
+<section class="secteurs" id="secteurs">
+  <div class="secteurs-pin">
+    <div class="container secteurs-head">
+      <p class="eyebrow" data-reveal>Pour qui</p>
+      <h2 class="section-title" data-split>Des métiers <em class="serif">exigeants,</em> des outils qui leur ressemblent.</h2>
+    </div>
+    <div class="secteurs-viewport">
+      <div class="secteurs-track" id="secteurs-track">
+        <article class="sector" style="--c1:#4F7EF7;--c2:#2E5BD9">
+          <span class="sector-idx">01</span>
+          <div class="sector-art"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21V9l9-6 9 6v12"/><path d="M9 21V12h6v9"/></svg></div>
+          <h3>Agences immobilières</h3>
+          <p>Site vitrine avec biens synchronisés, estimation en ligne, CRM IA qui qualifie et relance. Votre réputation locale, enfin à la hauteur de votre exigence.</p>
+          <div class="tags"><span>Site + biens</span><span>Estimation</span><span>CRM IA</span></div>
+        </article>
+        <article class="sector" style="--c1:#8B7CFF;--c2:#5B47E0">
+          <span class="sector-idx">02</span>
+          <div class="sector-art"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10 12 5 2 10l10 5 10-5z"/><path d="M6 12v5c3 2 9 2 12 0v-5"/></svg></div>
+          <h3>Organismes de formation</h3>
+          <p>Catalogue, inscriptions, plateforme e-learning et suivi qualité dans un seul écosystème. Vos apprenants vivent une expérience à la hauteur de vos contenus.</p>
+          <div class="tags"><span>Catalogue</span><span>E-learning</span><span>Suivi qualité</span></div>
+        </article>
+        <article class="sector" style="--c1:#2EE19C;--c2:#0FA36B">
+          <span class="sector-idx">03</span>
+          <div class="sector-art"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg></div>
+          <h3>Formateurs &amp; coachs</h3>
+          <p>Transformez votre méthode en programme en ligne : pages de vente, paiement, espace membre. Vous partagez votre savoir, la plateforme gère le reste.</p>
+          <div class="tags"><span>Page de vente</span><span>Espace membre</span><span>Paiement</span></div>
+        </article>
+        <article class="sector" style="--c1:#FFB547;--c2:#E07A12">
+          <span class="sector-idx">04</span>
+          <div class="sector-art"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.5 2.5-2.4-.6-.6-2.4 2.5-2.5z"/></svg></div>
+          <h3>Artisans &amp; commerces</h3>
+          <p>Un site qui montre la qualité de votre travail, vos réalisations et vos avis clients. Trouvé sur Google par ceux qui cherchent exactement ce que vous faites.</p>
+          <div class="tags"><span>Réalisations</span><span>SEO local</span><span>Prise de RDV</span></div>
+        </article>
+        <article class="sector" style="--c1:#FF5C7A;--c2:#D12D50">
+          <span class="sector-idx">05</span>
+          <div class="sector-art"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></div>
+          <h3>Professions libérales</h3>
+          <p>Cabinets, conseils, santé : une présence sobre, rassurante et conforme. Vos valeurs et votre déontologie au premier plan, la prise de contact simplifiée.</p>
+          <div class="tags"><span>Sobriété</span><span>Conformité</span><span>Contact simplifié</span></div>
+        </article>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ============================ PROBLÈME ============================ -->
-<section class="section" id="produit">
-  <div class="container">
-    <div class="section-head">
-      <span class="eyebrow reveal">3 fuites · 1 mi-temps perdu</span>
-      <h2 class="reveal" data-delay="1">Le vrai coût d'une agence<br><span class="accent">qui ne mesure jamais ses pertes.</span></h2>
-      <p class="reveal" data-delay="2">Pas de promesses. Pas de buzzwords. Trois chiffres sourcés qui décrivent ce que vit votre équipe chaque semaine, et ce qu'Aivelo répare concrètement.</p>
-    </div>
+<!-- ============================ METHODE ============================ -->
+<section class="section methode" id="methode">
+  <div class="container methode-grid">
+    <header class="section-head methode-head">
+      <p class="eyebrow" data-reveal>Méthode</p>
+      <h2 class="section-title" data-split>Cinq étapes. <em class="serif">Zéro</em> mauvaise surprise.</h2>
+      <p class="section-lead" data-reveal>Un process clair, des délais tenus, un interlocuteur unique. Vous savez à chaque instant où en est votre projet.</p>
+      <div data-reveal><a href="#contact" class="btn btn-ghost magnetic"><span class="btn-roll">Réserver l'atelier découverte</span></a></div>
+    </header>
 
-    <div class="pain-grid">
-      <div class="pain-card reveal">
-        <div class="pain-num">PAIN 01</div>
-        <div class="pain-stat">×9</div>
-        <h3 class="pain-h">Le lead capté en 5 minutes ou perdu</h3>
-        <p class="pain-p">Contacter un lead dans les 5 premières minutes multiplie par 9 vos chances de le convertir (étude NAR). Vos agents sont en visite, en RDV, en route. Le lead remplit un formulaire chez 3 concurrents et choisit celui qui rappelle en premier.</p>
-        <div class="pain-solution">L'agent IA Qualification répond, qualifie et score 0–100 en 30 secondes, 24h/24. Votre agent immobilier rappelle uniquement les leads chauds, avec le contexte complet.</div>
-      </div>
-
-      <div class="pain-card reveal" data-delay="1">
-        <div class="pain-num">PAIN 02</div>
-        <div class="pain-stat">70<span class="unit">%</span></div>
-        <h3 class="pain-h">Le temps absorbé par l'administratif</h3>
-        <p class="pain-p">70% du temps d'un agent immobilier est consacré à des tâches sans valeur ajoutée — saisie de leads, rédaction d'annonces, relances, mise à jour des portails, reporting (étude FNAIM 2025). Multiplié par 5 agents : un mi-temps complet payé à pousser du papier.</p>
-        <div class="pain-solution">5 agents IA prennent l'administratif en charge. Vos agents immobiliers reprennent leur vrai métier : conseiller, visiter, signer.</div>
-      </div>
-
-      <div class="pain-card reveal" data-delay="2">
-        <div class="pain-num">PAIN 03</div>
-        <div class="pain-stat">200<span class="unit">+ acheteurs</span></div>
-        <h3 class="pain-h">Le bien qui part chez la concurrence</h3>
-        <p class="pain-p">Nouveau mandat exclusif rentré. Vous avez 200+ acheteurs actifs dans votre base. Lequel appeler en priorité ? Par mémoire, l'agent en contacte 3-4 et publie l'annonce en espérant. Pendant ce temps, l'acheteur idéal achète chez le voisin.</p>
-        <div class="pain-solution">L'agent IA Matching croise chaque nouveau bien avec vos candidats en temps réel. Les 3 meilleurs matchs, scorés, dans la fiche bien — en 10 secondes.</div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ============================ STATS ============================ -->
-<section class="stats">
-  <div class="container">
-    <div class="stats-grid">
-      <div class="stat-item reveal">
-        <div class="stat-v" data-count="5">0<span class="unit">min</span></div>
-        <div class="stat-l">La fenêtre critique pour rappeler un lead.<br>×9 sur la conversion (source NAR).</div>
-      </div>
-      <div class="stat-item reveal" data-delay="1">
-        <div class="stat-v" data-count="6">0</div>
-        <div class="stat-l">Agents IA qui bossent en parallèle,<br>24h/24, sans pause café.</div>
-      </div>
-      <div class="stat-item reveal" data-delay="2">
-        <div class="stat-v" data-count="35">0<span class="unit">k</span></div>
-        <div class="stat-l">Agences en France à se disputer<br>les mêmes leads. La vitesse fait tout.</div>
-      </div>
-      <div class="stat-item reveal" data-delay="3">
-        <div class="stat-v" data-count="15">0<span class="unit">h</span></div>
-        <div class="stat-l">Économisées par agent et par semaine.<br>Multiplié par toute votre équipe.</div>
-      </div>
+    <div class="timeline">
+      <div class="timeline-rail" aria-hidden="true"><i id="timeline-fill"></i></div>
+      <ol>
+        <li class="step">
+          <span class="step-dot" aria-hidden="true"></span>
+          <small>Semaine 1</small>
+          <h3>Écoute</h3>
+          <p>Un atelier d'une heure pour comprendre votre métier, vos clients, vos valeurs et ce qui vous rend différent.</p>
+        </li>
+        <li class="step">
+          <span class="step-dot" aria-hidden="true"></span>
+          <small>Semaine 1–2</small>
+          <h3>Stratégie &amp; contenus</h3>
+          <p>Arborescence, messages clés, mots-clés SEO. On écrit avec vous les textes qui vous ressemblent.</p>
+        </li>
+        <li class="step">
+          <span class="step-dot" aria-hidden="true"></span>
+          <small>Semaine 2–3</small>
+          <h3>Design &amp; motion</h3>
+          <p>Maquettes interactives, animations, déclinaisons mobile. Deux allers-retours inclus pour affiner chaque détail.</p>
+        </li>
+        <li class="step">
+          <span class="step-dot" aria-hidden="true"></span>
+          <small>Semaine 3–5</small>
+          <h3>Développement</h3>
+          <p>Code propre, accessible et rapide. Connexion à vos outils : CRM, paiement, agenda, plateforme de formation.</p>
+        </li>
+        <li class="step">
+          <span class="step-dot" aria-hidden="true"></span>
+          <small>Et après</small>
+          <h3>Lancement &amp; suivi</h3>
+          <p>Mise en ligne, prise en main de votre back-office, maintenance et évolutions. On reste à vos côtés.</p>
+        </li>
+      </ol>
     </div>
   </div>
 </section>
 
-<!-- ============================ FEATURES ============================ -->
-<section class="features section" id="agents">
+<!-- ============================ ENGAGEMENTS ============================ -->
+<section class="section engagements" id="engagements">
   <div class="container">
-    <div class="section-head">
-      <span class="eyebrow reveal">6 agents IA · 1 plateforme</span>
-      <h2 class="reveal" data-delay="1">Une équipe d'agents IA<br><span class="accent">qui muscle vos agents immobiliers.</span></h2>
-      <p class="reveal" data-delay="2">Chaque agent IA prend en charge un pan métier sans valeur ajoutée. Ils travaillent ensemble, partagent les données, s'orchestrent automatiquement. Vos agents immobiliers gardent la main et le terrain.</p>
-    </div>
+    <header class="section-head section-head--center">
+      <p class="eyebrow" data-reveal>Nos engagements</p>
+      <h2 class="section-title" data-split>Une <em class="serif">éthique</em> que l'on peut mesurer.</h2>
+    </header>
 
     <div class="bento">
-      <div class="feat feat-large reveal">
-        <span class="feat-tag">Agent 01</span>
-        <div class="feat-icon">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+      <article class="bento-card bento-perf" data-tilt>
+        <div class="bento-gauge">
+          <svg viewBox="0 0 120 120"><circle cx="60" cy="60" r="52" class="g-bg"/><circle cx="60" cy="60" r="52" class="g-fg" data-gauge="0.95"/></svg>
+          <b><span data-count="95">95</span><small>+</small></b>
         </div>
-        <h3>Qualification automatique en 30 secondes</h3>
-        <p>L'agent IA analyse chaque nouveau lead — projet, budget, délai, financement, motivation — et lui attribue un score 0–100 chaud/tiède/froid. Votre agent immobilier rappelle uniquement les leads à fort potentiel, avec une fiche complète déjà prête. Fini les 20 minutes perdues sur un contact non solvable.</p>
-        <div class="feat-preview">
-          <div><span class="k">lead</span> &nbsp;&nbsp;<span class="v">Sophie Mercier</span></div>
-          <div><span class="k">projet</span> <span class="v">T3 Chartrons · 380k€ · 3 mois</span></div>
-          <div><span class="k">banque</span> <span class="ok">accord_principe ✓</span></div>
-          <div><span class="k">score</span> <span class="score">87 / 100 — CHAUD</span></div>
+        <h3>Performance</h3>
+        <p>Objectif Lighthouse 95+ sur chaque page. Un site rapide, c'est un client qui reste — et Google qui vous aime.</p>
+      </article>
+      <article class="bento-card" data-tilt>
+        <span class="bento-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="4.5" r="1.8"/><path d="M5 8.5l7 1.5 7-1.5M12 10v4.5M8.5 21l3.5-6.5 3.5 6.5"/></svg></span>
+        <h3>Accessible à tous</h3>
+        <p>Contrastes, navigation clavier, lecteurs d'écran : nous visons les critères WCAG 2.2 AA.</p>
+      </article>
+      <article class="bento-card" data-tilt>
+        <span class="bento-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg></span>
+        <h3>RGPD &amp; Europe</h3>
+        <p>Données hébergées en Europe, chiffrées, analytics sans cookies tiers. Vos clients sont respectés.</p>
+      </article>
+      <article class="bento-card" data-tilt>
+        <span class="bento-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.5 19 2c1 2 2 4.2 2 8 0 5.5-4.8 10-10 10z"/><path d="M2 21c0-3 1.9-5.4 5.2-6"/></svg></span>
+        <h3>Éco-conception</h3>
+        <p>Pages légères, images optimisées, zéro script inutile. Moins de carbone, plus de vitesse.</p>
+      </article>
+      <article class="bento-card" data-tilt>
+        <span class="bento-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.6 13.4 13.4 20.6a2 2 0 0 1-2.8 0L3 13V3h10l7.6 7.6a2 2 0 0 1 0 2.8z"/><circle cx="7.5" cy="7.5" r="1.5"/></svg></span>
+        <h3>Prix transparents</h3>
+        <p>Des tarifs publics, un devis détaillé ligne par ligne, pas de frais cachés.</p>
+      </article>
+      <article class="bento-card bento-own" data-tilt>
+        <span class="bento-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 9.9-1"/></svg></span>
+        <div class="own-copy">
+          <h3>Vous êtes propriétaire</h3>
+          <p>Code, nom de domaine, contenus, données : tout vous appartient. Aucun enfermement, jamais.</p>
         </div>
-      </div>
-
-      <div class="feat reveal" data-delay="1">
-        <span class="feat-tag">Agent 02</span>
-        <div class="feat-icon">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8"/></svg>
-        </div>
-        <h3>Annonces multi-portails</h3>
-        <p>Texte optimisé pour SeLoger, LeBonCoin et Bien'ici, généré en 30 secondes. Adapté à chaque portail.</p>
-      </div>
-
-      <div class="feat reveal" data-delay="2">
-        <span class="feat-tag">Agent 03</span>
-        <div class="feat-icon">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/><path d="M12 7v5l3 3"/></svg>
-        </div>
-        <h3>Relances orchestrées</h3>
-        <p>Séquence J+1 / J+7 / J+14 automatique. Chaque prospect est suivi sans effort, par email personnalisé.</p>
-      </div>
-
-      <div class="feat reveal" data-delay="2">
-        <span class="feat-tag">Agent 04</span>
-        <div class="feat-icon">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>
-        </div>
-        <h3>Matching temps réel</h3>
-        <p>Nouveau bien rentré ? L'IA croise instantanément vos candidats actifs et vous propose les meilleurs matchs.</p>
-      </div>
-
-      <div class="feat feat-large reveal" data-delay="3">
-        <span class="feat-tag">Agent 05 · Exclusif</span>
-        <div class="feat-icon">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"/><path d="M19 10v2a7 7 0 01-14 0v-2M12 19v4M8 23h8"/></svg>
-        </div>
-        <h3>Voice note de visite → résumé IA</h3>
-        <p>Votre agent immobilier enregistre 2 minutes après une visite depuis son mobile. L'agent IA transcrit, identifie les points clés, l'intérêt acheteur, les objections et les actions à mener. Sauvegardé dans le dossier bien et la fiche candidat. <strong style="color:var(--text)">Aucun autre CRM immobilier ne le fait.</strong></p>
-        <div class="feat-preview">
-          <div><span class="k">visite</span> <span class="v">19 mai · Villa Pessac · Mercier</span></div>
-          <div><span class="k">interet</span> <span class="ok">élevé · couple convaincu</span></div>
-          <div><span class="k">objection</span> <span class="v">cuisine à refaire</span></div>
-          <div><span class="k">action</span> <span class="v">envoyer devis cuisine sous 48h</span></div>
-        </div>
-      </div>
-
-      <div class="feat reveal" data-delay="4">
-        <span class="feat-tag">Agent 06</span>
-        <div class="feat-icon">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>
-        </div>
-        <h3>Import par scan ou photo</h3>
-        <p>Scannez un mandat, photographiez une fiche, collez un email. L'IA extrait tout et remplit le dossier.</p>
-      </div>
+        <div class="own-pills"><span>Code</span><span>Domaine</span><span>Contenus</span><span>Données</span></div>
+      </article>
     </div>
   </div>
 </section>
 
-<!-- ============================ PRICING ============================ -->
-<section class="section" id="tarifs">
+<!-- ============================ OFFRES ============================ -->
+<section class="section offres" id="offres">
   <div class="container">
-    <div class="section-head">
-      <span class="eyebrow reveal">Tarifs</span>
-      <h2 class="reveal" data-delay="1">Un seul agent qui vend mieux<br><span class="accent">rembourse Aivelo en 3 jours.</span></h2>
-      <p class="reveal" data-delay="2">Sans engagement. Annulation en un clic. Premier client onboardé en 24h.</p>
-    </div>
+    <header class="section-head section-head--center">
+      <p class="eyebrow" data-reveal>Offres</p>
+      <h2 class="section-title" data-split>Des formules claires, <em class="serif">à votre rythme.</em></h2>
+      <p class="section-lead" data-reveal>Choisissez votre univers. Chaque formule se personnalise avec les <span class="nowrap">add-ons</span>.</p>
+    </header>
 
-    <!-- Billing toggle -->
-    <div class="billing-toggle reveal">
-      <div class="billing-toggle-inner">
-        <button class="billing-btn active" data-period="monthly" onclick="setBilling('monthly')">Mensuel</button>
-        <button class="billing-btn" data-period="semi" onclick="setBilling('semi')">
-          6 mois <span class="billing-chip">−1 mois</span>
-        </button>
-        <button class="billing-btn" data-period="annual" onclick="setBilling('annual')">
-          Annuel <span class="billing-chip">−2 mois</span>
-        </button>
+    <div class="tabs-wrap" data-reveal>
+      <div class="tabs" role="tablist" aria-label="Catégories d'offres">
+        <span class="tabs-indicator" id="tabs-indicator" aria-hidden="true"></span>
+        <button role="tab" class="tab active" id="tab-sites" aria-controls="panel-sites" aria-selected="true" data-tab="sites">Sites web</button>
+        <button role="tab" class="tab" id="tab-formation" aria-controls="panel-formation" aria-selected="false" data-tab="formation" tabindex="-1">Formation</button>
+        <button role="tab" class="tab" id="tab-crm" aria-controls="panel-crm" aria-selected="false" data-tab="crm" tabindex="-1">CRM IA</button>
       </div>
     </div>
 
-    <!-- Savings banner -->
-    <div class="savings-banner" id="savings-banner"></div>
-
-    <!-- Cards -->
-    <div class="pricing-grid">
-
-      <!-- STARTER -->
-      <div class="price reveal">
-        <div class="price-name">Starter</div>
-        <div class="price-amount">
-          <span class="num" id="price-starter">149</span><span class="cur">€</span><span class="per">/mois</span>
-        </div>
-        <div class="price-billing-sub" id="sub-starter"></div>
-        <div class="price-saving" id="saving-starter">✓ Économie de 149€</div>
-        <p class="price-desc">Pour démarrer avec l'essentiel et tester la valeur.</p>
-        <ul>
-          <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg> Agent Qualification illimité</li>
-          <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg> 20 annonces / mois</li>
-          <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg> Dashboard complet</li>
-          <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg> 1 utilisateur</li>
-        </ul>
-        <a href="https://calendar.app.google/uFepKqQYgaG9t9Hf6" target="_blank" rel="noreferrer" class="btn btn-ghost">Commencer</a>
-      </div>
-
-      <!-- PRO -->
-      <div class="price price-featured reveal" data-delay="1">
-        <div class="price-name">Pro</div>
-        <div class="price-amount">
-          <span class="num" id="price-pro">249</span><span class="cur">€</span><span class="per">/mois</span>
-        </div>
-        <div class="price-billing-sub" id="sub-pro"></div>
-        <div class="price-saving" id="saving-pro">✓ Économie de 249€</div>
-        <p class="price-desc">La formule complète. Tous les agents IA débridés.</p>
-        <ul>
-          <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg> <strong>Les 6 agents IA</strong> illimités</li>
-          <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg> Relances J+1 / J+7 / J+14 auto</li>
-          <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg> Voice note visite + résumé IA</li>
-          <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg> Matching temps réel</li>
-          <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg> Jusqu'à 5 utilisateurs</li>
-        </ul>
-        <a href="https://calendar.app.google/uFepKqQYgaG9t9Hf6" target="_blank" rel="noreferrer" class="btn btn-primary">Réserver une démo <svg class="arr" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg></a>
-      </div>
-
-      <!-- AGENCY -->
-      <div class="price reveal" data-delay="2">
-        <div class="price-name">Agency</div>
-        <div class="price-amount">
-          <span class="num" id="price-agency">499</span><span class="cur">€</span><span class="per">/mois</span>
-        </div>
-        <div class="price-billing-sub" id="sub-agency"></div>
-        <div class="price-saving" id="saving-agency">✓ Économie de 499€</div>
-        <p class="price-desc">Pour les groupes multi-agences avec besoins avancés.</p>
-        <ul>
-          <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg> Tout le plan Pro</li>
-          <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg> Multi-agences illimité</li>
-          <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg> Multidiffusion incluse (SeLoger, LBC, BI)</li>
-          <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg> Support prioritaire 24/7</li>
-          <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg> Utilisateurs illimités</li>
-        </ul>
-        <a href="https://calendar.app.google/uFepKqQYgaG9t9Hf6" target="_blank" rel="noreferrer" class="btn btn-ghost">Nous contacter</a>
+    <!-- Sites -->
+    <div class="panel" role="tabpanel" id="panel-sites" aria-labelledby="tab-sites">
+      <div class="plans">
+        <article class="plan">
+          <h3>Essentiel</h3>
+          <p class="plan-desc">Un site vitrine élégant pour être trouvé et rassurer.</p>
+          <div class="plan-price"><small>à partir de</small><b>1 490</b><span>€ HT</span></div>
+          <ul class="ticks">
+            <li>Jusqu'à 5 pages</li>
+            <li>Design personnalisé &amp; responsive</li>
+            <li>SEO de base &amp; Google Business</li>
+            <li>Formulaire de contact</li>
+            <li>Livraison en 2 semaines</li>
+          </ul>
+          <a href="#contact" class="btn btn-ghost btn-block"><span class="btn-roll">Demander un devis</span></a>
+        </article>
+        <article class="plan plan-featured">
+          <span class="plan-badge">Le plus choisi</span>
+          <h3>Signature</h3>
+          <p class="plan-desc">Le site qui vous distingue : design sur-mesure et motion design.</p>
+          <div class="plan-price"><small>à partir de</small><b>3 490</b><span>€ HT</span></div>
+          <ul class="ticks">
+            <li>Jusqu'à 12 pages + blog</li>
+            <li>Direction artistique &amp; animations</li>
+            <li>Back-office pour vos contenus</li>
+            <li>SEO local avancé</li>
+            <li>Connexion CRM / agenda / avis</li>
+          </ul>
+          <a href="#contact" class="btn btn-primary btn-block"><span class="btn-roll">Démarrer mon site</span></a>
+        </article>
+        <article class="plan">
+          <h3>Sur-mesure</h3>
+          <p class="plan-desc">Fonctionnalités métier, espace client, e-commerce, intégrations.</p>
+          <div class="plan-price"><b class="plan-price-text">Sur devis</b></div>
+          <ul class="ticks">
+            <li>Atelier de cadrage offert</li>
+            <li>Espace client &amp; comptes</li>
+            <li>Intégrations API &amp; automatisations</li>
+            <li>E-commerce &amp; paiement</li>
+            <li>Chef de projet dédié</li>
+          </ul>
+          <a href="#contact" class="btn btn-ghost btn-block"><span class="btn-roll">Parler de mon projet</span></a>
+        </article>
       </div>
     </div>
 
-    <!-- ADD-ONS -->
-    <div class="addons-section reveal">
-      <div class="addons-head">
-        <h3>Enrichissez votre plan avec des add-ons</h3>
-        <p>Activez uniquement ce dont vous avez besoin, quand vous en avez besoin.</p>
-      </div>
-      <div class="addons-grid">
-        <div class="addon-card">
-          <div class="addon-icon">✍️</div>
-          <div>
-            <div class="addon-name">Signature électronique</div>
-            <div class="addon-sub" style="color:#2EE19C">YouSign eIDAS</div>
-          </div>
-          <p class="addon-desc">Mandats, compromis, baux signés en ligne. Valeur légale totale, zéro aller-retour postal.</p>
-          <div class="addon-price" style="color:#2EE19C">+39€/mois</div>
-        </div>
-        <div class="addon-card">
-          <div class="addon-icon">⚖️</div>
-          <div>
-            <div class="addon-name">Analyse Juridique IA</div>
-            <div class="addon-sub" style="color:#4F7EF7">Conformité documents</div>
-          </div>
-          <p class="addon-desc">Scan mandat/compromis → score conformité + extraction automatique. Alertes en temps réel.</p>
-          <div class="addon-price" style="color:#4F7EF7">+49€/mois</div>
-        </div>
-        <div class="addon-card">
-          <div class="addon-icon">📡</div>
-          <div>
-            <div class="addon-name">Multidiffusion native</div>
-            <div class="addon-sub" style="color:#FFB547">Portails principaux</div>
-          </div>
-          <p class="addon-desc">SeLoger · LeBonCoin · Bien'ici · Site web vitrine de votre agence. Diffusion en un clic.</p>
-          <div class="addon-price" style="color:#FFB547">+89€/mois</div>
-        </div>
-        <div class="addon-card">
-          <div class="addon-icon">🎙️</div>
-          <div>
-            <div class="addon-name">Agent vocal Vapi.ai</div>
-            <div class="addon-sub" style="color:#FF5C7A">Qualification 24h/24</div>
-          </div>
-          <p class="addon-desc">Qualification téléphonique automatique. 200 min incluses, puis 0,15€/min supplémentaire.</p>
-          <div class="addon-price" style="color:#FF5C7A">+79€/mois</div>
-        </div>
+    <!-- Formation -->
+    <div class="panel" role="tabpanel" id="panel-formation" aria-labelledby="tab-formation" hidden>
+      <div class="plans">
+        <article class="plan">
+          <h3>Lancement</h3>
+          <p class="plan-desc">Votre premier parcours en ligne, prêt à accueillir vos apprenants.</p>
+          <div class="plan-price"><small>à partir de</small><b>2 490</b><span>€ HT</span></div>
+          <ul class="ticks">
+            <li>1 parcours · jusqu'à 10 modules</li>
+            <li>Vidéos, PDF, quiz</li>
+            <li>Attestations automatiques</li>
+            <li>Espace apprenant à vos couleurs</li>
+            <li>Mise en ligne en 3 semaines</li>
+          </ul>
+          <a href="#contact" class="btn btn-ghost btn-block"><span class="btn-roll">Demander un devis</span></a>
+        </article>
+        <article class="plan plan-featured">
+          <span class="plan-badge">Recommandé</span>
+          <h3>Académie</h3>
+          <p class="plan-desc">La plateforme complète pour vendre, former et suivre.</p>
+          <div class="plan-price"><small>à partir de</small><b>4 990</b><span>€ HT</span></div>
+          <ul class="ticks">
+            <li>Parcours illimités</li>
+            <li>Catalogue, inscriptions &amp; paiement</li>
+            <li>Tableau de bord formateur</li>
+            <li>Emails &amp; relances automatisés</li>
+            <li>Indicateurs de suivi qualité</li>
+          </ul>
+          <a href="#contact" class="btn btn-primary btn-block"><span class="btn-roll">Lancer mon académie</span></a>
+        </article>
+        <article class="plan">
+          <h3>Organisation</h3>
+          <p class="plan-desc">Multi-sites, marque blanche et intégrations SI pour les structures établies.</p>
+          <div class="plan-price"><b class="plan-price-text">Sur devis</b></div>
+          <ul class="ticks">
+            <li>Multi-organisations &amp; rôles</li>
+            <li>Marque blanche complète</li>
+            <li>SSO &amp; intégrations SI</li>
+            <li>Reporting avancé</li>
+            <li>Accompagnement dédié</li>
+          </ul>
+          <a href="#contact" class="btn btn-ghost btn-block"><span class="btn-roll">Nous contacter</span></a>
+        </article>
       </div>
     </div>
 
-    <!-- FOUNDING MEMBER -->
-    <div class="founding-banner reveal">
+    <!-- CRM -->
+    <div class="panel" role="tabpanel" id="panel-crm" aria-labelledby="tab-crm" hidden>
+      <div class="billing" role="group" aria-label="Période de facturation">
+        <button class="billing-btn active" data-period="monthly" aria-pressed="true">Mensuel</button>
+        <button class="billing-btn" data-period="semi" aria-pressed="false">6 mois <em>−1 mois</em></button>
+        <button class="billing-btn" data-period="annual" aria-pressed="false">Annuel <em>−2 mois</em></button>
+      </div>
+      <p class="savings-banner" id="savings-banner" aria-live="polite"></p>
+      <div class="plans">
+        <article class="plan">
+          <h3>Starter</h3>
+          <p class="plan-desc">Pour démarrer avec l'essentiel et tester la valeur.</p>
+          <div class="plan-price"><b id="price-starter">149</b><span>€ /mois</span></div>
+          <p class="plan-sub"><span id="sub-starter"></span> <strong class="saving" id="saving-starter"></strong></p>
+          <ul class="ticks">
+            <li>Agent Qualification illimité</li>
+            <li>20 annonces / mois</li>
+            <li>Dashboard complet</li>
+            <li>1 utilisateur</li>
+          </ul>
+          <a href="https://calendar.app.google/uFepKqQYgaG9t9Hf6" target="_blank" rel="noreferrer" class="btn btn-ghost btn-block"><span class="btn-roll">Commencer</span></a>
+        </article>
+        <article class="plan plan-featured">
+          <span class="plan-badge">Populaire</span>
+          <h3>Pro</h3>
+          <p class="plan-desc">La formule complète. Tous les agents IA débridés.</p>
+          <div class="plan-price"><b id="price-pro">249</b><span>€ /mois</span></div>
+          <p class="plan-sub"><span id="sub-pro"></span> <strong class="saving" id="saving-pro"></strong></p>
+          <ul class="ticks">
+            <li>Les 6 agents IA illimités</li>
+            <li>Relances J+1 / J+7 / J+14 auto</li>
+            <li>Voice note visite + résumé IA</li>
+            <li>Matching temps réel</li>
+            <li>Jusqu'à 5 utilisateurs</li>
+          </ul>
+          <a href="https://calendar.app.google/uFepKqQYgaG9t9Hf6" target="_blank" rel="noreferrer" class="btn btn-primary btn-block"><span class="btn-roll">Réserver une démo</span></a>
+        </article>
+        <article class="plan">
+          <h3>Agency</h3>
+          <p class="plan-desc">Pour les groupes multi-agences avec besoins avancés.</p>
+          <div class="plan-price"><b id="price-agency">499</b><span>€ /mois</span></div>
+          <p class="plan-sub"><span id="sub-agency"></span> <strong class="saving" id="saving-agency"></strong></p>
+          <ul class="ticks">
+            <li>Tout le plan Pro</li>
+            <li>Multi-agences illimité</li>
+            <li>Multidiffusion incluse (SeLoger, LBC, BI)</li>
+            <li>Support prioritaire 24/7</li>
+            <li>Utilisateurs illimités</li>
+          </ul>
+          <a href="https://calendar.app.google/uFepKqQYgaG9t9Hf6" target="_blank" rel="noreferrer" class="btn btn-ghost btn-block"><span class="btn-roll">Nous contacter</span></a>
+        </article>
+      </div>
+    </div>
+
+    <p class="offres-note" data-reveal>Tous les prix sont indiqués hors taxes. Sites et plateformes : paiement en 3 fois sans frais possible.</p>
+  </div>
+</section>
+
+<!-- ============================ ADD-ONS ============================ -->
+<section class="section addons" id="addons">
+  <div class="container">
+    <header class="section-head addons-head">
       <div>
-        <div class="founding-tag">⭐ Offre Founding Member — Places limitées</div>
-        <div class="founding-title">Premier client : Pro à 199€/mois en annuel, bloqué à vie.</div>
-        <div class="founding-desc">+ Site vitrine agence offert (valeur 2 000€) &nbsp;·&nbsp; + Signature électronique YouSign offerte 6 mois.</div>
+        <p class="eyebrow" data-reveal>Add-ons</p>
+        <h2 class="section-title" data-split>Activez <em class="serif">uniquement</em> ce dont vous avez besoin.</h2>
       </div>
-      <a href="https://calendar.app.google/uFepKqQYgaG9t9Hf6" target="_blank" rel="noreferrer" class="founding-cta">
-        Je veux cette offre <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+      <div class="filters" role="group" aria-label="Filtrer les add-ons" data-reveal>
+        <button class="filter active" data-filter="all" aria-pressed="true">Tous</button>
+        <button class="filter" data-filter="site" aria-pressed="false">Sites</button>
+        <button class="filter" data-filter="formation" aria-pressed="false">Formation</button>
+        <button class="filter" data-filter="crm" aria-pressed="false">CRM</button>
+      </div>
+    </header>
+
+    <div class="addons-grid" id="addons-grid">
+      <article class="addon" data-cat="site formation">
+        <span class="addon-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span>
+        <div class="addon-body"><h3>Gestion &amp; maintenance</h3><small>Hébergement EU · sauvegardes · évolutions</small><p>Mises à jour, sécurité, surveillance 24/7 et 1 h de modifications incluse chaque mois.</p></div>
+        <b class="addon-price">+49€<small>/mois</small></b>
+      </article>
+      <article class="addon" data-cat="site">
+        <span class="addon-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg></span>
+        <div class="addon-body"><h3>SEO local</h3><small>Google Business · avis · contenus</small><p>Optimisation continue, gestion de la fiche Google et un article de blog optimisé par mois.</p></div>
+        <b class="addon-price">+69€<small>/mois</small></b>
+      </article>
+      <article class="addon" data-cat="site formation">
+        <span class="addon-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><path d="M8 9h8M8 13h5"/></svg></span>
+        <div class="addon-body"><h3>Assistant IA sur votre site</h3><small>Réponses 24h/24 · prise de RDV</small><p>Entraîné sur vos contenus, il répond aux visiteurs, qualifie la demande et vous la transmet.</p></div>
+        <b class="addon-price">+59€<small>/mois</small></b>
+      </article>
+      <article class="addon" data-cat="site">
+        <span class="addon-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 0 1 0 20M12 2a15 15 0 0 0 0 20"/></svg></span>
+        <div class="addon-body"><h3>Version multilingue</h3><small>Traduction · SEO international</small><p>Une langue supplémentaire traduite, relue et optimisée pour le référencement.</p></div>
+        <b class="addon-price">+390€<small>/langue</small></b>
+      </article>
+      <article class="addon" data-cat="formation">
+        <span class="addon-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m23 7-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></span>
+        <div class="addon-body"><h3>Classes virtuelles</h3><small>Visio intégrée · replays</small><p>Sessions en direct dans la plateforme, émargement automatique et replays disponibles.</p></div>
+        <b class="addon-price">+39€<small>/mois</small></b>
+      </article>
+      <article class="addon" data-cat="formation">
+        <span class="addon-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="6"/><path d="M15.5 13 17 22l-5-3-5 3 1.5-9"/></svg></span>
+        <div class="addon-body"><h3>Certificats &amp; émargement</h3><small>Signature électronique · preuves</small><p>Attestations nominatives, feuilles d'émargement signées en ligne, archivage des preuves.</p></div>
+        <b class="addon-price">+29€<small>/mois</small></b>
+      </article>
+      <article class="addon" data-cat="crm">
+        <span class="addon-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg></span>
+        <div class="addon-body"><h3>Signature électronique</h3><small>YouSign eIDAS</small><p>Mandats, compromis, baux signés en ligne. Valeur légale totale, zéro aller-retour postal.</p></div>
+        <b class="addon-price">+39€<small>/mois</small></b>
+      </article>
+      <article class="addon" data-cat="crm">
+        <span class="addon-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18M5 7h14M3 15l2-8 2 8a3 3 0 0 1-4 0zM17 15l2-8 2 8a3 3 0 0 1-4 0z"/></svg></span>
+        <div class="addon-body"><h3>Analyse juridique IA</h3><small>Conformité documents</small><p>Scan mandat/compromis → score de conformité + extraction automatique. Alertes en temps réel.</p></div>
+        <b class="addon-price">+49€<small>/mois</small></b>
+      </article>
+      <article class="addon" data-cat="crm site">
+        <span class="addon-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4.9 19.1a10 10 0 0 1 0-14.2M7.8 16.2a6 6 0 0 1 0-8.4M16.2 7.8a6 6 0 0 1 0 8.4M19.1 4.9a10 10 0 0 1 0 14.2"/><circle cx="12" cy="12" r="2"/></svg></span>
+        <div class="addon-body"><h3>Multidiffusion native</h3><small>Portails principaux</small><p>SeLoger · LeBonCoin · Bien'ici · site vitrine de votre agence. Diffusion en un clic.</p></div>
+        <b class="addon-price">+89€<small>/mois</small></b>
+      </article>
+      <article class="addon" data-cat="crm">
+        <span class="addon-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 10a7 7 0 0 0 14 0M12 19v3"/></svg></span>
+        <div class="addon-body"><h3>Agent vocal Vapi.ai</h3><small>Qualification 24h/24</small><p>Qualification téléphonique automatique. 200 min incluses, puis 0,15€/min supplémentaire.</p></div>
+        <b class="addon-price">+79€<small>/mois</small></b>
+      </article>
+      <article class="addon" data-cat="site formation crm">
+        <span class="addon-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="m7 15 4-4 3 3 5-6"/></svg></span>
+        <div class="addon-body"><h3>Analytics sans cookies</h3><small>Conforme RGPD · sans bandeau</small><p>Tableau de bord clair de vos visites et conversions, sans bandeau de consentement.</p></div>
+        <b class="addon-price">+19€<small>/mois</small></b>
+      </article>
+      <article class="addon" data-cat="site formation">
+        <span class="addon-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg></span>
+        <div class="addon-body"><h3>Pack contenus</h3><small>Rédaction · photo · vidéo</small><p>Rédaction de vos pages, shooting photo ou vidéo de présentation pour incarner votre marque.</p></div>
+        <b class="addon-price">dès 490€<small>/pack</small></b>
+      </article>
+    </div>
+
+    <!-- Founding member -->
+    <a href="https://calendar.app.google/uFepKqQYgaG9t9Hf6" target="_blank" rel="noreferrer" class="founding" data-reveal>
+      <span class="founding-shine" aria-hidden="true"></span>
+      <div>
+        <p class="founding-tag">⭐ Offre Founding Member — places limitées</p>
+        <h3>CRM Pro à 199€/mois en annuel, <em class="serif">bloqué à vie.</em></h3>
+        <p>+ Site vitrine agence offert (valeur 2 000€) · + Signature électronique YouSign offerte 6 mois.</p>
+      </div>
+      <span class="founding-cta">Je veux cette offre <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg></span>
+    </a>
+  </div>
+</section>
+
+<!-- ============================ FAQ ============================ -->
+<section class="section faq" id="faq">
+  <div class="container faq-grid">
+    <header class="section-head">
+      <p class="eyebrow" data-reveal>Questions fréquentes</p>
+      <h2 class="section-title" data-split>Tout ce que vous voulez <em class="serif">savoir</em>.</h2>
+      <p class="section-lead" data-reveal>Une autre question ? Écrivez-nous, on répond sous 24 h ouvrées.</p>
+    </header>
+    <div class="accordion">
+      <div class="acc-item" data-reveal>
+        <h3><button class="acc-btn" aria-expanded="false" aria-controls="acc-1" id="acc-btn-1">Combien de temps faut-il pour lancer mon site ?<i aria-hidden="true"></i></button></h3>
+        <div class="acc-panel" id="acc-1" role="region" aria-labelledby="acc-btn-1"><div><p>Comptez 2 semaines pour un site Essentiel, 4 à 5 semaines pour un site Signature et 3 semaines pour un premier parcours de formation. La première maquette est présentée sous 7 jours après l'atelier découverte.</p></div></div>
+      </div>
+      <div class="acc-item" data-reveal>
+        <h3><button class="acc-btn" aria-expanded="false" aria-controls="acc-2" id="acc-btn-2">Est-ce que je suis propriétaire de mon site ?<i aria-hidden="true"></i></button></h3>
+        <div class="acc-panel" id="acc-2" role="region" aria-labelledby="acc-btn-2"><div><p>Oui, totalement. Le code, le nom de domaine, les contenus et les données vous appartiennent. Si vous souhaitez changer de prestataire, nous vous remettons tout, proprement documenté.</p></div></div>
+      </div>
+      <div class="acc-item" data-reveal>
+        <h3><button class="acc-btn" aria-expanded="false" aria-controls="acc-3" id="acc-btn-3">Pourrai-je modifier mes contenus moi-même ?<i aria-hidden="true"></i></button></h3>
+        <div class="acc-panel" id="acc-3" role="region" aria-labelledby="acc-btn-3"><div><p>Oui. Chaque site Signature et chaque plateforme est livré avec un back-office simple et une session de prise en main. Pour le reste, l'add-on maintenance inclut des modifications chaque mois.</p></div></div>
+      </div>
+      <div class="acc-item" data-reveal>
+        <h3><button class="acc-btn" aria-expanded="false" aria-controls="acc-4" id="acc-btn-4">Ma plateforme de formation m'aidera-t-elle pour Qualiopi ?<i aria-hidden="true"></i></button></h3>
+        <div class="acc-panel" id="acc-4" role="region" aria-labelledby="acc-btn-4"><div><p>La plateforme centralise les éléments que les auditeurs demandent souvent : émargements, évaluations, taux de complétion, satisfaction. Elle facilite la constitution de vos preuves ; la certification reste délivrée par un organisme certificateur.</p></div></div>
+      </div>
+      <div class="acc-item" data-reveal>
+        <h3><button class="acc-btn" aria-expanded="false" aria-controls="acc-5" id="acc-btn-5">Le CRM IA se connecte-t-il à mon site d'agence ?<i aria-hidden="true"></i></button></h3>
+        <div class="acc-panel" id="acc-5" role="region" aria-labelledby="acc-btn-5"><div><p>Oui, nativement. Les demandes de contact et d'estimation arrivent directement dans le CRM, sont qualifiées par l'IA en 30 secondes, et vos biens sont publiés sur le site et les portails en un clic.</p></div></div>
+      </div>
+      <div class="acc-item" data-reveal>
+        <h3><button class="acc-btn" aria-expanded="false" aria-controls="acc-6" id="acc-btn-6">Comment se passe le paiement ?<i aria-hidden="true"></i></button></h3>
+        <div class="acc-panel" id="acc-6" role="region" aria-labelledby="acc-btn-6"><div><p>Pour les sites et plateformes : un acompte à la signature, puis le solde à la mise en ligne, avec paiement en 3 fois sans frais possible. Les abonnements CRM et add-ons sont sans engagement, résiliables en un clic.</p></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ CONTACT ============================ -->
+<section class="contact" id="contact">
+  <div class="contact-bg" aria-hidden="true"><div class="orb orb-c1"></div><div class="orb orb-c2"></div></div>
+  <div class="container contact-inner">
+    <p class="eyebrow" data-reveal>Atelier découverte · 30 minutes · offert</p>
+    <h2 class="contact-title" data-split>Parlons de <em class="serif">votre</em> projet.</h2>
+    <p class="section-lead" data-reveal>On écoute votre métier, on analyse votre présence actuelle et vous repartez avec des recommandations concrètes — que vous travailliez avec nous ou non.</p>
+    <div class="contact-ctas" data-reveal>
+      <a href="https://calendar.app.google/uFepKqQYgaG9t9Hf6" target="_blank" rel="noreferrer" class="btn btn-primary btn-xl magnetic">
+        <span class="btn-roll">Réserver un créneau</span>
+        <svg class="arr" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
       </a>
+      <a href="mailto:arthur.s@aivelo.fr" class="btn btn-ghost btn-xl magnetic"><span class="btn-roll">arthur.s@aivelo.fr</span></a>
     </div>
-
+    <p class="contact-foot" data-reveal>Sans engagement · Données privées · RGPD</p>
   </div>
 </section>
 
-<!-- ============================ CTA ============================ -->
-<section class="cta" id="demo">
-  <div class="container">
-    <div class="cta-card reveal">
-      <span class="eyebrow">Démo personnalisée · 15 minutes</span>
-      <h2>Voyez Aivelo tourner sur<br><span style="background:linear-gradient(135deg,var(--accent),var(--accent-soft));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent">vos vrais dossiers.</span></h2>
-      <p>On qualifie un de vos leads, on génère une annonce sur un de vos biens, on matche vos acheteurs en temps réel. Vous repartez avec une démo enregistrée et un audit de vos pertes de temps actuelles.</p>
-      <div style="display:flex;justify-content:center;gap:12px;flex-wrap:wrap;">
-        <a href="https://calendar.app.google/uFepKqQYgaG9t9Hf6" target="_blank" rel="noreferrer" class="btn btn-primary" style="height:54px;padding:0 28px;font-size:16px">📅 Réserver ma démo <svg class="arr" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg></a>
-        <a href="mailto:arthur.s@aivelo.fr" class="btn btn-ghost" style="height:54px;padding:0 24px;font-size:15px">✉️ arthur.s@aivelo.fr</a>
-      </div>
-      <div class="cta-meta">SANS ENGAGEMENT · DONNÉES PRIVÉES · RGPD</div>
-    </div>
-  </div>
-</section>
+</main>
 
 <!-- ============================ FOOTER ============================ -->
 <footer class="footer">
   <div class="container">
     <div class="footer-grid">
       <div class="footer-brand">
-        <a href="#" class="logo">
-          <span class="logo-mark">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21V9l9-6 9 6v12"/><path d="M9 21V12h6v9"/></svg>
-          </span>
+        <a href="#top" class="logo">
+          <span class="logo-mark"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21V9l9-6 9 6v12"/><path d="M9 21V12h6v9"/></svg></span>
           Aivelo
         </a>
-        <p>Le CRM immobilier nouvelle génération. Conçu en France, pour les agences ambitieuses.</p>
+        <p>Studio digital &amp; IA. Sites web, plateformes de formation et CRM immobilier, conçus en France pour les métiers qui méritent d'être vus.</p>
       </div>
-      <div class="footer-col">
-        <h4>Produit</h4>
-        <a href="#agents">Agents IA</a>
-        <a href="#tarifs">Tarifs</a>
-        <a href="#demo">Démo</a>
-        <a href="#">Roadmap</a>
+      <div>
+        <h4>Expertises</h4>
+        <ul>
+          <li><a href="#expertises">Sites web</a></li>
+          <li><a href="#expertises">Plateformes de formation</a></li>
+          <li><a href="#expertises">Gestion &amp; maintenance</a></li>
+          <li><a href="#expertises">CRM IA immobilier</a></li>
+        </ul>
       </div>
-      <div class="footer-col">
-        <h4>Société</h4>
-        <a href="#">À propos</a>
-        <a href="mailto:contact@aivelo.fr">Contact</a>
-        <a href="#">Blog</a>
-        <a href="#">Partenaires</a>
+      <div>
+        <h4>Studio</h4>
+        <ul>
+          <li><a href="#manifeste">Manifeste</a></li>
+          <li><a href="#methode">Méthode</a></li>
+          <li><a href="#engagements">Engagements</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
       </div>
-      <div class="footer-col">
+      <div>
         <h4>Légal</h4>
-        <a href="#">CGU</a>
-        <a href="#">Confidentialité</a>
-        <a href="#">RGPD</a>
-        <a href="#">Mentions légales</a>
+        <ul>
+          <li><a href="#">CGU</a></li>
+          <li><a href="#">Confidentialité</a></li>
+          <li><a href="#">RGPD</a></li>
+          <li><a href="#">Mentions légales</a></li>
+        </ul>
       </div>
     </div>
+    <div class="footer-word" aria-hidden="true" data-footer-word>Aivelo</div>
     <div class="footer-bottom">
       <span>© 2026 Aivelo. Tous droits réservés.</span>
       <span>Hébergé en Europe · Données chiffrées · Conçu à Bordeaux 🇫🇷</span>
@@ -1636,103 +836,12 @@
   </div>
 </footer>
 
-<script>
-  // ============================================================
-  // FUNCTION 1 — Nav scroll state
-  // ============================================================
-  function initNav() {
-    const nav = document.getElementById('nav');
-    const onScroll = () => {
-      nav.classList.toggle('scrolled', window.scrollY > 20);
-    };
-    onScroll();
-    window.addEventListener('scroll', onScroll, { passive: true });
-  }
-
-  // ============================================================
-  // FUNCTION 2 — Scroll reveal via IntersectionObserver
-  // ============================================================
-  function initReveal() {
-    const els = document.querySelectorAll('.reveal');
-    const io = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('in');
-          io.unobserve(entry.target);
-        }
-      });
-    }, { threshold: 0.12, rootMargin: '0px 0px -50px 0px' });
-    els.forEach(el => io.observe(el));
-  }
-
-  // ============================================================
-  // FUNCTION 3 — Animated counters in stats section
-  // ============================================================
-  function initCounters() {
-    const counters = document.querySelectorAll('[data-count]');
-    const animate = (el) => {
-      const target = parseInt(el.dataset.count, 10);
-      const unit = el.querySelector('.unit') ? el.querySelector('.unit').outerHTML : '';
-      const duration = 1400;
-      const start = performance.now();
-      const step = (now) => {
-        const progress = Math.min((now - start) / duration, 1);
-        const eased = 1 - Math.pow(1 - progress, 3);
-        const value = Math.round(target * eased);
-        el.innerHTML = value + unit;
-        if (progress < 1) requestAnimationFrame(step);
-      };
-      requestAnimationFrame(step);
-    };
-    const io = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          animate(entry.target);
-          io.unobserve(entry.target);
-        }
-      });
-    }, { threshold: 0.5 });
-    counters.forEach(c => io.observe(c));
-  }
-
-  // ============================================================
-  // FUNCTION 4 — Billing toggle
-  // ============================================================
-  const pricingData = {
-    monthly:  { starter: [149, '', ''],       pro: [249, '', ''],         agency: [499, '', ''] },
-    semi:     { starter: [124, '745€ facturés en une fois', '149'],  pro: [207, '1 245€ facturés en une fois', '249'],  agency: [416, '2 495€ facturés en une fois', '499'] },
-    annual:   { starter: [124, '1 490€ facturés en une fois', '298'], pro: [207, '2 490€ facturés en une fois', '498'], agency: [416, '4 990€ facturés en une fois', '998'] },
-  };
-  const savingsMsg = {
-    monthly: '',
-    semi: '✦ Économisez l\'équivalent d\'1 mois d\'abonnement avec cet engagement',
-    annual: '✦ Économisez l\'équivalent de 2 mois d\'abonnement avec cet engagement',
-  };
-
-  function setBilling(period) {
-    document.querySelectorAll('.billing-btn').forEach(b => b.classList.toggle('active', b.dataset.period === period));
-    const d = pricingData[period];
-    const plans = ['starter', 'pro', 'agency'];
-    plans.forEach(p => {
-      const [price, sub, saving] = d[p];
-      document.getElementById(`price-${p}`).textContent = price;
-      document.getElementById(`sub-${p}`).textContent = sub;
-      const savEl = document.getElementById(`saving-${p}`);
-      if (saving) {
-        savEl.textContent = `✓ Économie de ${saving}€`;
-        savEl.classList.add('visible');
-      } else {
-        savEl.classList.remove('visible');
-      }
-    });
-    document.getElementById('savings-banner').textContent = savingsMsg[period];
-  }
-
-  // Boot
-  initNav();
-  initReveal();
-  initCounters();
-</script>
-
+<!-- Motion stack — GSAP (ScrollTrigger, SplitText, Flip) + Lenis smooth scroll -->
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/SplitText.min.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/Flip.min.js" defer></script>
+<script src="https://unpkg.com/lenis@1.1.13/dist/lenis.min.js" defer></script>
+<script src="assets/js/main.js" defer></script>
 </body>
 </html>
