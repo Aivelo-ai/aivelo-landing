@@ -7,6 +7,7 @@ index.html            contenu et structure des sections
 assets/css/main.css   design system (tokens en tête de fichier), layout, responsive
 assets/js/main.js     interactions et motion design
 assets/css/sections.css  styles des sections Réalisations, Démo, Témoignages et effets associés
+assets/js/bg.js          fond animé jour / nuit (WebGL)
 assets/js/sections.js    interactions de ces sections (curseur avant/après, démo, compteurs, lentille…)
 ```
 
@@ -56,3 +57,7 @@ Rendu WebGL2 en deux passes (metaballs dans une texture flottante, puis ombrage 
 - **Fondu de fond** : la page passe au sombre puis au violet en traversant ces deux sections.
 - **Effets** : prix en compteur mécanique (texte normal au repos), ondulation des photos « Pour qui », lentille de verre sur le site du hero, vidéo de leçon (`assets/img/lecon.*`) dans la carte Formation.
 - **Nettoyage** : add-ons repliés à 6, liens légaux en fenêtre (texte provisoire à compléter), three.js non chargé sur mobile et en économie de données.
+
+## Fond jour / nuit
+
+`assets/js/bg.js` dessine le ciel derrière la page (WebGL, environ 10 Ko) : ciel de jour avec nuages et soleil sur les sections claires, nuit étoilée (Voie lactée, étoiles filantes, étoile Aivelo) sur les sections marquées `data-bg="ink"`, crépuscule violet sur `data-bg="indigo"`. Sans WebGL ou avec « réduire les animations », le fond d'origine reste.

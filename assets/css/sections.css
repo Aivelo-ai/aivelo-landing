@@ -1,5 +1,5 @@
 /* ==========================================================================
-   AIVELO — sections ajoutées après l'audit
+   AIVELO — sections ajoutées après l'audit, fond jour / nuit, verre liquide
    1 Réalisations · 2 Démo · 3 Ambiances · 4 Effets signature · 5 Hero
    6 Preuve sociale · 7 Nettoyage
    ========================================================================== */
@@ -172,13 +172,10 @@ html.is-dark-scene .nav .logo, html.is-dark-scene .nav-login { color: #fff; }
 
 /* ---------- 4. Effets signature ---------- */
 /* prix en compteur mécanique */
-.odo { display: inline-flex; align-items: flex-end; }
-.plan-price .odo span { font-size: inherit; color: inherit; }
-.odo-d { position: relative; display: inline-block; height: 1em; overflow: hidden; line-height: 1;
-  -webkit-mask: linear-gradient(transparent, #000 8%, #000 92%, transparent); mask: linear-gradient(transparent, #000 8%, #000 92%, transparent); }
-.odo-reel { display: flex; flex-direction: column; will-change: transform; }
-.odo-reel span { display: block; height: 1em; line-height: 1; text-align: center; }
-.odo-sep { display: inline-block; width: .26em; }
+.odo-d { position: relative; display: inline-block; clip-path: inset(0 -.06em); }
+.odo-ghost { visibility: hidden; }
+.odo-reel { position: absolute; left: 0; right: 0; top: 0; display: flex; flex-direction: column; will-change: transform; }
+.plan-price .odo-reel span { display: block; height: 1em; line-height: 1; text-align: center; font-size: inherit; color: inherit; }
 
 /* jauge mesurée en direct */
 .live-pill { display: inline-flex; align-items: center; gap: 6px; vertical-align: middle; margin-left: 8px; padding: 4px 10px; border-radius: 100px; font-size: 11.5px; font-weight: 600; letter-spacing: .02em;
@@ -286,3 +283,159 @@ html.water .step:not(.is-wet) p { color: var(--text-dim); }
   .ws-screen img, .ws-phone img, .work-shot:hover .ws-screen img, .work-shot:hover .ws-phone img, .work-shot.is-play .ws-phone img { transition: none; transform: none; }
   .ls-lens { display: none; }
 }
+
+/* ---------- Fond animé (assets/js/bg.js) ---------- */
+.bgfx { position: fixed; inset: 0; z-index: -1; width: 100vw; height: 100vh; pointer-events: none; }
+html.has-bgfx .aurora, html.has-bgfx .bg-fade { display: none; }
+html.has-bgfx body { background: transparent; }
+/* dark scenes are open sky: no panel, the night is the background */
+html.has-bgfx .manifesto, html.has-bgfx .works, html.has-bgfx .demo { background: transparent; box-shadow: none; }
+.bgfx-switch { position: fixed; right: calc(16px + env(safe-area-inset-right, 0px)); bottom: calc(16px + env(safe-area-inset-bottom, 0px)); z-index: 1200; display: flex; align-items: center; gap: 4px; padding: 5px; border-radius: 100px;
+  font: 600 12px/1 'Plus Jakarta Sans', system-ui, sans-serif; background: rgba(255,255,255,.82); border: 1px solid rgba(11,13,23,.08); box-shadow: 0 10px 30px -12px rgba(11,13,23,.35); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); }
+.bgfx-switch span { padding: 0 8px 0 6px; color: rgba(11,13,23,.5); }
+.bgfx-switch button { padding: 7px 11px; border-radius: 100px; color: #0B0D17; font: inherit; transition: background .3s, color .3s; }
+.bgfx-switch button:hover { background: rgba(11,13,23,.06); }
+.bgfx-switch button.on { background: #0B0D17; color: #fff; }
+@media (max-width: 640px) { .bgfx-switch span { display: none; } .bgfx-switch button { padding: 7px 9px; } }
+/* menu pill turns to dark glass over the dark scenes */
+.nav-links { transition: background .6s var(--ease), border-color .6s var(--ease), box-shadow .6s var(--ease); }
+.nav-links a { transition: color .6s var(--ease); }
+html.is-dark-scene .nav-links { background: rgba(255,255,255,.07); border-color: rgba(255,255,255,.14); box-shadow: inset 0 1px 0 rgba(255,255,255,.1); }
+html.is-dark-scene .nav-links a { color: rgba(255,255,255,.72); }
+html.is-dark-scene .nav-links a:hover, html.is-dark-scene .nav-links a.is-active { color: #fff; background: rgba(255,255,255,.14); box-shadow: inset 0 1px 0 rgba(255,255,255,.18); }
+.nav { transition: background .6s var(--ease), border-color .6s var(--ease); }
+html.is-dark-scene .nav.is-scrolled { background: rgba(11,13,23,.55); border-color: rgba(255,255,255,.08); box-shadow: none; }
+html.is-dark-scene .nav.is-scrolled .nav-links { background: transparent; border-color: transparent; box-shadow: none; }
+/* no hairlines around « Parlons de votre projet »: the sky flows straight into the footer */
+.contact, .footer { border-top: 0; }
+
+/* ---------- Mise en page plus large sur les grands écrans ---------- */
+:root { --container: 1560px; --gutter: clamp(16px, 4.5vw, 72px); }
+@media (min-width: 1500px) {
+  .hero-title { font-size: clamp(64px, 4.9vw, 104px); }
+  .section-title { font-size: clamp(52px, 3.9vw, 80px); }
+  .hero-sub { font-size: 19px; max-width: 620px; }
+  .section-lead { font-size: 19px; max-width: 700px; }
+  .section-head { max-width: 980px; }
+}
+
+/* ---------- Manifeste : grande vitre de glace au-dessus du ciel ---------- */
+html.has-bgfx .manifesto { padding: clamp(60px, 8vw, 120px) 0; }
+html.has-bgfx .manifesto .container { position: relative; max-width: min(1320px, 100%); }
+html.has-bgfx .manifesto .container::before { /* the pane */
+  content: ''; position: absolute; inset: calc(-1 * clamp(48px, 6vw, 96px)) 0; z-index: -1; border-radius: clamp(28px, 3vw, 44px);
+  background:
+    linear-gradient(115deg, rgba(255,255,255,0) 30%, rgba(255,255,255,.07) 45%, rgba(255,255,255,0) 60%) var(--sheen, 0%) 0 / 300% 100% no-repeat,
+    linear-gradient(160deg, rgba(255,255,255,.12), rgba(255,255,255,.03) 38%, rgba(140,160,255,.06));
+  -webkit-backdrop-filter: blur(3px) saturate(150%) brightness(1.12); backdrop-filter: blur(3px) saturate(150%) brightness(1.12);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.4), inset 0 -1px 0 rgba(255,255,255,.08), inset 0 0 60px rgba(150,170,255,.08), 0 50px 120px -40px rgba(0,0,0,.7);
+}
+html.has-bgfx .manifesto .container::after { /* bevelled glass edge, bright at the top left */
+  content: ''; position: absolute; inset: calc(-1 * clamp(48px, 6vw, 96px)) 0; z-index: -1; border-radius: clamp(28px, 3vw, 44px); padding: 1.5px; pointer-events: none;
+  background: linear-gradient(140deg, rgba(255,255,255,.75), rgba(255,255,255,.08) 30%, rgba(160,180,255,.05) 65%, rgba(160,180,255,.45));
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+}
+html.has-bgfx .manifesto-text, html.has-bgfx .manifesto-text .word {
+  background: linear-gradient(175deg, #FFFFFF 0%, #EAF0FF 45%, #B9C8FF 100%); -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+html.has-bgfx .manifesto-text { filter: drop-shadow(0 0 22px rgba(150,180,255,.22)) drop-shadow(0 1px 0 rgba(255,255,255,.25)); padding: 0 clamp(8px, 2vw, 40px); }
+html.has-bgfx .manifesto .eyebrow, html.has-bgfx .manifesto-sign { margin-left: clamp(8px, 2vw, 40px); }
+
+/* ---------- Expertises : une seule carte visible à la fois dans l'empilement ---------- */
+.stack-card:nth-child(n) { top: calc(var(--nav-h) + 28px); }
+.stack-card::after { display: none; }
+
+/* ---------- Écran de chargement : le « o » d'Aivelo n'est plus rogné ---------- */
+.preloader-word { padding: 0 .1em .08em .02em; }
+
+/* ---------- Contact : le logo 3D tient entièrement dans la section ---------- */
+.g3-bg { width: auto; height: min(78%, 72vw, 820px); }
+
+/* ---------- Manifeste : vitre plus claire, plus transparente ---------- */
+html.has-bgfx .manifesto .container::before {
+  background:
+    linear-gradient(115deg, rgba(255,255,255,0) 32%, rgba(255,255,255,.09) 44%, rgba(255,255,255,0) 56%) var(--sheen, 0%) 0 / 300% 100% no-repeat,
+    linear-gradient(160deg, rgba(255,255,255,.07), rgba(255,255,255,.012) 40%, rgba(160,180,255,.035));
+  -webkit-backdrop-filter: blur(.8px) saturate(160%) brightness(1.08); backdrop-filter: blur(.8px) saturate(160%) brightness(1.08);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.5), inset 1px 0 0 rgba(255,255,255,.12), inset 0 -1px 0 rgba(160,180,255,.18),
+    inset 0 0 0 1px rgba(255,255,255,.04), inset 0 30px 60px -40px rgba(255,255,255,.18), 0 50px 120px -50px rgba(0,0,0,.55);
+}
+html.has-bgfx .manifesto .container::after { background: linear-gradient(140deg, rgba(255,255,255,.9), rgba(255,255,255,.1) 28%, rgba(160,180,255,.04) 62%, rgba(170,190,255,.55)); }
+html.has-bgfx .manifesto-text, html.has-bgfx .manifesto-text .word {
+  background: linear-gradient(175deg, rgba(255,255,255,.98) 0%, rgba(236,242,255,.9) 45%, rgba(190,205,255,.72) 100%);
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+html.has-bgfx .manifesto-text { filter: drop-shadow(0 0 18px rgba(150,180,255,.18)) drop-shadow(0 1px 0 rgba(255,255,255,.3)); }
+
+/* ---------- Curseur : un anneau net, plus de flou sous le texte survolé ---------- */
+@media (hover: hover) and (pointer: fine) {
+  html.motion .cursor.is-hover {
+    width: 44px; height: 44px; margin: -22px 0 0 -22px;
+    background: transparent; border: 1.5px solid rgba(58,103,236,.55);
+    -webkit-backdrop-filter: none; backdrop-filter: none;
+    box-shadow: 0 0 0 4px rgba(79,126,247,.08);
+  }
+  html.is-dark-scene .cursor { background: #fff; }
+  html.is-dark-scene .cursor.is-hover { background: transparent; border-color: rgba(255,255,255,.7); box-shadow: 0 0 0 4px rgba(255,255,255,.08); }
+}
+
+/* ---------- Titres : accents et italiques plus jamais rognés par les masques d'animation ---------- */
+.hero-title .line { padding: .14em .08em .12em 0; margin: -.14em -.08em -.12em 0; }
+.split-line { padding: .12em .06em .12em 0 !important; margin: -.12em -.06em -.12em 0 !important; }
+
+/* ---------- Pied de page : le logo 3D a la place de tourner sans être coupé ---------- */
+.g3-mark { width: clamp(90px, 16.5vw, 224px); margin: -24px -26px; }
+
+/* ---------- Pastilles en verre liquide (style iOS) ---------- */
+.eyebrow, .own-pills span, .live-pill, .perf-metrics li, .tags span, .work-tags li, .tab-opt, .quote-sample, .dp-stamp { position: relative; }
+.eyebrow, .own-pills span, .live-pill, .perf-metrics li, .tags span, .work-tags li, .plan-badge, .tab-opt, .quote-sample, .dp-stamp {
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.55) 0%, rgba(255,255,255,.12) 48%, rgba(255,255,255,.22) 100%) !important;
+  border: 1px solid rgba(255,255,255,.7) !important;
+  box-shadow:
+    inset 0 1px 1px rgba(255,255,255,.95),
+    inset 0 -1px 2px rgba(255,255,255,.35),
+    inset 0 -6px 12px -8px rgba(79,126,247,.25),
+    0 6px 16px -10px rgba(30,45,110,.35) !important;
+  -webkit-backdrop-filter: blur(14px) saturate(190%) brightness(1.05); backdrop-filter: blur(14px) saturate(190%) brightness(1.05);
+}
+.eyebrow::after, .own-pills span::after, .live-pill::after, .perf-metrics li::after, .plan-badge::after { /* specular streak along the top */
+  content: ''; position: absolute; left: 12%; right: 12%; top: 1px; height: 38%; border-radius: 100px; pointer-events: none;
+  background: linear-gradient(180deg, rgba(255,255,255,.65), rgba(255,255,255,0));
+}
+.plan-badge { color: var(--accent-deep) !important; }
+/* the same glass, tinted for the dark scenes */
+.eyebrow--dark, .works .work-tags li, .demo .dp-stamp, html.has-bgfx .manifesto .eyebrow {
+  background: linear-gradient(180deg, rgba(255,255,255,.22) 0%, rgba(255,255,255,.04) 50%, rgba(255,255,255,.08) 100%) !important;
+  border-color: rgba(255,255,255,.28) !important;
+  box-shadow: inset 0 1px 1px rgba(255,255,255,.45), inset 0 -6px 12px -8px rgba(140,160,255,.35), 0 8px 20px -12px rgba(0,0,0,.6) !important;
+  color: rgba(255,255,255,.85);
+}
+.eyebrow--dark::after, html.has-bgfx .manifesto .eyebrow::after { background: linear-gradient(180deg, rgba(255,255,255,.35), rgba(255,255,255,0)); }
+
+/* ---------- Démo : panneau en verre net, sans double liseré intérieur ---------- */
+.demo-panel {
+  position: relative; border: 0; box-shadow: 0 30px 70px -40px rgba(0,0,0,.6);
+  background: linear-gradient(165deg, rgba(255,255,255,.1), rgba(255,255,255,.035));
+  -webkit-backdrop-filter: blur(22px) saturate(150%); backdrop-filter: blur(22px) saturate(150%);
+}
+.demo-panel::before { /* a single hairline edge, bright at the top, fading down */
+  content: ''; position: absolute; inset: 0; border-radius: inherit; padding: 1px; pointer-events: none;
+  background: linear-gradient(170deg, rgba(255,255,255,.38), rgba(255,255,255,.08) 45%, rgba(255,255,255,.14));
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+}
+.chip span, .mood span, .demo-name input { border-color: rgba(255,255,255,.1); background: rgba(255,255,255,.05); }
+
+/* ---------- Pastilles : plus de reflet en rectangle intérieur, la lumière est fondue dans le verre ---------- */
+.eyebrow::after, .own-pills span::after, .live-pill::after, .perf-metrics li::after, .plan-badge::after,
+.eyebrow--dark::after, html.has-bgfx .manifesto .eyebrow::after { content: none !important; display: none !important; }
+.eyebrow, .own-pills span, .live-pill, .perf-metrics li, .tags span, .work-tags li, .plan-badge, .tab-opt, .quote-sample, .dp-stamp {
+  background: linear-gradient(180deg, rgba(255,255,255,.5), rgba(255,255,255,.18)) !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.9), 0 6px 16px -10px rgba(30,45,110,.3) !important;
+}
+.eyebrow--dark, .works .work-tags li, .demo .dp-stamp, html.has-bgfx .manifesto .eyebrow {
+  background: linear-gradient(180deg, rgba(255,255,255,.14), rgba(255,255,255,.05)) !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.28), 0 8px 20px -12px rgba(0,0,0,.6) !important;
+}
+.bgfx-switch { display: none !important; }

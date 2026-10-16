@@ -563,7 +563,8 @@
         const next = cards[i + 1];
         if (!next) return;
         gsap.to(card, {
-          scale: .9 + i * .015, '--dim': .65, ease: 'none',
+          // the card underneath recedes and fades out completely: no ghost edges peeking above the new one
+          scale: .92, yPercent: -4, opacity: 0, ease: 'none',
           scrollTrigger: { trigger: next, start: 'top bottom', end: 'top 25%', scrub: true },
         });
       });

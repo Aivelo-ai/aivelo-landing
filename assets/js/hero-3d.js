@@ -190,7 +190,7 @@
     const scene = new THREE.Scene();
     scene.environment = studioEnvironment(THREE, renderer);
     const camera = new THREE.PerspectiveCamera(30, 1, 0.1, 100);
-    camera.position.set(0, 0.1, isHero ? 17 : isMark ? 13.5 : 14);
+    camera.position.set(0, 0.1, isHero ? 17 : isMark ? 18 : 14);   // the mark keeps a margin: it never touches its canvas edge while it turns
 
     if (isHero) {
       // What the glass refracts: the page's pearl tone, brand halos, a faint grid, a soft ground shadow

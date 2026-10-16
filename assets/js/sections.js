@@ -47,9 +47,18 @@
     if (reduceMotion) return;
     const box = v.parentElement;
     v.addEventListener('playing', () => box.classList.add('is-playing'));
-    new IntersectionObserver(([e]) => {
-      if (e.isIntersecting) { const p = v.play(); if (p && p.catch) p.catch(() => {}); } else v.pause();
-    }, { threshold: .4 }).observe(v);
+    v.disablePictureInPicture = true;
+    const card = v.closest('.stack-card');
+    const next = card && card.nextElementSibling;
+    let inView = false;
+    const sync = () => {
+      // in the sticky stack the card stays "in view" while the next one slides over it
+      const covered = next && next.getBoundingClientRect().top < card.getBoundingClientRect().top + card.offsetHeight * .5;
+      if (inView && !covered) { const p = v.play(); if (p && p.catch) p.catch(() => {}); } else v.pause();
+    };
+    new IntersectionObserver(([e]) => { inView = e.isIntersecting; sync(); }, { threshold: .4 }).observe(v);
+    let ticking = false;
+    window.addEventListener('scroll', () => { if (!ticking) { ticking = true; requestAnimationFrame(() => { ticking = false; sync(); }); } }, { passive: true });
   });
 
   /* ------------------------------------------------------------------
@@ -176,8 +185,10 @@
     el.setAttribute('aria-label', text);
     el.classList.add('odo', 'is-rolling');
     el.innerHTML = [...text].map((ch) => {
-      if (!/\d/.test(ch)) return `<span class="${ch.trim() ? 'odo-ch' : 'odo-sep'}" aria-hidden="true">${ch.trim() ? ch : ''}</span>`;
-      return `<span class="odo-d" aria-hidden="true"><span class="odo-reel">${REEL}</span></span>`;
+      if (!/\d/.test(ch)) return `<span aria-hidden="true">${ch}</span>`;
+      // the invisible digit gives the box the exact width and baseline of the final text,
+      // so nothing moves when the reels stop and the price turns back into plain text
+      return `<span class="odo-d" aria-hidden="true"><span class="odo-ghost">${ch}</span><span class="odo-reel">${REEL}</span></span>`;
     }).join('');
     const digits = [...text].filter((c) => /\d/.test(c)).map(Number);
     const reels = $$('.odo-reel', el);
@@ -400,7 +411,14 @@
     });
   };
   // after main.js has built its pins, so positions are measured on the final layout
-  const ready = () => setTimeout(() => { initFade(); if (window.ScrollTrigger) ScrollTrigger.refresh(); }, 50);
+  // the manifesto glass pane: a light reflection slides across it as you scroll
+  const initSheen = () => {
+    if (!window.ScrollTrigger || !motion() || reduceMotion) return;
+    const pane = $('.manifesto .container');
+    if (!pane) return;
+    gsap.fromTo(pane, { '--sheen': '100%' }, { '--sheen': '0%', ease: 'none', scrollTrigger: { trigger: '.manifesto', start: 'top bottom', end: 'bottom top', scrub: true, refreshPriority: -1 } });
+  };
+  const ready = () => setTimeout(() => { initFade(); initSheen(); if (window.ScrollTrigger) ScrollTrigger.refresh(); }, 50);
   (document.fonts ? Promise.race([document.fonts.ready, new Promise((r) => setTimeout(r, 1600))]) : Promise.resolve()).then(ready);
 
   /* ------------------------------------------------------------------
