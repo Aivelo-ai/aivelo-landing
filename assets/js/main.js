@@ -1,6 +1,6 @@
 /* ==========================================================================
    AIVELO — interactions & motion
-   Stack : GSAP 3.13 (ScrollTrigger, SplitText, Flip) + Lenis smooth scroll.
+   Stack : GSAP 3.13 (ScrollTrigger, SplitText) + Lenis smooth scroll.
    Everything degrades gracefully: without the libraries (or with
    prefers-reduced-motion) the page stays fully readable and usable.
    ========================================================================== */
@@ -213,7 +213,7 @@
   $$('.billing-btn').forEach((b) => b.addEventListener('click', () => setBilling(b.dataset.period)));
 
   /* ------------------------------------------------------------------
-     5. Add-ons filter (GSAP Flip)
+     5. Add-ons filter
      ------------------------------------------------------------------ */
   const addons = $$('.addon');
   $$('.filter').forEach((btn) => {
@@ -229,17 +229,21 @@
         a.classList.toggle('is-hidden', !show);
       });
 
-      if (motion && window.Flip) {
-        const state = Flip.getState(addons, { props: 'opacity' });
-        apply();
-        Flip.from(state, {
-          duration: .7,
-          ease: 'power3.inOut',
-          absolute: true,
-          stagger: .03,
-          onEnter: (els) => gsap.fromTo(els, { opacity: 0, scale: .92 }, { opacity: 1, scale: 1, duration: .6, ease: 'power3.out' }),
-          onLeave: (els) => gsap.to(els, { opacity: 0, scale: .92, duration: .4 }),
-          onComplete: refresh,
+      if (motion) {
+        // Calm cross-fade: old cards fade out, grid height eases, new cards rise in
+        const grid = $('#addons-grid');
+        const before = addons.filter((a) => !a.classList.contains('is-hidden'));
+        gsap.killTweensOf([grid, ...addons]);
+        gsap.to(before, {
+          opacity: 0, y: 10, duration: .22, ease: 'power2.in', stagger: .015,
+          onComplete: () => {
+            const h0 = grid.offsetHeight;
+            apply();
+            const h1 = grid.offsetHeight;
+            const after = addons.filter((a) => !a.classList.contains('is-hidden'));
+            gsap.fromTo(grid, { height: h0 }, { height: h1, duration: .5, ease: 'power3.inOut', clearProps: 'height', onComplete: refresh });
+            gsap.fromTo(after, { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: .7, ease: 'expo.out', stagger: .05, delay: .05 });
+          },
         });
       } else {
         apply();
@@ -284,7 +288,6 @@
      MOTION — from here on GSAP is available and motion is welcome
      ================================================================== */
   gsap.registerPlugin(ScrollTrigger, SplitText);
-  if (window.Flip) gsap.registerPlugin(Flip);
   gsap.defaults({ ease: 'expo.out', duration: 1.1 });
 
   /* ---------- Lenis smooth scroll ---------- */

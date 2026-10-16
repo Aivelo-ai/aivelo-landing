@@ -86,7 +86,7 @@ body {
   text-rendering: optimizeLegibility;
 }
 a { color: inherit; text-decoration: none; }
-button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
+button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; -webkit-user-select: none; user-select: none; -webkit-tap-highlight-color: transparent; }
 img, svg { display: block; max-width: 100%; }
 ul, ol { list-style: none; }
 h1, h2, h3, h4 { font-weight: 700; letter-spacing: -0.03em; line-height: 1.1; }
@@ -247,13 +247,17 @@ html.js .preloader {
   html.motion .cursor {
     display: grid; place-items: center;
     position: fixed; top: 0; left: 0; z-index: 1400;
-    width: 10px; height: 10px; margin: -5px 0 0 -5px;
-    border-radius: 50%; background: #fff; mix-blend-mode: difference;
+    width: 8px; height: 8px; margin: -4px 0 0 -4px;
+    border-radius: 50%; background: var(--text); border: 1px solid transparent;
     pointer-events: none;
-    transition: width .35s var(--ease), height .35s var(--ease), margin .35s var(--ease), background .35s var(--ease);
+    transition: width .4s var(--ease), height .4s var(--ease), margin .4s var(--ease), background .4s var(--ease), border-color .4s var(--ease), opacity .3s;
   }
-  html.motion .cursor.is-hover { width: 44px; height: 44px; margin: -22px 0 0 -22px; background: rgba(255,255,255,.9); }
-  html.motion .cursor.is-label { width: 88px; height: 88px; margin: -44px 0 0 -44px; mix-blend-mode: normal; background: var(--accent); }
+  html.motion .cursor.is-hover {
+    width: 40px; height: 40px; margin: -20px 0 0 -20px;
+    background: rgba(255,255,255,.18); border-color: rgba(11,13,23,.18);
+    -webkit-backdrop-filter: blur(2px); backdrop-filter: blur(2px);
+  }
+  html.motion .cursor.is-label { width: 88px; height: 88px; margin: -44px 0 0 -44px; background: var(--accent); border-color: transparent; }
   .cursor-label { font-size: 12px; font-weight: 700; color: #fff; opacity: 0; transition: opacity .25s; }
   .cursor.is-label .cursor-label { opacity: 1; }
 }
@@ -281,6 +285,8 @@ html.js .preloader {
 }
 .logo-mark::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(255,255,255,.22), transparent 55%); }
 .logo-mark svg { position: relative; z-index: 1; }
+.logo-img { width: 34px; height: 34px; object-fit: contain; filter: drop-shadow(0 4px 10px rgba(46,91,217,.25)); }
+.logo-img--lg { width: 64px; height: 64px; }
 .nav-links {
   display: flex; gap: 6px; padding: 5px;
   border-radius: 100px;
@@ -702,7 +708,7 @@ html.js .preloader {
 .filter { padding: 10px 18px; border-radius: 100px; font-size: 14px; font-weight: 600; color: var(--text-dim); transition: all .35s var(--ease); }
 .filter:hover { color: var(--text); }
 .filter.active { color: #fff; background: var(--accent); border-color: rgba(255,255,255,.4); box-shadow: inset 0 1px 0 rgba(255,255,255,.35), 0 10px 24px -10px var(--accent-glow); }
-.addons-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+.addons-grid { position: relative; display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
 .addon {
   position: relative; display: grid; grid-template-columns: auto 1fr; grid-template-rows: 1fr auto; gap: 14px 16px;
   padding: 24px; border-radius: var(--r-lg);
@@ -718,23 +724,6 @@ html.js .preloader {
 .addon-price { grid-column: 2; font-size: 20px; font-weight: 800; letter-spacing: -0.03em; color: var(--text); }
 .addon-price small { font-size: 13px; font-weight: 500; color: var(--text-mute); margin-left: 2px; }
 
-.founding {
-  position: relative; overflow: hidden; display: flex; align-items: center; justify-content: space-between; gap: 32px; flex-wrap: wrap;
-  margin-top: 40px; padding: clamp(28px, 4vw, 44px);
-  border-radius: var(--r-xl); border: 1px solid rgba(255,255,255,.85);
-  background: radial-gradient(100% 160% at 0% 0%, rgba(255,190,90,.38), transparent 60%), var(--glass);
-  -webkit-backdrop-filter: var(--glass-blur); backdrop-filter: var(--glass-blur);
-  box-shadow: var(--glass-shadow), 0 30px 70px -40px rgba(227,148,16,.5);
-}
-.founding > div { display: grid; gap: 10px; max-width: 760px; }
-.founding-tag { font-size: 13px; font-weight: 700; color: var(--warning); letter-spacing: .02em; }
-.founding h3 { font-size: clamp(24px, 2.8vw, 36px); letter-spacing: -0.04em; }
-.founding h3 .serif { background: linear-gradient(120deg, #E39410, #D9622B); -webkit-background-clip: text; background-clip: text; color: transparent; }
-.founding p:last-child { color: var(--text-dim); font-size: 15px; }
-.founding-cta { display: inline-flex; align-items: center; gap: 10px; height: 54px; padding: 0 24px; border-radius: 16px; background: linear-gradient(135deg, #FFC062, #F2A02A); color: #2A1A04; font-weight: 700; box-shadow: inset 0 1px 0 rgba(255,255,255,.5); transition: gap .35s var(--ease), box-shadow .35s; }
-.founding:hover .founding-cta { gap: 16px; box-shadow: 0 14px 36px -12px rgba(255,181,71,.7); }
-.founding-shine { position: absolute; inset: 0; pointer-events: none; background: linear-gradient(110deg, transparent 35%, rgba(255,255,255,.55) 50%, transparent 65%); transform: translateX(-100%); animation: shine 5s var(--ease-io) infinite; }
-@keyframes shine { 0%, 60% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
 
 /* ---------- FAQ ---------- */
 .faq-grid { display: grid; grid-template-columns: .85fr 1.15fr; gap: clamp(40px, 6vw, 96px); align-items: start; }

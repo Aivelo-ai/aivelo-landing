@@ -10,7 +10,7 @@ assets/js/main.js     interactions et motion design
 
 ## Librairies (CDN, versions figées)
 
-- **GSAP 3.13** : ScrollTrigger (animations au scroll, pin horizontal), SplitText (titres en slide-up ligne par ligne), Flip (filtre des add-ons)
+- **GSAP 3.13** : ScrollTrigger (animations au scroll, pin horizontal), SplitText (titres en slide-up ligne par ligne)
 - **Lenis 1.1** : smooth scroll
 
 Si les CDN ne répondent pas, ou si le visiteur a activé « réduire les animations », le site reste entièrement lisible et utilisable : la classe `motion` est retirée et tout s'affiche sans animation.

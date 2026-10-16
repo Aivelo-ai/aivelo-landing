@@ -10,7 +10,8 @@
 <meta property="og:title" content="Aivelo — Le digital qui valorise votre métier" />
 <meta property="og:description" content="Sites web sur-mesure, plateformes de formation, gestion & maintenance, CRM IA immobilier. Conçu en France." />
 <meta property="og:locale" content="fr_FR" />
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%234F7EF7'/%3E%3Cpath d='M9 23V13.5l7-4.7 7 4.7V23' fill='none' stroke='white' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E" />
+<link rel="icon" type="image/png" href="assets/img/aivelo-icon-64.png" />
+<link rel="apple-touch-icon" href="assets/img/aivelo-logo.png" />
 
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -45,9 +46,7 @@
 <!-- ============================ PRELOADER ============================ -->
 <div class="preloader" id="preloader" aria-hidden="true">
   <div class="preloader-inner">
-    <span class="logo-mark logo-mark--lg">
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21V9l9-6 9 6v12"/><path d="M9 21V12h6v9"/></svg>
-    </span>
+    <img class="logo-img logo-img--lg" src="assets/img/aivelo-logo.png" alt="" width="64" height="64" />
     <div class="preloader-word"><span>A</span><span>i</span><span>v</span><span>e</span><span>l</span><span>o</span></div>
     <div class="preloader-bar"><i id="preloader-bar"></i></div>
   </div>
@@ -61,9 +60,7 @@
 <header class="nav" id="nav">
   <div class="container nav-inner">
     <a href="#top" class="logo" aria-label="Aivelo — accueil">
-      <span class="logo-mark">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21V9l9-6 9 6v12"/><path d="M9 21V12h6v9"/></svg>
-      </span>
+      <img class="logo-img" src="assets/img/aivelo-logo.png" alt="" width="34" height="34" />
       Aivelo
     </a>
 
@@ -308,10 +305,10 @@
         <div class="stack-copy">
           <span class="stack-num">04</span>
           <h3>Aivelo CRM <em class="serif">IA</em> immobilier</h3>
-          <p>Six agents IA travaillent 24h/24 aux côtés de vos agents : qualification des leads en 30 secondes, annonces multi-portails, relances J+1/J+7/J+14, matching en temps réel, résumé de visite par note vocale et import par scan.</p>
+          <p>Six agents IA travaillent 24h/24 aux côtés de vos agents : qualification des leads en 30 secondes, rédaction des annonces, relances J+1/J+7/J+14, matching en temps réel, résumé de visite par note vocale et import par scan.</p>
           <ul class="ticks">
             <li>Score 0–100 de chaque lead, 24h/24</li>
-            <li>Annonces SeLoger · LeBonCoin · Bien'ici</li>
+            <li>Annonces rédigées par l'IA en 30 secondes</li>
             <li>Voice note de visite → résumé IA</li>
             <li>Connecté nativement à votre site vitrine</li>
           </ul>
@@ -629,7 +626,7 @@
           <ul class="ticks">
             <li>Tout le plan Pro</li>
             <li>Multi-agences illimité</li>
-            <li>Multidiffusion incluse (SeLoger, LBC, BI)</li>
+            <li>Tableau de bord multi-agences</li>
             <li>Support prioritaire 24/7</li>
             <li>Utilisateurs illimités</li>
           </ul>
@@ -699,11 +696,6 @@
         <div class="addon-body"><h3>Analyse juridique IA</h3><small>Conformité documents</small><p>Scan mandat/compromis → score de conformité + extraction automatique. Alertes en temps réel.</p></div>
         <b class="addon-price">+49€<small>/mois</small></b>
       </article>
-      <article class="addon" data-cat="crm site">
-        <span class="addon-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4.9 19.1a10 10 0 0 1 0-14.2M7.8 16.2a6 6 0 0 1 0-8.4M16.2 7.8a6 6 0 0 1 0 8.4M19.1 4.9a10 10 0 0 1 0 14.2"/><circle cx="12" cy="12" r="2"/></svg></span>
-        <div class="addon-body"><h3>Multidiffusion native</h3><small>Portails principaux</small><p>SeLoger · LeBonCoin · Bien'ici · site vitrine de votre agence. Diffusion en un clic.</p></div>
-        <b class="addon-price">+89€<small>/mois</small></b>
-      </article>
       <article class="addon" data-cat="crm">
         <span class="addon-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 10a7 7 0 0 0 14 0M12 19v3"/></svg></span>
         <div class="addon-body"><h3>Agent vocal Vapi.ai</h3><small>Qualification 24h/24</small><p>Qualification téléphonique automatique. 200 min incluses, puis 0,15€/min supplémentaire.</p></div>
@@ -721,16 +713,6 @@
       </article>
     </div>
 
-    <!-- Founding member -->
-    <a href="https://calendar.app.google/uFepKqQYgaG9t9Hf6" target="_blank" rel="noreferrer" class="founding" data-reveal>
-      <span class="founding-shine" aria-hidden="true"></span>
-      <div>
-        <p class="founding-tag">⭐ Offre Founding Member — places limitées</p>
-        <h3>CRM Pro à 199€/mois en annuel, <em class="serif">bloqué à vie.</em></h3>
-        <p>+ Site vitrine agence offert (valeur 2 000€) · + Signature électronique YouSign offerte 6 mois.</p>
-      </div>
-      <span class="founding-cta">Je veux cette offre <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg></span>
-    </a>
   </div>
 </section>
 
@@ -761,7 +743,7 @@
       </div>
       <div class="acc-item" data-reveal>
         <h3><button class="acc-btn" aria-expanded="false" aria-controls="acc-5" id="acc-btn-5">Le CRM IA se connecte-t-il à mon site d'agence ?<i aria-hidden="true"></i></button></h3>
-        <div class="acc-panel" id="acc-5" role="region" aria-labelledby="acc-btn-5"><div><p>Oui, nativement. Les demandes de contact et d'estimation arrivent directement dans le CRM, sont qualifiées par l'IA en 30 secondes, et vos biens sont publiés sur le site et les portails en un clic.</p></div></div>
+        <div class="acc-panel" id="acc-5" role="region" aria-labelledby="acc-btn-5"><div><p>Oui, nativement. Les demandes de contact et d'estimation arrivent directement dans le CRM, sont qualifiées par l'IA en 30 secondes, et vos biens apparaissent automatiquement sur votre site vitrine.</p></div></div>
       </div>
       <div class="acc-item" data-reveal>
         <h3><button class="acc-btn" aria-expanded="false" aria-controls="acc-6" id="acc-btn-6">Comment se passe le paiement ?<i aria-hidden="true"></i></button></h3>
@@ -797,7 +779,7 @@
     <div class="footer-grid">
       <div class="footer-brand">
         <a href="#top" class="logo">
-          <span class="logo-mark"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21V9l9-6 9 6v12"/><path d="M9 21V12h6v9"/></svg></span>
+          <img class="logo-img" src="assets/img/aivelo-logo.png" alt="" width="34" height="34" />
           Aivelo
         </a>
         <p>Studio digital &amp; IA. Sites web, plateformes de formation et CRM immobilier, conçus en France pour les métiers qui méritent d'être vus.</p>
@@ -838,11 +820,10 @@
   </div>
 </footer>
 
-<!-- Motion stack — GSAP (ScrollTrigger, SplitText, Flip) + Lenis smooth scroll -->
+<!-- Motion stack — GSAP (ScrollTrigger, SplitText) + Lenis smooth scroll -->
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/SplitText.min.js" defer></script>
-<script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/Flip.min.js" defer></script>
 <script src="https://unpkg.com/lenis@1.1.13/dist/lenis.min.js" defer></script>
 <script src="assets/js/main.js" defer></script>
 </body>
