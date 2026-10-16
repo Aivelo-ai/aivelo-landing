@@ -436,6 +436,28 @@ html.js .preloader {
 }
 .live-site[data-phase="wire"] .ls-badge, .live-site[data-phase="design"] .ls-badge, .live-site[data-phase="dev"] .ls-badge { color: var(--text-dim); background: rgba(11,13,23,.06); }
 
+/* Hero variant « logo en verre liquide » (assets/js/hero-3d.js, #logo-3d) */
+.glass3d { position: relative; display: grid; place-items: center; padding: 0; }
+.g3-stage {
+  position: relative; width: 100%; aspect-ratio: 1 / 1; max-height: 620px; max-width: 100%;
+  -webkit-mask-image: radial-gradient(closest-side, #000 50%, transparent 100%);
+  mask-image: radial-gradient(closest-side, #000 50%, transparent 100%);
+}
+.g3-canvas { display: block; width: 100%; height: 100%; opacity: 0; transition: opacity 1.2s var(--ease); }
+.g3-stage.is-ready .g3-canvas { opacity: 1; }
+.g3-fallback { display: none; position: absolute; inset: 22%; width: 56%; height: auto; }
+.g3-stage.is-fallback .g3-canvas { display: none; }
+.g3-stage.is-fallback .g3-fallback { display: block; }
+.g3-chip {
+  position: absolute; display: inline-flex; align-items: center; gap: 8px; padding: 9px 15px; border-radius: 100px;
+  font-size: 13px; font-weight: 600; white-space: nowrap;
+  background: var(--glass); border: 1px solid var(--glass-edge); box-shadow: var(--glass-shadow);
+  -webkit-backdrop-filter: var(--glass-blur); backdrop-filter: var(--glass-blur);
+}
+.g3-chip--a { left: 0; top: 12%; }
+.g3-chip--b { right: -2%; top: 46%; }
+.g3-chip--c { left: 4%; bottom: 5%; }
+
 /* floating cards around the window */
 .ls-code, .ls-chip, .ls-score { position: absolute; transition: opacity .6s var(--ease), transform .8s var(--ease); }
 .ls-code { left: -5%; bottom: 0; width: 54%; border-radius: 16px; padding: 12px 14px 14px; }
@@ -878,14 +900,12 @@ html.motion [data-reveal],
 html.motion [data-hero-fade] { opacity: 0; }
 html.motion [data-split] { visibility: hidden; }
 html.motion .hero-title .line > span { transform: translateY(110%); }
-html.motion .ls-window,
-html.motion .ls-steps { opacity: 0; }
+html.motion [data-intro] { opacity: 0; }
 
 /* safety net if a script stalls */
 html.motion:not(.motion-ready) [data-reveal],
 html.motion:not(.motion-ready) [data-hero-fade],
-html.motion:not(.motion-ready) .ls-window,
-html.motion:not(.motion-ready) .ls-steps { animation: failsafe-show .6s 5s forwards; }
+html.motion:not(.motion-ready) [data-intro] { animation: failsafe-show .6s 5s forwards; }
 html.motion:not(.motion-ready) [data-split] { animation: failsafe-vis 0s 5s forwards; }
 html.motion:not(.motion-ready) .hero-title .line > span { animation: failsafe-up .8s 5s forwards; }
 @keyframes failsafe-show { to { opacity: 1; } }
@@ -939,6 +959,8 @@ html.motion:not(.motion-ready) .hero-title .line > span { animation: failsafe-up
   .ls-chip { left: 0; bottom: 30px; }
   .ls-score { right: 0; width: 92px; height: 92px; }
   .ls-score b { font-size: 22px; }
+  .g3-chip { font-size: 11.5px; padding: 7px 11px; }
+  .g3-chip--b { right: 0; }
   .scroll-cue { display: none; }
   .bento { grid-template-columns: 1fr; }
   .bento-perf, .bento-own { grid-column: auto; }

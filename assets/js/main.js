@@ -329,8 +329,7 @@
     const tl = gsap.timeline({ defaults: { ease: 'expo.out' } });
     tl.fromTo('.hero-title .line > span', { yPercent: 110, y: 0, rotate: 3 }, { yPercent: 0, rotate: 0, duration: 1.4, stagger: .12 })
       .fromTo('[data-hero-fade]', { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 1.2, stagger: .1 }, '-=1.1')
-      .fromTo('.ls-window', { opacity: 0, y: 90, rotateX: 12, scale: .95 }, { opacity: 1, y: 0, rotateX: 0, scale: 1, duration: 1.6 }, '-=1.3')
-      .fromTo('.ls-steps', { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 1 }, '-=1.2')
+      .fromTo('[data-intro]', { opacity: 0, y: 80, rotateX: 10, scale: .95 }, { opacity: 1, y: 0, rotateX: 0, scale: 1, duration: 1.6, stagger: .12 }, '-=1.3')
       .call(() => liveSite && liveSite.play(), null, '-=.6')
       .fromTo('.scroll-cue', { opacity: 0 }, { opacity: 1, duration: .8 }, '-=.6');
     return tl;
