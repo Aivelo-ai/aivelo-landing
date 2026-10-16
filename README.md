@@ -33,7 +33,7 @@ Si les CDN ne répondent pas, ou si le visiteur a activé « réduire les animat
 
 `assets/js/hero-3d.js` (three.js, chargé seulement quand il sert) :
 
-- **Pied de page** : le logo du bloc « Aivelo » devient un logo en verre 3D quand le visiteur approche du bas de la page. Le logo plat reste en place si WebGL n'est pas disponible.
-- **Variante du hero**, désactivée par défaut : le visuel du hero devient le logo en verre, avec une grande version discrète derrière la section contact. Elle s'active en ajoutant `#logo-3d` à l'adresse (pour comparer) ou avec `data-hero="3d"` sur `<html>` (pour l'adopter).
+- **Contact et pied de page** : une grande version discrète du logo en verre passe derrière « Parlons de votre projet », et le logo du bloc « Aivelo » devient le logo en verre. Les deux se chargent à l'approche du bas de la page ; sans WebGL, le logo plat reste en place.
+- **Variante du hero**, désactivée par défaut : le visuel du hero devient le logo en verre. Elle s'active en ajoutant `#logo-3d` à l'adresse (pour comparer) ou avec `data-hero="3d"` sur `<html>` (pour l'adopter).
 
 Les contours du logo sont tracés depuis `assets/img/aivelo-logo.png` (constante `LOGO` en tête du fichier).

@@ -1,10 +1,10 @@
 /* ==========================================================================
    AIVELO — logo Aivelo en verre 3D (three.js, chargé à la demande)
-   - Toujours : le logo du bloc de pied de page devient un logo en verre 3D,
-     chargé seulement quand le visiteur approche du bas de la page.
+   - Toujours : une grande version discrète derrière la section contact et
+     le logo du bloc de pied de page, chargés seulement quand le visiteur
+     approche du bas de la page.
    - Variante « hero » (#logo-3d dans l'adresse ou <html data-hero="3d">) :
-     le visuel du hero devient le logo en verre, et une grande version
-     discrète passe derrière la section contact.
+     le visuel du hero devient aussi le logo en verre.
    Sans WebGL, le logo plat reste affiché.
    ========================================================================== */
 (() => {
@@ -50,25 +50,35 @@
     slot.replaceWith(visual);
     const heroStage = visual.querySelector('.g3-stage');
 
-    // Large, quiet version behind « Parlons de votre projet »
-    const contactBg = document.querySelector('.contact-bg');
-    let bgStage = null;
-    if (contactBg) {
-      bgStage = document.createElement('div');
-      bgStage.className = 'g3-bg';
-      bgStage.innerHTML = '<canvas class="g3-canvas"></canvas>';
-      contactBg.appendChild(bgStage);
-    }
-    const fail = () => { heroStage.classList.add('is-fallback'); if (bgStage) bgStage.remove(); };
+    const fail = () => heroStage.classList.add('is-fallback');
     loadThree().then((THREE) => {
-      try {
-        mount(THREE, heroStage, 'hero');
-        if (bgStage) mount(THREE, bgStage, 'background');
-      } catch (e) { fail(); }
+      try { mount(THREE, heroStage, 'hero'); } catch (e) { fail(); }
     }, fail);
   }
 
-  // 2. Footer brand mark: the flat logo becomes glass when the footer comes near
+  // Lazy mount: load three.js and start a stage only when its section comes near
+  const whenNear = (target, start) => {
+    const io = new IntersectionObserver(([e]) => {
+      if (!e.isIntersecting) return;
+      io.disconnect();
+      start();
+    }, { rootMargin: '600px 0px' });
+    io.observe(target);
+  };
+
+  // 2. Large, quiet version behind « Parlons de votre projet »
+  const contactBg = document.querySelector('.contact-bg');
+  if (contactBg) {
+    const bgStage = document.createElement('div');
+    bgStage.className = 'g3-bg';
+    bgStage.innerHTML = '<canvas class="g3-canvas"></canvas>';
+    contactBg.appendChild(bgStage);
+    whenNear(contactBg.parentElement, () => loadThree().then((THREE) => {
+      try { mount(THREE, bgStage, 'background'); } catch (e) { bgStage.remove(); }
+    }, () => bgStage.remove()));
+  }
+
+  // 3. Footer brand mark: the flat logo becomes glass when the footer comes near
   if (footerLogo) {
     const mark = document.createElement('div');
     mark.className = 'g3-mark';
