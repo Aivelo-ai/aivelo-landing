@@ -315,7 +315,6 @@
     lenis.on('scroll', (e) => { ScrollTrigger.update(); onScrollNav(e.scroll); });
     gsap.ticker.add((t) => lenis.raf(t * 1000));
     gsap.ticker.lagSmoothing(0);
-    lenis.stop(); // released once the intro has played
   } else {
     window.addEventListener('scroll', () => onScrollNav(window.scrollY), { passive: true });
   }
@@ -354,11 +353,20 @@
 
   const liveSite = initLiveSite();
 
+  let started = false;
   const startSite = () => {
+    if (started) return;
+    started = true;
     html.classList.add('motion-ready');
     if (lenis) lenis.start();
-    heroIntro();
+    try { heroIntro(); } catch (e) { console.error(e); }
   };
+  // Never leave the page locked behind the intro, whatever happens above
+  setTimeout(() => {
+    startSite();
+    const p = document.getElementById('preloader');
+    if (p) p.remove();
+  }, 6000);
 
   const pre = $('#preloader');
   let seen = false;
@@ -370,7 +378,7 @@
   ]);
 
   fontsReady.then(() => {
-    initScrollAnimations();
+    try { initScrollAnimations(); } catch (e) { console.error(e); }
     if (!pre) return startSite();
     pre.style.animation = 'none'; // disarm CSS failsafe now that JS is in control
     const letters = $$('.preloader-word span', pre);
