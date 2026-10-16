@@ -746,23 +746,33 @@ html.js .preloader {
 .step h3 { font-size: clamp(24px, 2.6vw, 34px); letter-spacing: -0.04em; }
 .step p { color: var(--text-dim); font-size: 16.5px; max-width: 520px; }
 
-/* ---------- Méthode : liquide WebGL (assets/js/water.js, variante verre 3D) ---------- */
+/* ---------- Méthode : goutte d'eau sur verre (assets/js/water.js, variante verre 3D) ---------- */
 html.water .timeline-rail { display: none; }
 .w-canvas { position: absolute; left: -120px; top: -160px; width: 172px; height: calc(100% + 160px); z-index: 2; pointer-events: none; }
-html.water .step-dot {
-  z-index: 1; width: 22px; height: 22px; left: -52px; top: 1px;
-  background: rgba(255,255,255,.85); border: 1.5px solid rgba(58,103,236,.25);
-  box-shadow: inset 0 1px 0 #fff, 0 6px 14px -6px rgba(30,45,110,.3);
+/* stations: small etched rings on the glass, lit once the drop has been there */
+html.water .step-dot,
+html.water .step.is-active .step-dot {
+  z-index: 1; width: 26px; height: 26px; left: -54px; top: -1px;
+  background: transparent; border: 1px solid rgba(58,103,236,.22);
+  box-shadow: inset 0 1px 2px rgba(30,45,110,.12), 0 1px 0 rgba(255,255,255,.9);
+  transition: border-color .8s var(--ease), box-shadow .8s var(--ease);
 }
-html.water .step.is-active .step-dot { background: rgba(255,255,255,.85); border-color: rgba(58,103,236,.25); box-shadow: inset 0 1px 0 #fff, 0 6px 14px -6px rgba(30,45,110,.3); }
-html.water .step h3 { transition: color .6s var(--ease); }
-html.water .step:not(.is-wet) h3 { color: rgba(11,13,23,.55); }
-.w-basin { position: relative; height: 130px; }
+html.water .step.is-wet .step-dot { border-color: rgba(58,103,236,.55); box-shadow: inset 0 1px 2px rgba(30,45,110,.12), 0 0 0 6px rgba(79,126,247,.07), 0 0 22px rgba(79,126,247,.22); }
+html.water .step h3, html.water .step p { transition: color .8s var(--ease); }
+html.water .step:not(.is-wet) h3 { color: rgba(11,13,23,.5); }
+.w-basin { position: relative; height: 120px; }
+.w-well {
+  position: absolute; left: -64px; top: 38px; width: 46px; height: 46px; border-radius: 50%;
+  border: 1px solid rgba(58,103,236,.22);
+  box-shadow: inset 0 1px 3px rgba(30,45,110,.14), 0 1px 0 rgba(255,255,255,.9);
+  transition: border-color .9s var(--ease), box-shadow .9s var(--ease);
+}
+.w-well.is-wet { border-color: rgba(15,168,116,.45); box-shadow: inset 0 1px 3px rgba(30,45,110,.14), 0 0 0 8px rgba(15,168,116,.06), 0 0 26px rgba(15,168,116,.22); }
 .w-done {
-  position: absolute; left: 30px; top: 58px; display: inline-flex; align-items: center; gap: 8px;
-  font-size: 14px; font-weight: 700; color: var(--success); padding: 8px 14px; border-radius: 100px;
+  position: absolute; left: 0; top: 46px; display: inline-flex; align-items: center; gap: 8px;
+  font-size: 14px; font-weight: 700; color: var(--success); padding: 7px 14px; border-radius: 100px;
   background: rgba(255,255,255,.88); border: 1px solid rgba(15,168,116,.25); box-shadow: 0 10px 24px -14px rgba(15,168,116,.6);
-  opacity: 0; transform: translateX(-10px) scale(.96); transition: opacity .6s var(--ease), transform .8s var(--ease);
+  opacity: 0; transform: translateX(-10px) scale(.96); transition: opacity .7s var(--ease), transform .9s var(--ease);
 }
 .w-done.is-on { opacity: 1; transform: none; }
 
