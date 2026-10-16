@@ -828,6 +828,10 @@ html.js .preloader {
   transition: transform .5s var(--ease);
 }
 .addon:hover { transform: translateY(-4px); }
+.addon { /* no backdrop blur here: it flickers while cards fade during filtering */
+  -webkit-backdrop-filter: none; backdrop-filter: none;
+  background: linear-gradient(160deg, rgba(255,255,255,.88) 0%, rgba(255,255,255,.64) 100%);
+}
 .addon.is-hidden { display: none; }
 .addon-ico { display: grid; place-items: center; width: 44px; height: 44px; border-radius: 12px; background: linear-gradient(160deg, rgba(79,126,247,.18), rgba(79,126,247,.06)); color: var(--accent-soft); }
 .addon-ico svg { width: 21px; height: 21px; }

@@ -232,21 +232,38 @@
       });
 
       if (motion) {
-        // Calm cross-fade: old cards fade out, grid height eases, new cards rise in
+        // Only what changes moves: removed cards fade out in place, cards that stay
+        // glide to their new slot (FLIP), new cards rise in, the grid height eases.
         const grid = $('#addons-grid');
-        const before = addons.filter((a) => !a.classList.contains('is-hidden'));
+        const shown = (a) => !a.classList.contains('is-hidden');
+        const willShow = (a) => f === 'all' || a.dataset.cat.split(' ').includes(f);
+        const visible = addons.filter(shown);
+        const leaving = visible.filter((a) => !willShow(a));
+        const staying = visible.filter(willShow);
+        const entering = addons.filter((a) => !shown(a) && willShow(a));
         gsap.killTweensOf([grid, ...addons]);
-        gsap.to(before, {
-          opacity: 0, y: 10, duration: .22, ease: 'power2.in', stagger: .015,
-          onComplete: () => {
-            const h0 = grid.offsetHeight;
-            apply();
-            const h1 = grid.offsetHeight;
-            const after = addons.filter((a) => !a.classList.contains('is-hidden'));
-            gsap.fromTo(grid, { height: h0 }, { height: h1, duration: .5, ease: 'power3.inOut', clearProps: 'height', onComplete: refresh });
-            gsap.fromTo(after, { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: .7, ease: 'expo.out', stagger: .05, delay: .05 });
-          },
-        });
+        gsap.set(addons, { clearProps: 'transform' });
+
+        const reflow = () => {
+          const h0 = grid.offsetHeight;
+          const rects = new Map(staying.map((a) => [a, a.getBoundingClientRect()]));
+          apply();
+          gsap.set(leaving, { clearProps: 'opacity,scale' });
+          const h1 = grid.offsetHeight;
+          gsap.fromTo(grid, { height: h0 }, { height: h1, duration: .55, ease: 'power3.inOut', clearProps: 'height', onComplete: refresh });
+          staying.forEach((a) => {
+            const r0 = rects.get(a);
+            const r1 = a.getBoundingClientRect();
+            gsap.fromTo(a, { x: r0.left - r1.left, y: r0.top - r1.top }, { x: 0, y: 0, duration: .6, ease: 'power3.inOut', clearProps: 'transform' });
+          });
+          gsap.fromTo(entering, { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: .6, ease: 'expo.out', stagger: .04, delay: .18, clearProps: 'transform' });
+        };
+
+        if (leaving.length) {
+          gsap.to(leaving, { opacity: 0, scale: .97, duration: .18, ease: 'power2.in', onComplete: reflow });
+        } else {
+          reflow();
+        }
       } else {
         apply();
       }
