@@ -361,7 +361,7 @@
       tl.to(pre, { opacity: 0, duration: .5, ease: 'power2.out', onStart: startSite });
       return;
     }
-    tl.from('.preloader .logo-mark', { scale: 0, rotate: -90, duration: .9, ease: 'back.out(1.6)' })
+    tl.from('.preloader .logo-img', { scale: 0, rotate: -90, duration: .9, ease: 'back.out(1.6)' })
       .from(letters, { yPercent: 110, duration: .9, stagger: .05 }, '-=.6')
       .to('#preloader-bar', { scaleX: 1, duration: .9, ease: 'power2.inOut' }, '-=.5')
       .to(['.preloader-inner'], { y: -40, opacity: 0, duration: .6, ease: 'power3.in' }, '+=.1')
@@ -413,8 +413,6 @@
       yPercent: -10, ease: 'none',
       scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true },
     });
-    gsap.to('.orb-1', { yPercent: 40, ease: 'none', scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true } });
-    gsap.to('.orb-2', { yPercent: 25, ease: 'none', scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true } });
 
     /* Hero pointer parallax */
     if (finePointer) {
