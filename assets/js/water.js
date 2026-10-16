@@ -2,11 +2,11 @@
    AIVELO — « Méthode » : une goutte d'eau sur verre (variante verre 3D)
 
    Story, A → B, driven by the scroll but obeying gravity:
-   A  Condensation beads sit on the glass at the top of the section. When the
-      visitor starts scrolling they coalesce into one drop (the idea forms).
+   A  A small drop forms on the glass at the top of the section and grows;
+      when the visitor starts scrolling it sets off (the idea forms).
    →  The drop slides down the glass: it accelerates, stretches into a tear
-      when fast, rounds up and jiggles when it brakes, leaves a wet film that
-      breaks into tiny beads, and swallows the beads lying on its way.
+      when fast, rounds up and jiggles when it brakes, and leaves a thin wet
+      film that dries behind it.
    ●  Each step is a station: the drop dwells in the step's ring, leaves a
       bead there (the step is "done") and moves on.
    B  It settles in the final ring as a round lens: « Projet livré ».
@@ -20,8 +20,8 @@
       on glass: refracted dark rim, bright caustic crescent, sharp specular
       glint, soft cast shadow. Merging between drops comes for free.
 
-   Active only with <html data-hero="3d"> (or #logo-3d), motion allowed,
-   GSAP, WebGL2 and float render targets available. Otherwise the regular
+   Active when motion is allowed and GSAP, WebGL2 and float render targets
+   are available. Otherwise the regular
    rail stays untouched.
    ========================================================================== */
 (() => {
@@ -29,7 +29,7 @@
 
   const html = document.documentElement;
   const timeline = document.querySelector('.timeline');
-  if (!timeline || html.dataset.hero !== '3d') return;
+  if (!timeline) return;
   if (!window.gsap || !window.ScrollTrigger || !html.classList.contains('motion')) return;
 
   const canvas = document.createElement('canvas');
@@ -223,7 +223,6 @@
     ];
   };
 
-  let beads = [];        // dew on the glass: { x, y, r, cond?, residue?, born? }
   let film = [];         // wet trail: { x, y, r0, born }
   let stationBeads = []; // beads left in the rings
 
@@ -235,23 +234,6 @@
     const a = L.path[lo], b = L.path[hi];
     const tx = b[0] - a[0], ty = b[1] - a[1], tl = Math.hypot(tx, ty) || 1;
     return { x: a[0] + tx * t, y: a[1] + ty * t, tx: tx / tl, ty: ty / tl };
-  };
-
-  const seedGlass = () => {
-    seed = 7;
-    beads = [];
-    // condensation cluster at A
-    for (let i = 0; i < 16; i++) {
-      const a = rnd() * Math.PI * 2, d = 6 + Math.pow(rnd(), .7) * 30;
-      beads.push({ x: L.A[0] + Math.cos(a) * d, y: L.A[1] + Math.sin(a) * d * .8, r: 1.2 + rnd() * 2.6, cond: true });
-    }
-    // scattered dew along the corridor
-    const n = Math.round(L.total / 26);
-    for (let i = 0; i < n; i++) {
-      const p = pointAt(rnd() * L.total);
-      const x = Math.max(4, Math.min(L.W - 6, p.x + (rnd() - .5) * 70));
-      beads.push({ x, y: p.y + (rnd() - .5) * 20, r: .9 + Math.pow(rnd(), 2.2) * 3.4 });
-    }
   };
 
   const layout = () => {
@@ -297,7 +279,6 @@
       return L.len[best];
     };
     L.stations = [0, ...L.dots.map(sAt), L.total];
-    if (!S.started) seedGlass();
   };
 
   /* ---------- scroll → target arc length, with a dwell at each station ---------- */
@@ -321,7 +302,6 @@
   const reset = () => {
     Object.assign(S, fresh());
     film = []; stationBeads = [];
-    seedGlass();
     steps.forEach((st) => st.classList.remove('is-wet'));
     well.classList.remove('is-wet');
     done.classList.remove('is-on');
@@ -351,21 +331,14 @@
     if (!visible || document.hidden || !L.total) return;
     const t = (now - t0) / 1000;
 
-    // A — condensation: before the scroll starts, the seed drop slowly grows
+    // A — the drop forms: before the scroll starts, it slowly grows
     const target = Math.max(S.maxTarget, targetFromProgress(progress));
     S.maxTarget = target;
     if (!S.started && target > 1) S.started = true;
     if (!S.started) S.R = Math.min(7, S.R + dt * .35);
 
-    // coalescence at A: the cluster is pulled into the drop once it starts
     const head = pointAt(S.s);
     if (S.started) {
-      beads.forEach((b) => {
-        if (!b.cond) return;
-        const dx = head.x - b.x, dy = head.y - b.y, d = Math.hypot(dx, dy) || 1;
-        const pull = Math.min(1, dt * (2.2 + 60 / d));
-        b.x += dx * pull; b.y += dy * pull;
-      });
       S.R += (R_MAIN - S.R) * (1 - Math.pow(.06, dt));
     }
 
@@ -393,14 +366,10 @@
     done.classList.toggle('is-on', S.settled);
     if (S.settled) S.R += (19.5 - S.R) * (1 - Math.pow(.05, dt)); // merges into a lens
 
-    // absorb the dew on the way
-    if (S.started) beads = beads.filter((b) => Math.hypot(head.x - b.x, head.y - b.y) >= S.R * .85 + b.r || b.residue);
-
-    // wet film behind the drop, which then breaks into tiny beads
+    // thin wet film behind the drop, drying out
     if (S.started && !S.settled && S.s - S.lastDeposit > 2.2) {
       const tail = pointAt(Math.max(0, S.s - S.R * .6));
       film.push({ x: tail.x + (rnd() - .5) * .8, y: tail.y, r0: S.R * .34, born: t });
-      if (rnd() < .16) beads.push({ x: tail.x + (rnd() - .5) * 4, y: tail.y + (rnd() - .5) * 3, r: .7 + rnd() * 1.5, residue: true, born: t });
       S.lastDeposit = S.s;
     }
     film = film.filter((f) => t - f.born < 1.5);
@@ -408,7 +377,6 @@
     // point list
     let n = 0;
     const push = (x, y, r, flat) => { if (n < MAX_PTS && r > .3) { ptData[n * 4] = x; ptData[n * 4 + 1] = y; ptData[n * 4 + 2] = r; ptData[n * 4 + 3] = flat; n++; } };
-    beads.forEach((b) => push(b.x, b.y, b.r * (b.residue ? Math.min(1, (t - b.born) * 3) : 1), 0));
     stationBeads.forEach((b) => { b.r += (b.rT - b.r) * (1 - Math.pow(.02, dt)); push(b.x, b.y, b.r, 0); });
     film.forEach((f) => { const a = (t - f.born) / 1.5; push(f.x, f.y, f.r0 * (1 - a * a) * .95, .85); });
 

@@ -38,8 +38,8 @@ Si les CDN ne répondent pas, ou si le visiteur a activé « réduire les animat
 
 Les contours du logo sont tracés depuis `assets/img/aivelo-logo.png` (constante `LOGO` en tête du fichier).
 
-## Méthode : goutte d'eau sur verre (test)
+## Méthode : goutte d'eau sur verre
 
-`assets/js/water.js` raconte un trajet A → B au défilement, en respectant la gravité : en haut, de la condensation perle sur le verre et se rassemble en une goutte (A) ; la goutte glisse, s'étire quand elle accélère, vibre quand elle freine, laisse une traînée humide qui se fragmente et avale les gouttelettes sur son passage ; elle marque une pause dans le cercle de chaque étape et y laisse une perle ; elle se dépose en lentille dans le cercle final (B), puis « Projet livré » apparaît. L'eau ne remonte jamais : la scène se réinitialise seulement quand la section est sortie de l'écran par le bas.
+`assets/js/water.js` raconte un trajet A → B au défilement, en respectant la gravité : une goutte se forme en haut de la section (A), glisse le long des étapes en s'étirant quand elle accélère et en vibrant quand elle freine, marque une pause dans le cercle de chaque étape et y laisse une perle, puis se dépose en lentille dans le cercle final (B) : « Projet livré ». L'eau ne remonte jamais : la scène se réinitialise seulement quand la section est sortie de l'écran par le bas.
 
-Rendu WebGL2 en deux passes (metaballs dans une texture flottante, puis ombrage « verre liquide » : biseau lumineux, frange colorée, corps dépoli, reflet net, ombre portée). Actif seulement avec la variante verre 3D (`#logo-3d` ou `data-hero="3d"`) ; ailleurs, la ligne classique reste en place.
+Rendu WebGL2 en deux passes (metaballs dans une texture flottante, puis ombrage « verre liquide »). Sans WebGL2 ou avec « réduire les animations », la ligne classique reste en place.
