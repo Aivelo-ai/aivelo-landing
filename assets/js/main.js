@@ -39,20 +39,22 @@
   });
 
   /* ------------------------------------------------------------------
-     1b. Optical kerning — pull trailing punctuation closer in display type
+     1b. Optical kerning in display type: pull trailing punctuation closer,
+         and shorten hyphens (this face draws them very wide at large sizes)
      ------------------------------------------------------------------ */
-  $$('[data-split], .hero-title, .contact-title').forEach((root) => {
+  $$('[data-split], .hero-title, .contact-title, .stack-copy h3, .plan h3, .sector h3, .bento-card h3, .marquee-track span').forEach((root) => {
     const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
     const nodes = [];
     while (walker.nextNode()) nodes.push(walker.currentNode);
+    const re = /((?<=[^\s])[.,](?=\s|$)|(?<=\p{L})-(?=\p{L}))/u;
     nodes.forEach((node) => {
       if (node.parentElement.closest('.serif')) return;
-      if (!/[^\s][.,](?=\s|$)/.test(node.nodeValue)) return;
+      if (!re.test(node.nodeValue)) return;
       const frag = document.createDocumentFragment();
-      node.nodeValue.split(/(?<=[^\s])([.,])(?=\s|$)/).forEach((part, i) => {
+      node.nodeValue.split(new RegExp(re.source, 'gu')).forEach((part, i) => {
         if (i % 2) {
           const sp = document.createElement('span');
-          sp.className = 'punct';
+          sp.className = part === '-' ? 'hy' : 'punct';
           sp.textContent = part;
           frag.appendChild(sp);
         } else if (part) {
@@ -428,12 +430,56 @@
       });
     }
 
-    /* Marquee reacts to scroll velocity */
+    /* Marquee: scrolls on its own, can be grabbed and dragged (mouse or touch),
+       keeps a little inertia on release and speeds up with the page scroll */
+    const marquee = $('.marquee');
     const track = $('.marquee-track');
+    marquee.classList.add('is-js');
+    let mx = 0;
+    let half = track.scrollWidth / 2;
+    let fling = 0;
+    let boost = 0;
+    let dragging = false;
+    let lastX = 0;
+    const setX = gsap.quickSetter(track, 'x', 'px');
     const skew = gsap.quickTo(track, 'skewX', { duration: .6, ease: 'power3.out' });
+    const measure = () => { half = track.scrollWidth / 2; };
+    window.addEventListener('resize', measure);
+    if (document.fonts) document.fonts.ready.then(measure);
+    gsap.ticker.add((time, dt) => {
+      if (!dragging) {
+        mx += -0.045 * dt * (1 + boost) + fling;
+        fling *= 0.94;
+        boost *= 0.92;
+      }
+      if (mx <= -half) mx += half;
+      if (mx > 0) mx -= half;
+      setX(mx);
+    });
+    marquee.addEventListener('pointerdown', (e) => {
+      dragging = true;
+      lastX = e.clientX;
+      fling = 0;
+      marquee.classList.add('is-dragging');
+      marquee.setPointerCapture(e.pointerId);
+    });
+    marquee.addEventListener('pointermove', (e) => {
+      if (!dragging) return;
+      const dx = e.clientX - lastX;
+      lastX = e.clientX;
+      mx += dx;
+      fling = dx;
+    });
+    const release = () => { dragging = false; marquee.classList.remove('is-dragging'); };
+    marquee.addEventListener('pointerup', release);
+    marquee.addEventListener('pointercancel', release);
     ScrollTrigger.create({
-      trigger: '.marquee', start: 'top bottom', end: 'bottom top',
-      onUpdate: (self) => skew(gsap.utils.clamp(-8, 8, self.getVelocity() / -300)),
+      trigger: marquee, start: 'top bottom', end: 'bottom top',
+      onUpdate: (self) => {
+        const v = self.getVelocity();
+        skew(gsap.utils.clamp(-8, 8, v / -300));
+        boost = Math.min(6, Math.abs(v) / 400);
+      },
     });
 
     /* Manifesto: section eases in, words light up as you read */
@@ -512,7 +558,7 @@
         },
       });
       $$('.sector', trackEl).forEach((s) => {
-        gsap.from($$('.sector-art, h3, p, .tags', s), {
+        gsap.from($$('.sector-media, h3, p, .tags', s), {
           y: 60, opacity: 0, duration: 1, stagger: .06,
           scrollTrigger: { trigger: s, containerAnimation: tween, start: 'left 88%', toggleActions: 'play none none reverse' },
         });
@@ -539,12 +585,8 @@
       scrollTrigger: { trigger: '.contact', start: 'top bottom', end: 'bottom bottom', scrub: true },
     });
 
-    /* Footer wordmark: characters rise one by one */
-    const word = $('[data-footer-word]');
-    if (word) {
-      const chars = SplitText.create(word, { type: 'chars', charsClass: 'char' }).chars;
-      gsap.from(chars, { yPercent: 100, opacity: 0, duration: 1.4, stagger: .06, scrollTrigger: { trigger: word, start: 'top 95%', once: true } });
-    }
+    /* Footer brand lockup rises in */
+    gsap.from('[data-footer-word] > *', { y: 60, opacity: 0, duration: 1.4, stagger: .12, scrollTrigger: { trigger: '[data-footer-word]', start: 'top 95%', once: true } });
 
     /* Pointer micro-interactions */
     if (finePointer) initPointerFx();
