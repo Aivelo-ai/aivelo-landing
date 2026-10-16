@@ -396,13 +396,12 @@
       onEnter: (batch) => gsap.to(batch, { opacity: 1, y: 0, duration: 1.2, stagger: .09 }),
     });
 
-    /* Cards: blueprint → real. A wireframe layer draws its outline over the card,
-       then dissolves to reveal the finished card underneath. */
+    /* Card grids slide up in sequence */
     const cardSel = '#panel-sites .plan, .addon, .bento-card';
-    gsap.set(cardSel, { opacity: 0 });
+    gsap.set(cardSel, { opacity: 0, y: 70 });
     ScrollTrigger.batch(cardSel, {
-      start: 'top 90%', once: true,
-      onEnter: (batch) => batch.forEach((card, i) => blueprintReveal(card, i * .09)),
+      start: 'top 92%', once: true,
+      onEnter: (batch) => gsap.to(batch, { opacity: 1, y: 0, duration: 1.3, stagger: .08, overwrite: true }),
     });
 
     /* Hero parallax on scroll */
@@ -411,7 +410,7 @@
       scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true },
     });
     gsap.to('.hero-visual', {
-      yPercent: -8, ease: 'none',
+      yPercent: -10, ease: 'none',
       scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true },
     });
 
@@ -577,10 +576,7 @@
       '</section>',
     ].join('\n');
 
-    let current = null;
     const setPhase = (id) => {
-      if (id === current) return;
-      current = id;
       root.dataset.phase = id;
       const idx = phases.findIndex((p) => p.id === id);
       steps.forEach((s, i) => {
@@ -588,64 +584,39 @@
         s.classList.toggle('is-done', i < idx);
       });
       badge.textContent = phases[idx].label;
+      if (id === 'wire') codeEl.textContent = '';
+      cta.classList.remove('is-click');
     };
     setPhase('wire');
 
-    // One timeline describes the whole build; the phase is derived from its time,
-    // so it reads correctly whether it plays forward, loops or is scrubbed backwards.
-    const build = (vars) => {
-      const tl = gsap.timeline(vars);
-      const typing = { n: 0 };
-      const starts = [];
-      let t = 0;
-      phases.forEach((p) => {
-        starts.push(t);
-        tl.fromTo('#ls-progress', { scaleX: 0 }, { scaleX: 1, duration: p.d, ease: 'none', immediateRender: false }, t);
-        if (p.id === 'dev') {
-          tl.fromTo(typing, { n: 0 }, {
-            n: code.length, duration: p.d * .75, ease: 'none', immediateRender: false,
-            onUpdate: () => { codeEl.textContent = code.slice(0, Math.round(typing.n)); },
-          }, t + .3);
-        }
-        if (p.id === 'live') {
-          tl.fromTo(pointer, { left: '86%', top: '96%', opacity: 0 }, { left: '19%', top: '63%', opacity: 1, duration: 1.3, ease: 'power3.inOut', immediateRender: false }, t + .5)
-            .to(pointer, { scale: .8, duration: .12, yoyo: true, repeat: 1, transformOrigin: '20% 15%' }, t + 1.85);
-          tl.to(pointer, { opacity: 0, duration: .5 }, t + p.d - .6);
-        }
-        t += p.d;
-      });
-      const clickAt = starts[3] + 1.9;
-      tl.eventCallback('onUpdate', () => {
-        const time = tl.time();
-        let idx = 0;
-        starts.forEach((s, i) => { if (time >= s) idx = i; });
-        setPhase(phases[idx].id);
-        if (idx === 0 && codeEl.textContent) codeEl.textContent = '';
-        cta.classList.toggle('is-click', time >= clickAt);
-      });
-      return tl;
-    };
+    const typing = { n: 0 };
+    const tl = gsap.timeline({ repeat: -1, paused: true });
+    let t = 0;
+    phases.forEach((p) => {
+      tl.call(setPhase, [p.id], t);
+      tl.fromTo('#ls-progress', { scaleX: 0 }, { scaleX: 1, duration: p.d, ease: 'none', immediateRender: false }, t);
+      if (p.id === 'dev') {
+        tl.fromTo(typing, { n: 0 }, {
+          n: code.length, duration: p.d * .75, ease: 'none', immediateRender: false,
+          onUpdate: () => { codeEl.textContent = code.slice(0, Math.round(typing.n)); },
+        }, t + .3);
+      }
+      if (p.id === 'live') {
+        tl.fromTo(pointer, { left: '86%', top: '96%', opacity: 0 }, { left: '19%', top: '63%', opacity: 1, duration: 1.3, ease: 'power3.inOut', immediateRender: false }, t + .5)
+          .to(pointer, { scale: .8, duration: .12, yoyo: true, repeat: 1, transformOrigin: '20% 15%' }, t + 1.85)
+          .call(() => cta.classList.add('is-click'), null, t + 1.9)
+          .to(pointer, { opacity: 0, duration: .5 }, t + p.d - .6);
+      }
+      t += p.d;
+    });
 
-    // Play on a loop, only while the hero is on screen
-    const tl = build({ repeat: -1, paused: true });
+    // Only run while the hero is on screen
     let wanted = false;
     let visible = true;
     const sync = () => (wanted && visible && !document.hidden ? tl.play() : tl.pause());
     new IntersectionObserver(([e]) => { visible = e.isIntersecting; sync(); }).observe(root);
     document.addEventListener('visibilitychange', sync);
     return { play: () => { wanted = true; sync(); } };
-  }
-
-  function blueprintReveal(card, delay) {
-    const bp = document.createElement('span');
-    bp.className = 'bp';
-    bp.setAttribute('aria-hidden', 'true');
-    card.appendChild(bp);
-    gsap.timeline({ delay, onComplete: () => bp.remove() })
-      .set(card, { opacity: 1 })
-      .fromTo(bp, { clipPath: 'inset(0% 100% 100% 0%)' }, { clipPath: 'inset(0% 0% 0% 0%)', duration: .6, ease: 'power2.inOut' })
-      .to(bp, { opacity: 0, duration: .7, ease: 'power2.out' }, '+=.15')
-      .fromTo(card, { scale: .985 }, { scale: 1, duration: .9, ease: 'expo.out', clearProps: 'scale' }, '<');
   }
 
   /* ---------- Cursor, magnetic buttons, tilt cards ---------- */

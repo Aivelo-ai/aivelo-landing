@@ -664,23 +664,6 @@ html.js .preloader {
 .own-pills { display: flex; flex-wrap: wrap; gap: 8px; }
 .own-pills span { font-size: 12.5px; padding: 6px 12px; border-radius: 100px; background: rgba(15,168,116,.08); color: var(--success); border: 1px solid rgba(15,168,116,.22); }
 
-/* ---------- Blueprint reveal layer (injected by JS on card entry) ---------- */
-.bp {
-  position: absolute; inset: -1px; z-index: 5; pointer-events: none; border-radius: inherit;
-  border: 1.5px dashed rgba(58,103,236,.5);
-  background:
-    linear-gradient(rgba(58,103,236,.07) 1px, transparent 1px) 0 0 / 18px 18px,
-    linear-gradient(90deg, rgba(58,103,236,.07) 1px, transparent 1px) 0 0 / 18px 18px,
-    rgba(243,245,251,.96);
-}
-.bp::before { /* skeleton lines: title + two text rows */
-  content: ''; position: absolute; left: 24px; right: 24px; top: 26px; height: 48px;
-  background:
-    linear-gradient(rgba(58,103,236,.22), rgba(58,103,236,.22)) 0 0 / 46% 10px no-repeat,
-    linear-gradient(rgba(58,103,236,.13), rgba(58,103,236,.13)) 0 24px / 88% 8px no-repeat,
-    linear-gradient(rgba(58,103,236,.13), rgba(58,103,236,.13)) 0 40px / 64% 8px no-repeat;
-}
-
 /* ---------- Offres ---------- */
 .tabs-wrap { display: flex; justify-content: center; margin-bottom: 40px; }
 .tabs { position: relative; display: inline-flex; padding: 6px; border-radius: 100px; }
