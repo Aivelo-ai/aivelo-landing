@@ -327,12 +327,14 @@
     const tl = gsap.timeline({ defaults: { ease: 'expo.out' } });
     tl.fromTo('.hero-title .line > span', { yPercent: 110, y: 0, rotate: 3 }, { yPercent: 0, rotate: 0, duration: 1.4, stagger: .12 })
       .fromTo('[data-hero-fade]', { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 1.2, stagger: .1 }, '-=1.1')
-      .fromTo('.hero-visual .win', { opacity: 0, y: 90, rotateX: 14, scale: .94 }, { opacity: 1, y: 0, rotateX: 0, scale: 1, duration: 1.6, stagger: .14 }, '-=1.3')
-      .fromTo('.hero-visual .chip', { opacity: 0, scale: .6, y: 20 }, { opacity: 1, scale: 1, y: 0, duration: 1, stagger: .12, ease: 'back.out(1.8)' }, '-=1')
-      .fromTo('.learn-progress i', { scaleX: 0 }, { scaleX: 1, transformOrigin: 'left', duration: 1.6, ease: 'power3.inOut' }, '-=1.2')
+      .fromTo('.ls-window', { opacity: 0, y: 90, rotateX: 12, scale: .95 }, { opacity: 1, y: 0, rotateX: 0, scale: 1, duration: 1.6 }, '-=1.3')
+      .fromTo('.ls-steps', { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 1 }, '-=1.2')
+      .call(() => liveSite && liveSite.play(), null, '-=.6')
       .fromTo('.scroll-cue', { opacity: 0 }, { opacity: 1, duration: .8 }, '-=.6');
     return tl;
   };
+
+  const liveSite = initLiveSite();
 
   const startSite = () => {
     html.classList.add('motion-ready');
@@ -550,6 +552,73 @@
     if (finePointer) initPointerFx();
 
     window.addEventListener('load', refresh);
+  }
+
+  /* ---------- Hero "live site": wireframe → design → code → live, on a loop ---------- */
+  function initLiveSite() {
+    const root = $('.live-site');
+    if (!root) return null;
+    const phases = [
+      { id: 'wire', label: 'Maquette', d: 2.6 },
+      { id: 'design', label: 'Design', d: 2.6 },
+      { id: 'dev', label: 'Développement', d: 3.2 },
+      { id: 'live', label: 'En ligne', d: 3.8 },
+    ];
+    const steps = $$('.ls-step', root);
+    const badge = $('#ls-badge');
+    const codeEl = $('#ls-code');
+    const cta = $('#ls-cta');
+    const pointer = $('#ls-pointer');
+    const code = [
+      '<section class="hero">',
+      '  <h1>Vendre avec',
+      '    <em>exigence.</em></h1>',
+      '  <a class="btn" href="/estimation">',
+      '    Estimer mon bien</a>',
+      '</section>',
+    ].join('\n');
+
+    const setPhase = (id) => {
+      root.dataset.phase = id;
+      const idx = phases.findIndex((p) => p.id === id);
+      steps.forEach((s, i) => {
+        s.classList.toggle('is-on', i === idx);
+        s.classList.toggle('is-done', i < idx);
+      });
+      badge.textContent = phases[idx].label;
+      if (id === 'wire') codeEl.textContent = '';
+      cta.classList.remove('is-click');
+    };
+    setPhase('wire');
+
+    const typing = { n: 0 };
+    const tl = gsap.timeline({ repeat: -1, paused: true });
+    let t = 0;
+    phases.forEach((p) => {
+      tl.call(setPhase, [p.id], t);
+      tl.fromTo('#ls-progress', { scaleX: 0 }, { scaleX: 1, duration: p.d, ease: 'none', immediateRender: false }, t);
+      if (p.id === 'dev') {
+        tl.fromTo(typing, { n: 0 }, {
+          n: code.length, duration: p.d * .75, ease: 'none', immediateRender: false,
+          onUpdate: () => { codeEl.textContent = code.slice(0, Math.round(typing.n)); },
+        }, t + .3);
+      }
+      if (p.id === 'live') {
+        tl.fromTo(pointer, { left: '86%', top: '96%', opacity: 0 }, { left: '19%', top: '63%', opacity: 1, duration: 1.3, ease: 'power3.inOut', immediateRender: false }, t + .5)
+          .to(pointer, { scale: .8, duration: .12, yoyo: true, repeat: 1, transformOrigin: '20% 15%' }, t + 1.85)
+          .call(() => cta.classList.add('is-click'), null, t + 1.9)
+          .to(pointer, { opacity: 0, duration: .5 }, t + p.d - .6);
+      }
+      t += p.d;
+    });
+
+    // Only run while the hero is on screen
+    let wanted = false;
+    let visible = true;
+    const sync = () => (wanted && visible && !document.hidden ? tl.play() : tl.pause());
+    new IntersectionObserver(([e]) => { visible = e.isIntersecting; sync(); }).observe(root);
+    document.addEventListener('visibilitychange', sync);
+    return { play: () => { wanted = true; sync(); } };
   }
 
   /* ---------- Cursor, magnetic buttons, tilt cards ---------- */
