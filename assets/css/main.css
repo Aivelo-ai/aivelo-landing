@@ -430,6 +430,19 @@ html.js .preloader {
 }
 .live-site[data-phase="wire"] .ls-badge, .live-site[data-phase="design"] .ls-badge, .live-site[data-phase="dev"] .ls-badge { color: var(--text-dim); background: rgba(11,13,23,.06); }
 
+/* scroll hint (desktop scrub mode, wireframe phase only) */
+.ls-hint {
+  position: absolute; left: 50%; top: 50%; z-index: 2; translate: -50% -50%;
+  display: none; align-items: center; gap: 8px; white-space: nowrap;
+  font-family: var(--font-mono); font-size: 11.5px; letter-spacing: .04em; color: var(--accent-deep);
+  padding: 9px 16px; border-radius: 100px; background: rgba(255,255,255,.9); border: 1px solid rgba(58,103,236,.25);
+  box-shadow: 0 10px 26px -12px rgba(30,45,110,.3); transition: opacity .4s var(--ease);
+}
+.ls-hint svg { animation: hint-bob 1.6s var(--ease-io) infinite; }
+@keyframes hint-bob { 50% { transform: translateY(3px); } }
+.live-site.is-scrub .ls-hint { display: inline-flex; }
+.live-site.is-scrub:not([data-phase="wire"]) .ls-hint { opacity: 0; }
+
 /* floating cards around the window */
 .ls-code, .ls-chip, .ls-score { position: absolute; transition: opacity .6s var(--ease), transform .8s var(--ease); }
 .ls-code { left: -5%; bottom: 0; width: 54%; border-radius: 16px; padding: 12px 14px 14px; }
@@ -663,6 +676,23 @@ html.js .preloader {
 .bento-own .own-copy { display: grid; gap: 8px; flex: 1 1 360px; }
 .own-pills { display: flex; flex-wrap: wrap; gap: 8px; }
 .own-pills span { font-size: 12.5px; padding: 6px 12px; border-radius: 100px; background: rgba(15,168,116,.08); color: var(--success); border: 1px solid rgba(15,168,116,.22); }
+
+/* ---------- Blueprint reveal layer (injected by JS on card entry) ---------- */
+.bp {
+  position: absolute; inset: -1px; z-index: 5; pointer-events: none; border-radius: inherit;
+  border: 1.5px dashed rgba(58,103,236,.5);
+  background:
+    linear-gradient(rgba(58,103,236,.07) 1px, transparent 1px) 0 0 / 18px 18px,
+    linear-gradient(90deg, rgba(58,103,236,.07) 1px, transparent 1px) 0 0 / 18px 18px,
+    rgba(243,245,251,.96);
+}
+.bp::before { /* skeleton lines: title + two text rows */
+  content: ''; position: absolute; left: 24px; right: 24px; top: 26px; height: 48px;
+  background:
+    linear-gradient(rgba(58,103,236,.22), rgba(58,103,236,.22)) 0 0 / 46% 10px no-repeat,
+    linear-gradient(rgba(58,103,236,.13), rgba(58,103,236,.13)) 0 24px / 88% 8px no-repeat,
+    linear-gradient(rgba(58,103,236,.13), rgba(58,103,236,.13)) 0 40px / 64% 8px no-repeat;
+}
 
 /* ---------- Offres ---------- */
 .tabs-wrap { display: flex; justify-content: center; margin-bottom: 40px; }
