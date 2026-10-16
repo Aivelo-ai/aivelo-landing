@@ -1,63 +1,91 @@
 /* ==========================================================================
-   AIVELO — variante « logo en verre liquide »
-   Off by default. Turned on by the address hash #logo-3d or by
-   <html data-hero="3d">. It swaps the hero visual for the Aivelo logo in
-   3D tinted glass and adds a large, slow version of it behind the contact
-   section. three.js is loaded only when the variant is on; without WebGL
-   the flat logo is shown instead.
+   AIVELO — logo Aivelo en verre 3D (three.js, chargé à la demande)
+   - Toujours : le logo du bloc de pied de page devient un logo en verre 3D,
+     chargé seulement quand le visiteur approche du bas de la page.
+   - Variante « hero » (#logo-3d dans l'adresse ou <html data-hero="3d">) :
+     le visuel du hero devient le logo en verre, et une grande version
+     discrète passe derrière la section contact.
+   Sans WebGL, le logo plat reste affiché.
    ========================================================================== */
 (() => {
   'use strict';
 
   const html = document.documentElement;
-  const wanted = location.hash === '#logo-3d' || html.dataset.hero === '3d';
   const slot = document.querySelector('.live-site');
-  if (!wanted || !slot) return;
-  html.dataset.hero = '3d';
+  const heroVariant = !!slot && (location.hash === '#logo-3d' || html.dataset.hero === '3d');
+  const footerLogo = document.querySelector('[data-footer-word] img');
+  if (!heroVariant && !footerLogo) return;
+  if (heroVariant) html.dataset.hero = '3d';
 
   /* Logo geometry, traced from assets/img/aivelo-logo.png (471 × 471 px):
      one closed outline per piece, in source pixels, with its exact colour. */
   const LOGO = [{"name":"star","color":"#1967f7","pts":[[266.9,22.3],[267.7,23.5],[271.1,37.5],[275.7,49.5],[279.1,55.5],[281.5,58.5],[286.5,62.9],[294.5,67.3],[307.5,71.9],[316.5,74.1],[318.3,75.3],[317.5,76.1],[312.5,77.1],[300.5,80.9],[293.5,83.7],[286.5,88.1],[280.5,93.5],[277.7,97.5],[271.9,110.5],[267.1,127.7],[266.1,126.5],[263.9,117.5],[259.3,104.5],[255.3,96.5],[252.5,92.5],[247.5,88.1],[244.5,86.1],[235.5,81.7],[224.5,78.1],[215.5,75.9],[214.7,75.1],[216.5,74.1],[228.5,71.1],[238.5,67.3],[246.5,62.9],[252.5,57.5],[254.9,54.5],[258.3,48.5],[262.9,36.5],[266.1,23.5]]},{"name":"notch","color":"#2773f7","pts":[[199.5,282.5],[200.5,282.5],[200.5,388.5],[192.5,389.5],[188.5,391.5],[154.5,400.5],[146.5,403.5],[146.5,311.5]]},{"name":"tower-tall","color":"#081b58","pts":[[237.5,116.5],[237.5,380.5],[224.5,382.5],[201.5,388.5],[201.5,343.5],[201.5,282.5],[200.5,281.5],[201.5,280.5],[201.5,257.5],[199.5,256.5],[195.5,258.5],[146.5,286.5],[146.5,172.5]]},{"name":"tower-blue","color":"#2c73ed","pts":[[296.5,155.5],[298.5,155.5],[316.5,168.5],[322.5,171.5],[322.5,367.5],[321.5,368.5],[301.5,369.5],[300.5,370.5],[284.5,372.5],[257.5,376.5],[257.5,182.5]]},{"name":"tower-left","color":"#071953","pts":[[125.5,235.5],[126.5,235.5],[126.5,409.5],[77.5,427.5],[69.5,429.5],[69.5,269.5]]},{"name":"tower-right","color":"#406991","pts":[[343.5,235.5],[393.5,267.5],[393.5,366.5],[377.5,366.5],[342.5,366.5],[342.5,236.5]]},{"name":"base","color":"#164d92","pts":[[339.5,384.9],[341.5,384.5],[387.5,384.5],[391.5,385.3],[392.9,386.1],[393.5,387.5],[393.5,426.5],[392.3,428.3],[208.5,428.5],[160.5,428.5],[155.5,429.5],[149.5,429.5],[144.5,428.5],[139.5,428.9],[133.7,428.5],[155.5,420.9],[194.5,409.1],[200.5,407.9],[222.5,402.1],[249.5,396.5],[265.5,393.5],[297.5,388.5],[300.5,388.5],[305.5,387.5],[310.5,387.5],[315.5,386.5],[321.5,386.5],[326.5,385.5],[336.5,385.5]]}];
 
-  // 1. Swap the hero visual (runs before main.js: deferred scripts keep their order)
-  const visual = document.createElement('div');
-  visual.className = 'hero-visual glass3d';
-  visual.setAttribute('aria-hidden', 'true');
-  visual.innerHTML = `
-    <div class="g3-stage" data-intro>
-      <canvas class="g3-canvas"></canvas>
-      <img class="g3-fallback" src="assets/img/aivelo-logo.png" alt="" width="192" height="192" />
-    </div>
-    <span class="g3-chip g3-chip--a" data-intro><span class="dot dot-blue"></span>Sites web sur-mesure</span>
-    <span class="g3-chip g3-chip--b" data-intro><span class="dot dot-green"></span>Plateformes de formation</span>
-    <span class="g3-chip g3-chip--c" data-intro><span class="dot dot-blue"></span>UX &amp; motion design</span>`;
-  slot.replaceWith(visual);
-  const heroStage = visual.querySelector('.g3-stage');
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  // 2. Background version behind « Parlons de votre projet »
-  const contactBg = document.querySelector('.contact-bg');
-  let bgStage = null;
-  if (contactBg) {
-    bgStage = document.createElement('div');
-    bgStage.className = 'g3-bg';
-    bgStage.innerHTML = '<canvas class="g3-canvas"></canvas>';
-    contactBg.appendChild(bgStage);
+  // three.js, fetched once, only when a stage needs it
+  let threeLoading = null;
+  const loadThree = () => threeLoading || (threeLoading = new Promise((resolve, reject) => {
+    if (window.THREE) return resolve(window.THREE);
+    const s = document.createElement('script');
+    s.src = 'https://cdn.jsdelivr.net/npm/three@0.149.0/build/three.min.js';
+    s.onload = () => resolve(window.THREE);
+    s.onerror = reject;
+    document.head.appendChild(s);
+  }));
+
+  // 1. Hero variant: swap the hero visual (runs before main.js: deferred scripts keep their order)
+  if (heroVariant) {
+    const visual = document.createElement('div');
+    visual.className = 'hero-visual glass3d';
+    visual.setAttribute('aria-hidden', 'true');
+    visual.innerHTML = `
+      <div class="g3-stage" data-intro>
+        <canvas class="g3-canvas"></canvas>
+        <img class="g3-fallback" src="assets/img/aivelo-logo.png" alt="" width="192" height="192" />
+      </div>
+      <span class="g3-chip g3-chip--a" data-intro><span class="dot dot-blue"></span>Sites web sur-mesure</span>
+      <span class="g3-chip g3-chip--b" data-intro><span class="dot dot-green"></span>Plateformes de formation</span>
+      <span class="g3-chip g3-chip--c" data-intro><span class="dot dot-blue"></span>UX &amp; motion design</span>`;
+    slot.replaceWith(visual);
+    const heroStage = visual.querySelector('.g3-stage');
+
+    // Large, quiet version behind « Parlons de votre projet »
+    const contactBg = document.querySelector('.contact-bg');
+    let bgStage = null;
+    if (contactBg) {
+      bgStage = document.createElement('div');
+      bgStage.className = 'g3-bg';
+      bgStage.innerHTML = '<canvas class="g3-canvas"></canvas>';
+      contactBg.appendChild(bgStage);
+    }
+    const fail = () => { heroStage.classList.add('is-fallback'); if (bgStage) bgStage.remove(); };
+    loadThree().then((THREE) => {
+      try {
+        mount(THREE, heroStage, 'hero');
+        if (bgStage) mount(THREE, bgStage, 'background');
+      } catch (e) { fail(); }
+    }, fail);
   }
 
-  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const fail = () => { heroStage.classList.add('is-fallback'); if (bgStage) bgStage.remove(); };
-
-  const s = document.createElement('script');
-  s.src = 'https://cdn.jsdelivr.net/npm/three@0.149.0/build/three.min.js';
-  s.onload = () => {
-    try {
-      const THREE = window.THREE;
-      mount(THREE, heroStage, 'hero');
-      if (bgStage) mount(THREE, bgStage, 'background');
-    } catch (e) { fail(); }
-  };
-  s.onerror = fail;
-  document.head.appendChild(s);
+  // 2. Footer brand mark: the flat logo becomes glass when the footer comes near
+  if (footerLogo) {
+    const mark = document.createElement('div');
+    mark.className = 'g3-mark';
+    mark.innerHTML = '<canvas class="g3-canvas"></canvas>';
+    footerLogo.before(mark);
+    const io = new IntersectionObserver(([e]) => {
+      if (!e.isIntersecting) return;
+      io.disconnect();
+      loadThree().then((THREE) => {
+        try {
+          mount(THREE, mark, 'mark');
+          footerLogo.hidden = true;
+        } catch (err) { mark.remove(); }
+      }, () => mark.remove());
+    }, { rootMargin: '600px 0px' });
+    io.observe(footerLogo.parentElement); // the mark itself stays hidden until it is ready
+  }
 
   /* ---------- shared pieces ---------- */
 
@@ -120,7 +148,7 @@
           specularIntensity: dark ? 0.6 : 1, envMapIntensity: dark ? 0.55 : 0.9,
         })
         : new THREE.MeshPhysicalMaterial({
-          color, metalness: 0.05, roughness: 0.22, clearcoat: 1, clearcoatRoughness: 0.08, envMapIntensity: 0.9,
+          color, metalness: 0.05, roughness: dark ? 0.3 : 0.22, clearcoat: 1, clearcoatRoughness: 0.08, envMapIntensity: dark ? 0.5 : 0.9,
         });
       const mesh = new THREE.Mesh(geo, mat);
       if (piece.name === 'base') mesh.position.z = 0.12;
@@ -135,6 +163,7 @@
   function mount(THREE, stage, mode) {
     const canvas = stage.querySelector('canvas');
     const isHero = mode === 'hero';
+    const isMark = mode === 'mark';
     const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: !isHero, powerPreference: 'high-performance' });
     if (!renderer.getContext()) throw new Error('no webgl');
     renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
@@ -145,7 +174,7 @@
     const scene = new THREE.Scene();
     scene.environment = studioEnvironment(THREE, renderer);
     const camera = new THREE.PerspectiveCamera(30, 1, 0.1, 100);
-    camera.position.set(0, 0.1, isHero ? 17 : 14);
+    camera.position.set(0, 0.1, isHero ? 17 : isMark ? 13.5 : 14);
 
     if (isHero) {
       // What the glass refracts: the page's pearl tone, brand halos, a faint grid, a soft ground shadow
@@ -195,7 +224,7 @@
 
     // Smooth, damped motion: idle sway + pointer (hero) or scroll (background)
     const pointer = { x: 0, y: 0 };
-    if (isHero) {
+    if (isHero || isMark) {
       window.addEventListener('pointermove', (e) => {
         pointer.x = e.clientX / window.innerWidth - 0.5;
         pointer.y = e.clientY / window.innerHeight - 0.5;
@@ -211,8 +240,8 @@
       if (!visible || document.hidden) return;
       const t = reduceMotion ? 0 : clock.getElapsedTime();
       let tx, ty;
-      if (isHero) {
-        ty = Math.sin(t * 0.4) * 0.28 + pointer.x * 0.75;
+      if (isHero || isMark) {
+        ty = Math.sin(t * 0.4) * (isMark ? 0.45 : 0.28) + pointer.x * 0.75;
         tx = Math.sin(t * 0.55) * 0.05 + pointer.y * 0.3;
       } else {
         const r = stage.getBoundingClientRect();

@@ -29,11 +29,11 @@ Si les CDN ne répondent pas, ou si le visiteur a activé « réduire les animat
 - `.magnetic` (sur un bouton) : effet magnétique au survol
 - `data-tilt` (sur une carte) : inclinaison 3D + halo qui suit la souris
 
-## Variante du hero : logo en verre 3D
+## Logo en verre 3D
 
-`assets/js/hero-3d.js` remplace le visuel du hero par le logo Aivelo en verre 3D (three.js, chargé uniquement pour cette variante). Elle est désactivée par défaut et s'active :
+`assets/js/hero-3d.js` (three.js, chargé seulement quand il sert) :
 
-- en ajoutant `#logo-3d` à l'adresse (pour comparer),
-- ou en mettant `data-hero="3d"` sur la balise `<html>` (pour l'adopter).
+- **Pied de page** : le logo du bloc « Aivelo » devient un logo en verre 3D quand le visiteur approche du bas de la page. Le logo plat reste en place si WebGL n'est pas disponible.
+- **Variante du hero**, désactivée par défaut : le visuel du hero devient le logo en verre, avec une grande version discrète derrière la section contact. Elle s'active en ajoutant `#logo-3d` à l'adresse (pour comparer) ou avec `data-hero="3d"` sur `<html>` (pour l'adopter).
 
-Sans WebGL, le logo plat s'affiche à la place.
+Les contours du logo sont tracés depuis `assets/img/aivelo-logo.png` (constante `LOGO` en tête du fichier).
