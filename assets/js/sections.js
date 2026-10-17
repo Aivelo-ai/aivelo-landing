@@ -742,9 +742,9 @@
       <h3>Nom de domaine</h3><p>OVH SAS, 2 rue Kellermann, 59100 Roubaix, France · <a href="https://www.ovhcloud.com" target="_blank" rel="noreferrer">ovhcloud.com</a></p>
       <h3>Propriété intellectuelle</h3><p>Les contenus de ce site (textes, visuels, logo) appartiennent à Aivelo, sauf mention contraire. Les sites clients sont présentés avec leur accord.</p>`],
     confidentialite: ['Confidentialité & RGPD', `
-      <p>Ce site ne dépose aucun cookie publicitaire ni de suivi. Le responsable du traitement est Arthur Semelier (Aivelo).</p>
+      <p>Ce site ne dépose aucun cookie, ni publicitaire ni de suivi. Le responsable du traitement est Arthur Semelier (Aivelo).</p>
       <h3>Données collectées</h3><p>Uniquement celles que vous nous transmettez : nom, e-mail et téléphone lorsque vous réservez un atelier ou nous écrivez, ainsi que l'estimation composée sur le site si vous choisissez de la joindre. Elles servent à préparer l'atelier et à répondre à votre demande. Elles ne sont ni vendues ni cédées.</p>
-      <h3>Prestataires</h3><p>Réservation : Calendly. Visioconférence et agenda : Google. Hébergement : Vercel. Ces prestataires peuvent traiter des données hors de l'Union européenne, encadrés par le Data Privacy Framework UE–États-Unis ou par les clauses contractuelles types de la Commission européenne.</p>
+      <h3>Prestataires</h3><p>Réservation : Calendly. Visioconférence et agenda : Google. Hébergement : Vercel. Mesure d'audience : Umami, sans cookie, avec des statistiques anonymes et agrégées (pages vues, clics sur les boutons), qui ne permettent pas de vous identifier. Ces prestataires peuvent traiter des données hors de l'Union européenne, encadrés par le Data Privacy Framework UE–États-Unis ou par les clauses contractuelles types de la Commission européenne.</p>
       <h3>Durée de conservation</h3><p>Demandes de contact et rendez-vous sans suite : 3 ans après le dernier échange. Clients : pendant toute la durée du contrat, puis 3 ans. Factures et pièces comptables : 10 ans, comme l'impose la loi.</p>
       <h3>Vos droits</h3><p>Accès, rectification, effacement, limitation, opposition et portabilité : écrivez à <a href="mailto:arthur.s@aivelo.fr">arthur.s@aivelo.fr</a>, réponse sous un mois. Vous pouvez aussi adresser une réclamation à la <a href="https://www.cnil.fr" target="_blank" rel="noreferrer">CNIL</a>.</p>`],
     cgv: ['Conditions générales', `
@@ -781,4 +781,28 @@
     };
     stack.addEventListener('scroll', sync, { passive: true }); sync();
   }
+
+  /* ------------------------------------------------------------------
+     Mesure d'audience (Umami, sans cookie) : les clics qui comptent
+     ------------------------------------------------------------------ */
+  const track = (name, data) => { try { if (window.umami) window.umami.track(name, data); } catch (e) { /* never break the page for a statistic */ } };
+  const where = (el) => (el.closest('.m-dock') ? 'barre-mobile' : el.closest('.nav, .mobile-menu') ? 'menu' : el.closest('.book') ? 'fenetre-reservation' : el.closest('.footer') ? 'pied-de-page' : (el.closest('section[id]') || {}).id || 'page');
+  // Umami counts every click on an element carrying data-umami-event, including those added here
+  const tag = (el, name, extra = {}) => {
+    el.setAttribute('data-umami-event', name);
+    Object.entries({ section: where(el), ...extra }).forEach(([k, v]) => el.setAttribute(`data-umami-event-${k}`, v));
+  };
+  $$('a[href="#demo"]').forEach((a) => tag(a, a.dataset.metierGo ? 'esquisser-metier' : a.closest('.m-dock') ? 'estimer' : 'demarrer-projet', a.dataset.metierGo ? { metier: a.dataset.metierGo } : {}));
+  $$('[data-sim]').forEach((a) => tag(a, 'estimer', { type: a.dataset.sim, niveau: a.dataset.simLevel || '' }));
+  $$('[data-book]').forEach((a) => tag(a, a.id === 'sim-book' ? 'reserver-avec-estimation' : 'reserver-atelier'));
+  $$('a[href*="wa.me"]').forEach((a) => tag(a, 'whatsapp'));
+  $$('a[href*="linkedin.com"]').forEach((a) => tag(a, 'linkedin'));
+  $$('a[href^="mailto:"]').forEach((a) => tag(a, a.id === 'sim-send' ? 'recapitulatif-email' : 'email'));
+  // the funnel: sketch → estimate → booking confirmed
+  const once = (el, name) => { if (el) el.addEventListener('change', () => track(name), { once: true }); };
+  once($('#demo-form'), 'esquisse-composee');
+  once($('#sim-form'), 'estimation-composee');
+  window.addEventListener('message', (e) => {
+    if (/calendly\.com$/.test((() => { try { return new URL(e.origin).hostname; } catch (x) { return ''; } })()) && e.data && e.data.event === 'calendly.event_scheduled') track('rdv-confirme');
+  });
 })();

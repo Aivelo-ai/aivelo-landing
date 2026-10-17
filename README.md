@@ -74,3 +74,4 @@ Rendu WebGL2 en deux passes (metaballs dans une texture flottante, puis ombrage 
 - **Polices** : hébergées dans `assets/fonts/` (`@font-face` en tête de `assets/css/sections.css`), aucune requête vers Google Fonts.
 - **Fond** : le soleil descend et se dore au fil de la page ; dans les sections de nuit, la constellation du logo se dessine (`assets/js/bg.js`).
 - **Hero** : après « En ligne », la fenêtre fait défiler les vrais sites clients (`REALS` dans `assets/js/main.js`, captures `assets/img/real-*.webp`).
+- **Statistiques** : Umami Cloud, sans cookie (balise dans le `<head>`, limitée à `aivelo.fr` par `data-domains`). Les clics clés portent `data-umami-event` (ajouté par `assets/js/sections.js`) : `demarrer-projet`, `esquisser-metier`, `estimer`, `reserver-atelier`, `reserver-avec-estimation`, `whatsapp`, `linkedin`, `email`, plus `esquisse-composee`, `estimation-composee` et `rdv-confirme` (réservation Calendly confirmée).
