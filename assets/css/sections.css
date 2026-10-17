@@ -732,4 +732,13 @@ html.has-bgfx .manifesto-text { filter: drop-shadow(0 0 18px rgba(150,180,255,.1
 .ls-reals img { position: absolute; top: 0; left: 0; width: 100%; height: auto; opacity: 0; transition: opacity .5s var(--ease); will-change: transform; }
 .ls-reals img.is-on { opacity: 1; }
 .live-site.is-real .ls-badge { color: #fff; background: var(--accent-btn, #2E5BD9); }
+/* Hero mobile : la 5e étape « Nos clients » ne doit plus élargir la fenêtre au-delà de l'écran */
+.hero-inner > * { min-width: 0; }
+.ls-url { max-width: 100%; min-width: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+@media (max-width: 640px) {
+  .ls-steps { max-width: 100%; }
+  /* étapes passées et à venir : un simple point ; seule l'étape en cours garde son nom */
+  .ls-step:not(.is-on) { font-size: 0; gap: 0; padding: 6px 7px; }
+  .ls-url { font-size: 10px; }
+}
 .bgfx-switch { display: none !important; }
