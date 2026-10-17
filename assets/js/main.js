@@ -727,7 +727,9 @@
     const realStep = $('.ls-step[data-step="real"]', root);
     const reals = document.createElement('div');
     reals.className = 'ls-reals';
-    reals.innerHTML = REALS.map(([img]) => `<img alt="" decoding="async" data-src="assets/img/${img}.webp" />`).join('');
+    // on a phone, the window shows the mobile version of each site: readable at that size
+    const small = window.matchMedia('(max-width: 640px)').matches;
+    reals.innerHTML = REALS.map(([img]) => `<img alt="" decoding="async" data-src="assets/img/${img}${small ? '-m' : ''}.webp" />`).join('');
     stage.appendChild(reals);
     const realImgs = $$('img', reals);
     let realTween = null;
