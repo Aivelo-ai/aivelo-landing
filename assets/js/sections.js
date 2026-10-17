@@ -66,7 +66,7 @@
      ------------------------------------------------------------------ */
   const DEMO = {
     immo: { brand: 'Maison Lumière', links: ['Acheter', 'Vendre', "L'agence"], nav: 'Contact', eyebrow: 'Agence immobilière · Bordeaux', title: 'Vendre avec exigence.', sub: "Estimation offerte sous 48 h, accompagnement jusqu'à la signature.", cta: 'Estimer mon bien', cta2: 'Nos biens', img: 'secteur-immobilier', cards: [['Villa · Pessac', '620 000 €', 'bien-1'], ['T3 · Chartrons', '380 000 €', 'bien-2'], ['Loft · Bastide', '455 000 €', 'bien-3']] },
-    formation: { brand: 'Académie Nova', links: ['Formations', 'Financement', 'Qualité'], nav: 'Espace apprenant', eyebrow: 'Organisme de formation certifié', title: 'Apprendre, vraiment.', sub: 'Des parcours en ligne et en présentiel, finançables CPF et OPCO.', cta: 'Voir les formations', cta2: 'Être rappelé', img: 'secteur-formation', cards: [['Management · 21 h', 'Éligible CPF'], ['Bureautique · 14 h', '100 % en ligne'], ['Sécurité · 7 h', 'Présentiel']] },
+    formation: { brand: 'Académie Nova', links: ['Formations', 'Financement', 'Qualité'], nav: 'Espace apprenant', eyebrow: 'Organisme de formation', title: 'Apprendre, vraiment.', sub: 'Des parcours en ligne et en présentiel, à votre rythme.', cta: 'Voir les formations', cta2: 'Être rappelé', img: 'secteur-formation', cards: [['Management · 21 h', 'Blended'], ['Bureautique · 14 h', '100 % en ligne'], ['Sécurité · 7 h', 'Présentiel']] },
     coach: { brand: 'Claire Martin', links: ['Programmes', 'Méthode', 'Avis'], nav: 'Réserver', eyebrow: 'Coach professionnelle certifiée', title: 'Avancer, enfin.', sub: "Un programme de 8 semaines pour clarifier vos choix et passer à l'action.", cta: 'Réserver un appel', cta2: 'Le programme', img: 'secteur-coach', cards: [['Séance découverte', 'Offerte'], ['Programme 8 semaines', 'En ligne'], ['Atelier collectif', 'Bordeaux']] },
     finance: { brand: 'Patrimoine & Co', links: ['Expertises', 'Le cabinet', 'Ressources'], nav: 'Rendez-vous', eyebrow: 'Conseil en gestion de patrimoine', title: 'Votre patrimoine, en clair.', sub: 'Un regard indépendant pour préparer, protéger et transmettre.', cta: 'Prendre rendez-vous', cta2: 'Notre approche', img: 'secteur-finance', cards: [['Retraite', 'Préparer'], ['Immobilier', 'Investir'], ['Transmission', 'Protéger']] },
     artisan: { brand: 'Atelier Durand', links: ['Réalisations', 'Savoir-faire', 'Avis'], nav: 'Devis', eyebrow: 'Menuiserie & agencement · Gironde', title: 'Le bois, sur-mesure.', sub: 'Cuisines, dressings et escaliers dessinés et fabriqués dans notre atelier.', cta: 'Demander un devis', cta2: 'Nos réalisations', img: 'secteur-artisan', cards: [['Cuisine · Arcachon', '2025'], ['Dressing · Talence', '2025'], ['Escalier · Libourne', '2024']] },
@@ -186,7 +186,7 @@
     site: {
       sizeLabel: 'Nombre de pages', hint: 'Accueil, services, à propos, contact… chaque page compte.', max: 25, def: 5, unit: ['page', 'pages'],
       levels: {
-        std: { name: 'Essentiel', label: 'Soigné', sub: 'Design personnalisé', base: 2000, incl: 5, extra: 150, days: 10 },
+        std: { name: 'Essentiel', label: 'Essentiel', sub: 'Design personnalisé', base: 2000, incl: 5, extra: 150, days: 10 },
         sig: { name: 'Signature', label: 'Signature', sub: 'DA, motion & back-office', base: 3500, incl: 12, extra: 220, days: 15, includes: ['cms', 'blog', 'rdv'] },
       },
       daysPerExtra: 1,
@@ -208,7 +208,7 @@
     formation: {
       sizeLabel: 'Modules à intégrer', hint: 'Vous fournissez vos contenus (vidéos, PDF, quiz) : nous les intégrons et les mettons en forme.', max: 60, def: 10, unit: ['module', 'modules'],
       levels: {
-        std: { name: 'Lancement', label: 'Plateforme', sub: 'Parcours, quiz, attestations', base: 2490, incl: 10, extra: 45, days: 11 },
+        std: { name: 'Lancement', label: 'Lancement', sub: 'Parcours, quiz, attestations', base: 2490, incl: 10, extra: 45, days: 11 },
         sig: { name: 'Académie', label: 'Académie', sub: 'Catalogue, paiement, suivi', base: 4990, incl: 20, extra: 35, days: 20, includes: ['report'] },
       },
       daysPerExtra: .25,
@@ -431,6 +431,10 @@
     document.addEventListener('securitypolicyviolation', (e) => {
       if (/calendar\.google|calendly/.test(e.blockedURI || '')) fallback(true);
     });
+    const ready = () => { if (blocked) return; body.classList.add('is-ready'); body.classList.remove('is-blocked'); $('.book-fallback', body).hidden = true; };
+    window.addEventListener('message', (e) => {
+      if (/(^|\.)calendly\.com$/.test((() => { try { return new URL(e.origin).hostname; } catch (x) { return ''; } })()) && e.data && /^calendly\./.test(e.data.event || '')) ready();
+    });
     let lastSrc = '';
     const open = () => {
       const brief = window.labBriefArmed && window.labBrief ? window.labBrief : '';
@@ -442,7 +446,11 @@
         const f = document.createElement('iframe');
         f.src = src; f.title = 'Agenda de réservation';
         // a slow agenda that arrives after the fallback still takes its place; a refused one never does
-        f.addEventListener('load', () => setTimeout(() => { if (blocked) return; body.classList.add('is-ready'); body.classList.remove('is-blocked'); $('.book-fallback', body).hidden = true; }, 120));
+        // the iframe's load event also fires on a browser error page: a no-cors request tells us whether
+        // the agenda is reachable at all (blocked by a firewall, an ad blocker or a CSP → the way out)
+        let reachable = null;
+        fetch(src, { mode: 'no-cors', cache: 'no-store' }).then(() => { reachable = true; if (f.dataset.loaded) ready(); }, () => { reachable = false; fallback(true); });
+        f.addEventListener('load', () => { f.dataset.loaded = '1'; if (reachable !== false) setTimeout(() => { if (reachable) ready(); }, 120); });
         body.appendChild(f); lastSrc = src;
         setTimeout(() => { if (!body.classList.contains('is-ready')) fallback(false); }, 9000);
       }
@@ -470,7 +478,10 @@
      ------------------------------------------------------------------ */
   const dock = document.createElement('div');
   dock.className = 'm-dock';
-  dock.innerHTML = `<a href="https://wa.me/33624434801?text=${encodeURIComponent('Bonjour Arthur, je vous contacte depuis le site Aivelo au sujet d\u2019un projet.')}" class="m-dock-wa" target="_blank" rel="noreferrer" aria-label="Écrire sur WhatsApp"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.1l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8s-.4-.1-.6.1-.7.8-.8 1-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.3-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6a2.7 2.7 0 0 0 1.8-1.3 2.2 2.2 0 0 0 .2-1.3c-.1-.1-.3-.2-.5-.3z"/></svg></a><a href="#demo" class="m-dock-ghost">Estimer</a><a href="https://calendly.com/arthur-s-aivelo/atelier-decouverte" target="_blank" rel="noreferrer" class="m-dock-main" data-book>Réserver l\u2019atelier</a>`;
+  // « Estimer » goes straight to the estimate: on this page, or on the home page from the other pages
+  const homeHref = ($('.nav .logo') || {}).getAttribute ? $('.nav .logo').getAttribute('href') : '';
+  const estimateHref = $('#estimation') ? '#estimation' : `${homeHref && homeHref[0] !== '#' ? homeHref : ''}#estimation`;
+  dock.innerHTML = `<a href="https://wa.me/33624434801?text=${encodeURIComponent('Bonjour Arthur, je vous contacte depuis le site Aivelo au sujet d\u2019un projet.')}" class="m-dock-wa" target="_blank" rel="noreferrer" aria-label="Écrire sur WhatsApp"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.1l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8s-.4-.1-.6.1-.7.8-.8 1-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.3-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6a2.7 2.7 0 0 0 1.8-1.3 2.2 2.2 0 0 0 .2-1.3c-.1-.1-.3-.2-.5-.3z"/></svg></a><a href="${estimateHref}" class="m-dock-ghost">Estimer</a><a href="https://calendly.com/arthur-s-aivelo/atelier-decouverte" target="_blank" rel="noreferrer" class="m-dock-main" data-book>Réserver l\u2019atelier</a>`;
   document.body.appendChild(dock);
   if (window.labBook) { const d = $('[data-book]', dock); d.removeAttribute('target'); d.setAttribute('href', '#reserver'); d.setAttribute('role', 'button'); d.addEventListener('click', (e) => { e.preventDefault(); window.labBook(); }); }
   const hero = $('.hero'); const contact = $('#contact'); const est = $('#estimation');
@@ -736,22 +747,22 @@
      ------------------------------------------------------------------ */
   const LEGAL = {
     mentions: ['Mentions légales', `
-      <h3>Éditeur</h3><p>Aivelo, entreprise d'Arthur Semelier, en cours d'immatriculation (le numéro SIRET sera publié ici dès son attribution). 20 rue Louis Maydieu, Bordeaux, France.<br>Directeur de la publication : Arthur Semelier.</p>
+      <h3>Éditeur</h3><p>Aivelo, entreprise d'Arthur Semelier, en cours d'immatriculation (le numéro SIRET sera publié ici dès son attribution). 20 rue Louis Maydieu, 33200 Bordeaux (Caudéran), France.<br>Directeur de la publication : Arthur Semelier.</p>
       <h3>Contact</h3><p><a href="mailto:arthur.s@aivelo.fr">arthur.s@aivelo.fr</a> · <a href="https://wa.me/33624434801" target="_blank" rel="noreferrer">+33 6 24 43 48 01</a></p>
       <h3>Hébergement</h3><p>Vercel Inc., 440 N Barranca Ave #4133, Covina, CA 91723, États-Unis · <a href="https://vercel.com" target="_blank" rel="noreferrer">vercel.com</a></p>
       <h3>Nom de domaine</h3><p>OVH SAS, 2 rue Kellermann, 59100 Roubaix, France · <a href="https://www.ovhcloud.com" target="_blank" rel="noreferrer">ovhcloud.com</a></p>
       <h3>Propriété intellectuelle</h3><p>Les contenus de ce site (textes, visuels, logo) appartiennent à Aivelo, sauf mention contraire. Les sites clients sont présentés avec leur accord.</p>`],
     confidentialite: ['Confidentialité & RGPD', `
-      <p>Ce site ne dépose aucun cookie, ni publicitaire ni de suivi. Le responsable du traitement est Arthur Semelier (Aivelo).</p>
+      <p>Ce site ne dépose aucun cookie de mesure ni publicitaire. Seul l'agenda Calendly, lorsque vous ouvrez la réservation, peut déposer ses propres cookies, nécessaires à la prise de rendez-vous. Le responsable du traitement est Arthur Semelier (Aivelo).</p>
       <h3>Données collectées</h3><p>Uniquement celles que vous nous transmettez : nom, e-mail et téléphone lorsque vous réservez un atelier ou nous écrivez, ainsi que l'estimation composée sur le site si vous choisissez de la joindre. Elles servent à préparer l'atelier et à répondre à votre demande. Elles ne sont ni vendues ni cédées.</p>
       <h3>Prestataires</h3><p>Réservation : Calendly. Visioconférence et agenda : Google. Hébergement : Vercel. Mesure d'audience : Umami, sans cookie, avec des statistiques anonymes et agrégées (pages vues, clics sur les boutons), qui ne permettent pas de vous identifier. Ces prestataires peuvent traiter des données hors de l'Union européenne, encadrés par le Data Privacy Framework UE–États-Unis ou par les clauses contractuelles types de la Commission européenne.</p>
       <h3>Durée de conservation</h3><p>Demandes de contact et rendez-vous sans suite : 3 ans après le dernier échange. Clients : pendant toute la durée du contrat, puis 3 ans. Factures et pièces comptables : 10 ans, comme l'impose la loi.</p>
       <h3>Vos droits</h3><p>Accès, rectification, effacement, limitation, opposition et portabilité : écrivez à <a href="mailto:arthur.s@aivelo.fr">arthur.s@aivelo.fr</a>, réponse sous un mois. Vous pouvez aussi adresser une réclamation à la <a href="https://www.cnil.fr" target="_blank" rel="noreferrer">CNIL</a>.</p>`],
     cgv: ['Conditions générales', `
       <p>Chaque projet fait l'objet d'un devis détaillé ligne par ligne.</p>
-      <h3>Paiement</h3><p>Acompte à la signature, solde à la mise en ligne, paiement en 3 fois sans frais possible. Abonnements CRM et add-ons sans engagement.</p>
+      <h3>Paiement</h3><p>Acompte à la signature, solde à la mise en ligne, paiement en 3 fois sans frais possible. Abonnements mensuels (CRM, maintenance, options) sans engagement, résiliables à tout moment ; formules 6 mois et annuelles payées d'avance pour la période choisie.</p>
       <h3>Propriété</h3><p>À la livraison et après paiement complet, le code, le nom de domaine, les contenus et les données appartiennent au client.</p>
-      <p>[Conditions complètes à compléter.]</p>`],
+      <p>Les conditions détaillées (périmètre, allers-retours, calendrier, recette) figurent dans chaque devis signé.</p>`],
   };
   const dlg = $('#legal');
   if (dlg && typeof dlg.showModal === 'function') {
@@ -792,7 +803,7 @@
     el.setAttribute('data-umami-event', name);
     Object.entries({ section: where(el), ...extra }).forEach(([k, v]) => el.setAttribute(`data-umami-event-${k}`, v));
   };
-  $$('a[href="#demo"]').forEach((a) => tag(a, a.dataset.metierGo ? 'esquisser-metier' : a.closest('.m-dock') ? 'estimer' : 'demarrer-projet', a.dataset.metierGo ? { metier: a.dataset.metierGo } : {}));
+  $$('a[href$="#demo"], a[href$="#estimation"]').forEach((a) => { if (!a.hasAttribute('data-sim')) tag(a, a.dataset.metierGo ? 'esquisser-metier' : a.closest('.m-dock') || /#estimation$/.test(a.getAttribute('href')) ? 'estimer' : 'demarrer-projet', a.dataset.metierGo ? { metier: a.dataset.metierGo } : {}); });
   $$('[data-sim]').forEach((a) => tag(a, 'estimer', { type: a.dataset.sim, niveau: a.dataset.simLevel || '' }));
   $$('[data-book]').forEach((a) => tag(a, a.id === 'sim-book' ? 'reserver-avec-estimation' : 'reserver-atelier'));
   $$('a[href*="wa.me"]').forEach((a) => tag(a, 'whatsapp'));

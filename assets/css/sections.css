@@ -741,4 +741,48 @@ html.has-bgfx .manifesto-text { filter: drop-shadow(0 0 18px rgba(150,180,255,.1
   .ls-step:not(.is-on) { font-size: 0; gap: 0; padding: 6px 7px; }
   .ls-url { font-size: 10px; }
 }
+
+/* ==========================================================================
+   Pages locales (SEO) : création de site web à Bordeaux
+   ========================================================================== */
+.crumbs { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-bottom: 18px; font-size: 13px; color: var(--text-mute); }
+.crumbs a { color: var(--text-dim); text-decoration: underline; text-underline-offset: 3px; text-decoration-color: rgba(11,13,23,.2); }
+.crumbs a:hover { color: var(--text); }
+.local-card { position: relative; display: grid; gap: 22px; padding: clamp(24px, 2.6vw, 34px); border-radius: var(--r-xl);
+  background: radial-gradient(90% 90% at 100% 0%, rgba(79,126,247,.16), transparent 60%), var(--glass); -webkit-backdrop-filter: var(--glass-blur); backdrop-filter: var(--glass-blur); border: 1px solid var(--glass-edge); box-shadow: var(--glass-shadow); }
+.local-card-head { display: flex; align-items: center; gap: 14px; }
+.local-card-head b { display: block; font-size: 18px; letter-spacing: -.02em; }
+.local-card-head small { font-size: 13px; color: var(--text-dim); }
+.local-pin { display: grid; place-items: center; width: 46px; height: 46px; border-radius: 14px; color: #fff; background: linear-gradient(140deg, #8B7CFF, #2E5BD9); box-shadow: 0 12px 24px -12px rgba(46,91,217,.7); }
+.local-facts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.local-facts li { display: grid; gap: 4px; padding: 14px; border-radius: 16px; background: var(--glass-solid); border: 1px solid var(--glass-edge); }
+.local-facts b { font-size: clamp(20px, 1.8vw, 26px); letter-spacing: -.03em; }
+.local-facts span { font-size: 12.5px; color: var(--text-dim); line-height: 1.35; }
+.local-ways { display: grid; gap: 10px; font-size: 14.5px; color: var(--text-dim); }
+.local-ways b { color: var(--text); }
+.local-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.local-chips li, .zone-list li { font-size: 13px; padding: 6px 12px; border-radius: 100px; background: rgba(255,255,255,.6); border: 1px solid var(--glass-edge); color: var(--text-dim); }
+.local-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: clamp(14px, 1.6vw, 22px); }
+.local-tile { display: grid; align-content: start; gap: 12px; padding: clamp(22px, 2.2vw, 30px); border-radius: var(--r-xl); background: var(--glass); -webkit-backdrop-filter: var(--glass-blur); backdrop-filter: var(--glass-blur); border: 1px solid var(--glass-edge); box-shadow: var(--glass-shadow); }
+.local-tile h3 { font-size: 20px; letter-spacing: -.02em; }
+.local-tile p { font-size: 15px; color: var(--text-dim); }
+.local-num { font-family: var(--font-mono); font-size: 12px; color: var(--accent-btn, #2E5BD9); }
+.offres .plans { margin-top: clamp(28px, 4vw, 48px); }
+.zones-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: clamp(14px, 1.6vw, 22px); }
+.zone { display: grid; align-content: start; gap: 12px; padding: clamp(22px, 2.4vw, 32px); border-radius: var(--r-xl); background: var(--glass); -webkit-backdrop-filter: var(--glass-blur); backdrop-filter: var(--glass-blur); border: 1px solid var(--glass-edge); box-shadow: var(--glass-shadow); }
+.zone h3 { font-size: 22px; letter-spacing: -.02em; }
+.zone > p { font-size: 15px; color: var(--text-dim); }
+.zone-list { display: flex; flex-wrap: wrap; gap: 8px; }
+.zone--france { background: radial-gradient(100% 120% at 100% 100%, rgba(139,124,255,.2), transparent 60%), var(--glass); }
+@media (max-width: 1100px) { .local-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 760px) {
+  .local-grid, .zones-grid { grid-template-columns: 1fr; }
+  .local-facts { grid-template-columns: 1fr 1fr 1fr; }
+  .local-facts li { padding: 10px; }
+}
+/* menu mobile : la réservation en premier, pleine largeur */
+.mobile-menu-foot { display: grid !important; gap: 14px; justify-items: start; grid-template-columns: 1fr; }
+.mobile-menu-foot .btn { justify-self: stretch; width: auto; justify-content: center; }
+/* Lab : le sélecteur de fond ne recouvre pas le contenu sur mobile (il n'existe pas en ligne) */
+@media (max-width: 900px) { .bgfx-switch { display: none !important; } }
 .bgfx-switch { display: none !important; }

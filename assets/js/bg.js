@@ -290,7 +290,7 @@ void main(){
   const lerp = (a, b, k) => a + (b - a) * k;
   const frame = (now) => {
     if (!running) return;
-    requestAnimationFrame(frame);
+    rafId = requestAnimationFrame(frame);
     if (choice === 'off') return;
     if (now - last < 28) return;
     const dt = Math.min(.1, (now - (last || now)) / 1000) || .016;
@@ -323,7 +323,13 @@ void main(){
     gl.drawArrays(gl.TRIANGLES, 0, 3);
   };
   requestAnimationFrame(frame);
-  document.addEventListener('visibilitychange', () => { running = !document.hidden; if (running) requestAnimationFrame(frame); });
+  // one loop only: coming back to the tab must not stack a second requestAnimationFrame chain
+  let rafId = 0;
+  document.addEventListener('visibilitychange', () => {
+    running = !document.hidden;
+    cancelAnimationFrame(rafId);
+    if (running) rafId = requestAnimationFrame(frame);
+  });
 
   /* ---------- on / off (Lab: compare with the original background) ---------- */
   const sw = document.createElement('div');

@@ -3,12 +3,12 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Aivelo — Studio digital & IA · Sites web, plateformes de formation, CRM immobilier</title>
-<meta name="description" content="Aivelo conçoit, développe et gère des sites web sur-mesure, des plateformes de formation et un CRM immobilier propulsé par l'IA. Un digital qui valorise votre métier et vos valeurs." />
+<title>Studio web à Bordeaux · Sites &amp; plateformes de formation | Aivelo</title>
+<meta name="description" content="Studio web à Bordeaux (Caudéran) : sites sur-mesure dès 2 000 € HT, plateformes de formation et maintenance. Première maquette en 7 jours." />
 <meta name="theme-color" content="#EEF1F8" />
 <meta property="og:type" content="website" />
 <meta property="og:title" content="Aivelo — Le digital qui valorise votre métier" />
-<meta property="og:description" content="Sites web sur-mesure, plateformes de formation, gestion & maintenance, CRM IA immobilier. Conçu en France." />
+<meta property="og:description" content="Sites web sur-mesure, plateformes de formation, gestion & maintenance, CRM IA immobilier. Conçu à Bordeaux." />
 <meta property="og:locale" content="fr_FR" />
 <meta property="og:url" content="https://aivelo.fr/" />
 <meta property="og:site_name" content="Aivelo" />
@@ -42,20 +42,99 @@
 {
   "@context": "https://schema.org",
   "@type": "ProfessionalService",
+  "@id": "https://aivelo.fr/#studio",
   "name": "Aivelo",
-  "description": "Studio digital & IA : sites web sur-mesure, plateformes de formation, gestion & maintenance, CRM immobilier IA.",
-  "email": "arthur.s@aivelo.fr",
-  "areaServed": "FR",
-  "address": { "@type": "PostalAddress", "addressLocality": "Bordeaux", "addressCountry": "FR" },
+  "description": "Studio web à Bordeaux (Caudéran) : création de sites internet sur-mesure, plateformes de formation, maintenance et CRM IA immobilier.",
   "url": "https://aivelo.fr/",
+  "email": "arthur.s@aivelo.fr",
+  "telephone": "+33624434801",
   "logo": "https://aivelo.fr/assets/img/aivelo-logo.png",
   "image": "https://aivelo.fr/assets/img/og-aivelo.jpg",
-  "founder": { "@type": "Person", "name": "Arthur Semelier", "jobTitle": "Fondateur", "sameAs": ["https://www.linkedin.com/in/arthursemelier/"] },
-  "knowsAbout": ["Création de sites web", "Plateformes e-learning", "Maintenance de sites", "CRM immobilier", "SEO local"],
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "20 rue Louis Maydieu",
+    "postalCode": "33200",
+    "addressLocality": "Bordeaux",
+    "addressRegion": "Nouvelle-Aquitaine",
+    "addressCountry": "FR"
+  },
+  "areaServed": [
+    {
+      "@type": "City",
+      "name": "Bordeaux"
+    },
+    {
+      "@type": "AdministrativeArea",
+      "name": "Bordeaux Métropole"
+    },
+    {
+      "@type": "AdministrativeArea",
+      "name": "Gironde"
+    },
+    {
+      "@type": "Country",
+      "name": "France"
+    }
+  ],
+  "founder": {
+    "@type": "Person",
+    "name": "Arthur Semelier",
+    "jobTitle": "Fondateur",
+    "sameAs": [
+      "https://www.linkedin.com/in/arthursemelier/"
+    ]
+  },
+  "sameAs": [
+    "https://www.linkedin.com/in/arthursemelier/"
+  ],
+  "knowsAbout": [
+    "Création de sites web",
+    "Plateformes e-learning",
+    "Maintenance de sites",
+    "CRM immobilier",
+    "SEO local"
+  ],
   "makesOffer": [
-    { "@type": "Offer", "name": "Site Essentiel", "price": "2000", "priceCurrency": "EUR" },
-    { "@type": "Offer", "name": "Site Signature", "price": "3500", "priceCurrency": "EUR" },
-    { "@type": "Offer", "name": "Plateforme de formation Lancement", "price": "2490", "priceCurrency": "EUR" }
+    {
+      "@type": "Offer",
+      "name": "Site Essentiel",
+      "priceSpecification": {
+        "@type": "PriceSpecification",
+        "minPrice": 2000,
+        "priceCurrency": "EUR",
+        "valueAddedTaxIncluded": false
+      }
+    },
+    {
+      "@type": "Offer",
+      "name": "Site Signature",
+      "priceSpecification": {
+        "@type": "PriceSpecification",
+        "minPrice": 3500,
+        "priceCurrency": "EUR",
+        "valueAddedTaxIncluded": false
+      }
+    },
+    {
+      "@type": "Offer",
+      "name": "Plateforme de formation Lancement",
+      "priceSpecification": {
+        "@type": "PriceSpecification",
+        "minPrice": 2490,
+        "priceCurrency": "EUR",
+        "valueAddedTaxIncluded": false
+      }
+    },
+    {
+      "@type": "Offer",
+      "name": "Plateforme de formation Académie",
+      "priceSpecification": {
+        "@type": "PriceSpecification",
+        "minPrice": 4990,
+        "priceCurrency": "EUR",
+        "valueAddedTaxIncluded": false
+      }
+    }
   ]
 }
 </script>
@@ -88,7 +167,7 @@
           </nav>
 
     <div class="nav-cta">
-      <a href="#demo" class="btn btn-primary btn-sm magnetic nav-btn"><span class="btn-roll">Démarrer un projet</span></a>
+      <a href="https://calendly.com/arthur-s-aivelo/atelier-decouverte" target="_blank" rel="noreferrer" class="btn btn-primary btn-sm magnetic nav-btn" data-book><span class="btn-roll">Réserver l'atelier</span></a>
       <button class="burger" id="burger" aria-label="Ouvrir le menu" aria-expanded="false" aria-controls="mobile-menu"><span></span><span></span></button>
     </div>
   </div>
@@ -100,13 +179,14 @@
     <a href="#realisations"><span>02</span>Réalisations</a>
     <a href="#secteurs"><span>03</span>Pour qui</a>
     <a href="#demo"><span>04</span>Votre projet</a>
-    <a href="#offres"><span>05</span>Offres</a>
+    <a href="#methode"><span>05</span>Méthode</a>
     <a href="#offres"><span>06</span>Offres</a>
     <a href="#contact"><span>07</span>Contact</a>
   </nav>
   <div class="mobile-menu-foot">
+    <a href="https://calendly.com/arthur-s-aivelo/atelier-decouverte" target="_blank" rel="noreferrer" class="btn btn-primary btn-block" data-book><span class="btn-roll">Réserver l'atelier offert · 30 min</span></a>
     <a href="mailto:arthur.s@aivelo.fr">arthur.s@aivelo.fr</a>
-    <span>Conçu à Bordeaux</span>
+    <a href="/creation-site-web-bordeaux">Création de site web à Bordeaux</a>
   </div>
 </div>
 
@@ -125,12 +205,6 @@
     <feDisplacementMap id="fx-ripple-map" in="SourceGraphic" in2="noise" scale="0" xChannelSelector="R" yChannelSelector="G" />
   </filter>
 </svg>
-<dialog class="legal" id="legal" aria-labelledby="legal-title">
-  <form method="dialog"><button class="legal-close" aria-label="Fermer">×</button></form>
-  <h2 id="legal-title">Mentions légales</h2>
-  <div class="legal-body" id="legal-body"></div>
-  <p class="legal-todo">Mis à jour en octobre 2026</p>
-</dialog>
 <main id="main">
 
 <!-- ============================ HERO ============================ -->
@@ -138,7 +212,7 @@
 
   <div class="container hero-inner">
     <div class="hero-copy">
-      <p class="eyebrow hero-eyebrow" data-hero-fade><span class="pulse"></span>Studio digital &amp; IA · Bordeaux</p>
+      <p class="eyebrow hero-eyebrow" data-hero-fade><span class="pulse"></span>Studio web · Bordeaux, Caudéran</p>
 
       <h1 class="hero-title" data-hero-title>
         <span class="line"><span>Votre <span class="nowrap">savoir-faire</span></span></span>
@@ -147,15 +221,15 @@
       </h1>
 
       <p class="hero-sub">
-        Sites web sur-mesure et plateformes de formation, avec un CRM IA en option pour les agences immobilières.
-        On conçoit, on développe et on gère des outils qui mettent en lumière votre travail,
+        Création de sites web sur-mesure et de plateformes de formation, à Bordeaux et partout en France.
+        Je conçois, je développe et je gère des outils qui mettent en lumière votre travail,
         vos valeurs, et qui font revenir vos clients.
       </p>
 
       <div class="hero-ctas" data-hero-fade>
-        <a href="#demo" class="btn btn-primary btn-lg magnetic"><span class="btn-roll">Démarrer un projet</span>
+        <a href="#demo" class="btn btn-primary btn-lg magnetic"><span class="btn-roll">Estimer mon projet</span>
           <svg class="arr" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg></a>
-        <a href="#expertises" class="btn btn-ghost btn-lg magnetic"><span class="btn-roll">Nos expertises</span></a>
+        <a href="https://calendly.com/arthur-s-aivelo/atelier-decouverte" target="_blank" rel="noreferrer" class="btn btn-ghost btn-lg magnetic" data-book><span class="btn-roll">Réserver l'atelier offert · 30 min</span></a>
       </div>
 
       <ul class="hero-trust" data-hero-fade>
@@ -246,8 +320,8 @@
     <p class="eyebrow eyebrow--dark" data-reveal>Manifeste</p>
     <p class="manifesto-text" data-scrub-words>
       Derrière chaque site, il y a un métier, des années de pratique et des valeurs.
-      Notre travail : les rendre visibles. Sans artifice, sans jargon. Juste un design
-      précis, un code propre et une technologie qui sert vos clients avant de servir nos egos.
+      Mon travail : les rendre visibles. Sans artifice, sans jargon. Juste un design
+      précis, un code propre et une technologie qui sert vos clients avant de servir un ego.
     </p>
     <div class="manifesto-sign" data-reveal>
       <span class="manifesto-line"></span>
@@ -311,9 +385,9 @@
         <div class="stack-copy">
           <span class="stack-num">02</span>
           <h3>Plateformes de formation</h3>
-          <p>Votre expertise transformée en parcours : vidéos, quiz, attestations, suivi des apprenants et paiement en ligne. Une expérience d'apprentissage fluide, à vos couleurs, pensée pour suivre la progression de chaque apprenant.</p>
+          <p>Vos modules intégrés dans une plateforme à vos couleurs : vidéos, quiz, attestations, inscriptions et paiement en ligne. Une expérience d'apprentissage fluide, pensée pour suivre la progression de chaque apprenant.</p>
           <ul class="ticks">
-            <li>Parcours, modules &amp; classes virtuelles</li>
+            <li>Intégration de vos modules &amp; parcours</li>
             <li>Quiz, évaluations &amp; attestations auto</li>
             <li>Inscriptions, paiement &amp; relances</li>
             <li>Suivi de progression des apprenants</li>
@@ -339,9 +413,9 @@
         <div class="stack-copy">
           <span class="stack-num">03</span>
           <h3>Gestion &amp; maintenance</h3>
-          <p>Hébergement européen, sauvegardes, mises à jour, sécurité et petites évolutions. Vous vous concentrez sur votre métier, on veille sur le reste, avec un rapport clair chaque mois.</p>
+          <p>Hébergement rapide et sécurisé, sauvegardes, mises à jour et petites évolutions. Vous vous concentrez sur votre métier, je veille sur le reste, avec un rapport clair chaque mois.</p>
           <ul class="ticks">
-            <li>Hébergement EU, SSL &amp; CDN</li>
+            <li>Hébergement CDN mondial &amp; SSL</li>
             <li>Sauvegardes quotidiennes</li>
             <li>Mises à jour &amp; surveillance 24/7</li>
             <li>Modifications incluses chaque mois</li>
@@ -629,7 +703,7 @@
         <span class="dp-stamp">Esquisse d'ambiance · pas un modèle</span>
         <ol class="demo-path">
           <li><b>01</b><span><strong>Cette esquisse</strong>Une intention de style, pour parler le même langage.</span></li>
-          <li><b>02</b><span><strong>L'atelier découverte</strong>On audite votre présence et on écoute vos besoins, vos clients, vos contenus.</span></li>
+          <li><b>02</b><span><strong>L'atelier découverte</strong>J'audite votre présence et j'écoute vos besoins, vos clients, vos contenus.</span></li>
           <li><b>03</b><span><strong>Votre maquette sur-mesure</strong>Dessinée pour vous, présentée sous 7 jours.</span></li>
         </ol>
       </div>
@@ -689,11 +763,11 @@
           </fieldset>
         </form>
 
-        <a class="sim-peek" href="#sim-result" aria-hidden="true" tabindex="-1"><span><small>Budget estimé</small><b id="sim-peek-price">2 000 – 2 400 € HT</b></span><em>Détail ↓</em></a>
+        <a class="sim-peek" href="#sim-result" aria-hidden="true" tabindex="-1"><span><small>Budget estimé</small><b id="sim-peek-price">2 000 – 2 300 € HT</b></span><em>Détail ↓</em></a>
 
         <aside class="sim-result" id="sim-result" aria-live="polite" data-reveal>
           <small class="sim-kicker" id="sim-plan">Formule Essentiel</small>
-          <div class="sim-price"><small>Budget estimé</small><b><span id="sim-low">2 000</span><i>–</i><span id="sim-high">2 400</span></b><em>€ HT</em></div>
+          <div class="sim-price"><small>Budget estimé</small><b><span id="sim-low">2 000</span><i>–</i><span id="sim-high">2 300</span></b><em>€ HT</em></div>
           <div class="sim-meta">
             <div><small>Délai</small><b id="sim-delay">2 semaines</b></div>
             <div><small>Abonnements</small><b id="sim-monthly">0 € / mois</b></div>
@@ -705,7 +779,7 @@
             <small class="sim-kicker">Projet sur-mesure</small>
             <b class="sim-custom-title">Sur devis, après un audit offert.</b>
             <ol>
-              <li><b>1</b>Atelier de 30 min : on écoute votre métier et vos objectifs.</li>
+              <li><b>1</b>Atelier de 30 min : j'écoute votre métier et vos objectifs.</li>
               <li><b>2</b>Audit de votre présence actuelle et de vos outils.</li>
               <li><b>3</b>Devis détaillé ligne par ligne, sous 72 h.</li>
             </ol>
@@ -741,25 +815,25 @@
       <ol>
         <li class="step">
           <span class="step-dot" aria-hidden="true"></span>
-          <small>Semaine 1</small>
+          <small>Jour 1</small>
           <h3>Écoute</h3>
-          <p>Un atelier d'une heure pour comprendre votre métier, vos clients, vos valeurs et ce qui vous rend différent.</p>
+          <p>Un atelier de 30 minutes, offert, pour comprendre votre métier, vos clients, vos valeurs et ce qui vous rend différent.</p>
         </li>
         <li class="step">
           <span class="step-dot" aria-hidden="true"></span>
-          <small>Semaine 1–2</small>
+          <small>Semaine 1</small>
           <h3>Stratégie &amp; contenus</h3>
-          <p>Arborescence, messages clés, mots-clés SEO. On écrit avec vous les textes qui vous ressemblent.</p>
+          <p>Arborescence, messages clés, mots-clés SEO. J'écris avec vous les textes qui vous ressemblent.</p>
         </li>
         <li class="step">
           <span class="step-dot" aria-hidden="true"></span>
-          <small>Semaine 2–3</small>
+          <small>Semaines 1–2</small>
           <h3>Design &amp; motion</h3>
-          <p>Maquettes interactives, animations, déclinaisons mobile. Deux allers-retours inclus pour affiner chaque détail.</p>
+          <p>Première maquette sous 7 jours, puis animations et déclinaisons mobile. Deux allers-retours inclus pour affiner chaque détail.</p>
         </li>
         <li class="step">
           <span class="step-dot" aria-hidden="true"></span>
-          <small>Semaine 3–5</small>
+          <small>Semaines 2–4</small>
           <h3>Développement</h3>
           <p>Code propre, accessible et rapide. Connexion à vos outils existants : paiement, agenda, emailing, outils métier.</p>
         </li>
@@ -767,7 +841,7 @@
           <span class="step-dot" aria-hidden="true"></span>
           <small>Et après</small>
           <h3>Lancement &amp; suivi</h3>
-          <p>Mise en ligne, prise en main de votre back-office, maintenance et évolutions. On reste à vos côtés.</p>
+          <p>Mise en ligne, prise en main de votre back-office, maintenance et évolutions. Je reste à vos côtés.</p>
         </li>
       </ol>
     </div>
@@ -778,8 +852,8 @@
 <section class="section engagements" id="engagements">
   <div class="container">
     <header class="section-head section-head--center">
-      <p class="eyebrow" data-reveal>Nos engagements</p>
-      <h2 class="section-title" data-split>Une <em class="serif">éthique</em> que l'on peut mesurer.</h2>
+      <p class="eyebrow" data-reveal>Engagements</p>
+      <h2 class="section-title" data-split>Une <em class="serif">éthique</em> qui se mesure.</h2>
     </header>
 
     <div class="bento">
@@ -789,7 +863,7 @@
           <b><span id="perf-score">…</span></b>
         </div>
         <h3>Performance <span class="live-pill">Objectif Lighthouse</span></h3>
-        <p>Notre objectif sur chaque site livré : un score Lighthouse de 98 ou plus. Un site rapide, c'est un client qui reste, et Google qui vous aime.</p>
+        <p>Mon objectif sur chaque site livré : un score Lighthouse de 98 ou plus. Un site rapide, c'est un client qui reste, et Google qui vous aime.</p>
         <ul class="perf-metrics">
           <li><small>Affichage</small><b>&lt; 1,2 s</b></li>
           <li><small>Stabilité</small><b>&lt; 0,1</b></li>
@@ -799,7 +873,7 @@
       <article class="bento-card" data-tilt>
         <span class="bento-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="4.5" r="1.8"/><path d="M5 8.5l7 1.5 7-1.5M12 10v4.5M8.5 21l3.5-6.5 3.5 6.5"/></svg></span>
         <h3>Accessible à tous</h3>
-        <p>Contrastes, navigation clavier, lecteurs d'écran : nous visons les critères WCAG 2.2 AA.</p>
+        <p>Contrastes, navigation clavier, lecteurs d'écran : je vise les critères WCAG 2.2 AA.</p>
       </article>
       <article class="bento-card" data-tilt>
         <span class="bento-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg></span>
@@ -860,7 +934,7 @@
   <div class="container">
     <header class="section-head section-head--center">
       <p class="eyebrow" data-reveal>Ils en parlent</p>
-      <h2 class="section-title" data-split>Ce qu'en disent <em class="serif">nos clients.</em></h2>
+      <h2 class="section-title" data-split>Ils m'ont <em class="serif">confié</em> leur projet.</h2>
     </header>
     <div class="quotes-grid">
       <figure class="quote" data-tilt data-reveal>
@@ -909,12 +983,12 @@
             <li>Design personnalisé &amp; responsive</li>
             <li>SEO de base &amp; Google Business</li>
             <li>Formulaire de contact</li>
-            <li>Livraison en 2 semaines</li>
+            <li>Livraison en 2 semaines environ</li>
           </ul>
           <a href="#estimation" class="btn btn-ghost btn-block" data-sim="site" data-sim-level="std"><span class="btn-roll">Estimer ce projet</span></a>
         </article>
         <article class="plan plan-featured">
-          <span class="plan-badge">Le plus choisi</span>
+          <span class="plan-badge">Recommandé</span>
           <h3>Signature</h3>
           <p class="plan-desc">Le site qui vous distingue : design sur-mesure et motion design.</p>
           <div class="plan-price"><small>à partir de</small><b>3 500</b><span>€ HT</span></div>
@@ -936,7 +1010,7 @@
             <li>Espace client &amp; comptes</li>
             <li>Intégrations API &amp; automatisations</li>
             <li>E-commerce &amp; paiement</li>
-            <li>Chef de projet dédié</li>
+            <li>Audit de l'existant</li>
           </ul>
           <a href="#estimation" class="btn btn-ghost btn-block" data-sim="custom"><span class="btn-roll">Demander un audit</span></a>
         </article>
@@ -965,7 +1039,7 @@
           <p class="plan-desc">La plateforme complète pour vendre, former et suivre.</p>
           <div class="plan-price"><small>à partir de</small><b>4 990</b><span>€ HT</span></div>
           <ul class="ticks">
-            <li>Parcours illimités</li>
+            <li>Parcours illimités · 20 modules intégrés</li>
             <li>Catalogue, inscriptions &amp; paiement</li>
             <li>Tableau de bord formateur</li>
             <li>Emails &amp; relances automatisés</li>
@@ -1013,7 +1087,7 @@
           <a href="https://calendly.com/arthur-s-aivelo/atelier-decouverte" target="_blank" rel="noreferrer" class="btn btn-ghost btn-block" data-book><span class="btn-roll">Réserver une démo</span></a>
         </article>
         <article class="plan plan-featured">
-          <span class="plan-badge">Populaire</span>
+          <span class="plan-badge">Recommandé</span>
           <h3>Pro</h3>
           <p class="plan-desc">La formule complète. Tous les agents IA débridés.</p>
           <div class="plan-price"><b id="price-pro">249</b><span>€ /mois</span></div>
@@ -1065,12 +1139,12 @@
     <header class="section-head">
       <p class="eyebrow" data-reveal>Questions fréquentes</p>
       <h2 class="section-title" data-split>Tout ce que vous voulez <em class="serif">savoir.</em></h2>
-      <p class="section-lead" data-reveal>Une autre question ? Écrivez-nous, on répond sous 24 h ouvrées.</p>
+      <p class="section-lead" data-reveal>Une autre question ? <a href="mailto:arthur.s@aivelo.fr">Écrivez-moi</a>, je réponds sous 24 h ouvrées.</p>
     </header>
     <div class="accordion">
       <div class="acc-item" data-reveal>
         <h3><button class="acc-btn" aria-expanded="false" aria-controls="acc-0" id="acc-btn-0">Faut-il prendre le CRM pour avoir un site&nbsp;?<i aria-hidden="true"></i></button></h3>
-        <div class="acc-panel" id="acc-0" role="region" aria-labelledby="acc-btn-0"><div><p>Non. Nos sites et nos plateformes de formation sont des offres complètes et indépendantes. Le CRM IA est une option pensée pour les agences immobilières, que vous pouvez ajouter plus tard, ou jamais.</p></div></div>
+        <div class="acc-panel" id="acc-0" role="region" aria-labelledby="acc-btn-0"><div><p>Non. Mes sites et mes plateformes de formation sont des offres complètes et indépendantes. Le CRM IA est une option pensée pour les agences immobilières, que vous pouvez ajouter plus tard, ou jamais.</p></div></div>
       </div>
       <div class="acc-item" data-reveal>
         <h3><button class="acc-btn" aria-expanded="false" aria-controls="acc-1" id="acc-btn-1">Combien de temps faut-il pour lancer mon site&nbsp;?<i aria-hidden="true"></i></button></h3>
@@ -1078,7 +1152,7 @@
       </div>
       <div class="acc-item" data-reveal>
         <h3><button class="acc-btn" aria-expanded="false" aria-controls="acc-2" id="acc-btn-2">Est-ce que je suis propriétaire de mon site&nbsp;?<i aria-hidden="true"></i></button></h3>
-        <div class="acc-panel" id="acc-2" role="region" aria-labelledby="acc-btn-2"><div><p>Oui, totalement. Le code, le nom de domaine, les contenus et les données vous appartiennent. Si vous souhaitez changer de prestataire, nous vous remettons tout, proprement documenté.</p></div></div>
+        <div class="acc-panel" id="acc-2" role="region" aria-labelledby="acc-btn-2"><div><p>Oui, totalement. Le code, le nom de domaine, les contenus et les données vous appartiennent. Si vous souhaitez changer de prestataire, je vous remets tout, proprement documenté.</p></div></div>
       </div>
       <div class="acc-item" data-reveal>
         <h3><button class="acc-btn" aria-expanded="false" aria-controls="acc-3" id="acc-btn-3">Pourrai-je modifier mes contenus moi-même&nbsp;?<i aria-hidden="true"></i></button></h3>
@@ -1086,7 +1160,7 @@
       </div>
       <div class="acc-item" data-reveal>
         <h3><button class="acc-btn" aria-expanded="false" aria-controls="acc-4" id="acc-btn-4">Puis-je suivre la progression de mes apprenants&nbsp;?<i aria-hidden="true"></i></button></h3>
-        <div class="acc-panel" id="acc-4" role="region" aria-labelledby="acc-btn-4"><div><p>Oui. Chaque plateforme intègre un tableau de bord : progression par apprenant, taux de complétion, résultats aux quiz et attestations délivrées. Vous pouvez exporter ces données à tout moment.</p></div></div>
+        <div class="acc-panel" id="acc-4" role="region" aria-labelledby="acc-btn-4"><div><p>Oui. La formule Académie intègre un tableau de bord (en option sur Lancement) : progression par apprenant, taux de complétion, résultats aux quiz et attestations délivrées. Vous pouvez exporter ces données à tout moment.</p></div></div>
       </div>
       <div class="acc-item" data-reveal>
         <h3><button class="acc-btn" aria-expanded="false" aria-controls="acc-5" id="acc-btn-5">Le CRM IA se connecte-t-il à mon site d'agence&nbsp;?<i aria-hidden="true"></i></button></h3>
@@ -1094,7 +1168,7 @@
       </div>
       <div class="acc-item" data-reveal>
         <h3><button class="acc-btn" aria-expanded="false" aria-controls="acc-6" id="acc-btn-6">Comment se passe le paiement&nbsp;?<i aria-hidden="true"></i></button></h3>
-        <div class="acc-panel" id="acc-6" role="region" aria-labelledby="acc-btn-6"><div><p>Pour les sites et plateformes : un acompte à la signature, puis le solde à la mise en ligne, avec paiement en 3 fois sans frais possible. Les abonnements CRM et add-ons sont sans engagement, résiliables en un clic.</p></div></div>
+        <div class="acc-panel" id="acc-6" role="region" aria-labelledby="acc-btn-6"><div><p>Pour les sites et plateformes : un acompte à la signature, puis le solde à la mise en ligne, avec paiement en 3 fois sans frais possible. Les abonnements mensuels (CRM, maintenance, options) sont sans engagement, résiliables à tout moment ; les formules 6 mois et annuelles sont payées d'avance pour la période choisie.</p></div></div>
       </div>
     </div>
   </div>
@@ -1106,7 +1180,7 @@
   <div class="container contact-inner">
     <p class="eyebrow" data-reveal>Atelier découverte · 30 minutes · offert</p>
     <h2 class="contact-title" data-split>Parlons de <em class="serif">votre</em> projet.</h2>
-    <p class="section-lead" data-reveal>On écoute votre métier, on analyse votre présence actuelle et vous repartez avec des recommandations concrètes, que vous travailliez avec nous ou non.</p>
+    <p class="section-lead" data-reveal>J'écoute votre métier, j'analyse votre présence actuelle et vous repartez avec des recommandations concrètes, que vous travailliez avec moi ou non.</p>
     <div class="contact-ctas" data-reveal>
       <a href="https://calendly.com/arthur-s-aivelo/atelier-decouverte" target="_blank" rel="noreferrer" class="btn btn-primary btn-xl magnetic" data-book>
         <span class="btn-roll">Réserver l'atelier</span>
@@ -1130,12 +1204,12 @@
           <img class="logo-img" src="assets/img/aivelo-logo.png" alt="" width="34" height="34" />
           Aivelo
         </a>
-        <p>Studio digital &amp; IA. Sites web, plateformes de formation et CRM immobilier, conçus en France pour les métiers qui méritent d'être vus.</p>
+        <p>Studio web à Bordeaux (Caudéran). Sites web, plateformes de formation et CRM immobilier, pour les métiers qui méritent d'être vus.</p>
       </div>
       <div>
         <h2 class="footer-h">Expertises</h2>
         <ul>
-          <li><a href="#expertises">Sites web</a></li>
+          <li><a href="/creation-site-web-bordeaux">Création de site web à Bordeaux</a></li>
           <li><a href="#expertises">Plateformes de formation</a></li>
           <li><a href="#expertises">Gestion &amp; maintenance</a></li>
           <li><a href="#expertises">CRM IA immobilier</a></li>
@@ -1166,6 +1240,13 @@
     </div>
   </div>
 </footer>
+
+<dialog class="legal" id="legal" aria-labelledby="legal-title">
+  <form method="dialog"><button class="legal-close" aria-label="Fermer">×</button></form>
+  <h2 id="legal-title">Mentions légales</h2>
+  <div class="legal-body" id="legal-body"></div>
+  <p class="legal-todo">Mis à jour en octobre 2026</p>
+</dialog>
 
 <!-- Motion stack — GSAP (ScrollTrigger, SplitText) + Lenis smooth scroll -->
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js" defer></script>

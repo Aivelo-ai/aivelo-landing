@@ -21,6 +21,8 @@
     window.matchMedia('(max-width: 760px), (pointer: coarse)').matches ||
     (navigator.deviceMemory && navigator.deviceMemory < 4);
   if (lite && !heroVariant) return;
+  // visitors who asked for less motion keep the flat logo: no 600 kB library, no render loop
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches && !heroVariant) return;
   if (heroVariant) html.dataset.hero = '3d';
 
   /* Logo geometry, traced from assets/img/aivelo-logo.png (471 × 471 px):

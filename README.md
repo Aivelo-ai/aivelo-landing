@@ -75,3 +75,11 @@ Rendu WebGL2 en deux passes (metaballs dans une texture flottante, puis ombrage 
 - **Fond** : le soleil descend et se dore au fil de la page ; dans les sections de nuit, la constellation du logo se dessine (`assets/js/bg.js`).
 - **Hero** : après « En ligne », la fenêtre fait défiler les vrais sites clients (`REALS` dans `assets/js/main.js`, captures `assets/img/real-*.webp`).
 - **Statistiques** : Umami Cloud, sans cookie (balise dans le `<head>`, limitée à `aivelo.fr` par `data-domains`). Les clics clés portent `data-umami-event` (ajouté par `assets/js/sections.js`) : `demarrer-projet`, `esquisser-metier`, `estimer`, `reserver-atelier`, `reserver-avec-estimation`, `whatsapp`, `linkedin`, `email`, plus `esquisse-composee`, `estimation-composee` et `rdv-confirme` (réservation Calendly confirmée).
+
+## Pages SEO et configuration Vercel
+
+- **`creation-site-web-bordeaux.html`** : page locale, servie à `/creation-site-web-bordeaux` grâce à `cleanUrls` (`vercel.json`). Même design et mêmes scripts que l'accueil, sans les effets lourds (three.js, goutte d'eau).
+- **Liens internes** : toujours en chemins absolus propres (`/`, `/#offres`, `/creation-site-web-bordeaux`).
+- **Données structurées** : une seule entité `ProfessionalService` (`@id https://aivelo.fr/#studio`), identique sur toutes les pages.
+- **`vercel.json`** : URLs sans `.html`, cache long sur les polices et images.
+- **`sitemap.xml`** : une ligne par page, avec `lastmod`.
