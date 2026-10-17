@@ -21,7 +21,7 @@ Si les CDN ne répondent pas, ou si le visiteur a activé « réduire les animat
 ## Modifier le contenu
 
 - **Réalisations** : cartes `.work` dans `#realisations`. Captures dans `assets/img/real-*.webp` (pleine page ordinateur + mobile) ; le curseur « Maquette / Site livré » compare `real-carnot-wire.webp` et `real-carnot-top.webp`.
-- **Témoignages** : `#temoignages`. Les trois avis sont des exemples marqués « à remplacer ».
+- **Témoignages** : `#temoignages`, masqué (`hidden`) tant que chaque client n'a pas validé sa citation. Retirer `hidden` une fois les trois accords obtenus.
 - **Démo** : contenus par métier dans l'objet `DEMO` de `assets/js/sections.js`.
 - **Tarifs sites / formation** : directement dans les cartes `.plan` des panneaux `#panel-sites` et `#panel-formation` (`index.html`).
 - **Tarifs CRM** : prix mensuels dans `#panel-crm`, remises 6 mois / annuel dans `pricingData` (`assets/js/main.js`).
@@ -56,8 +56,18 @@ Rendu WebGL2 en deux passes (metaballs dans une texture flottante, puis ombrage 
 - **Démo « esquisse d'ambiance »** (fond violet) : métier, ambiance et couleur transforment l'aperçu ; le bouton envoie l'esquisse par e-mail comme point de départ de l'atelier.
 - **Fondu de fond** : la page passe au sombre puis au violet en traversant ces deux sections.
 - **Effets** : prix en compteur mécanique (texte normal au repos), ondulation des photos « Pour qui », lentille de verre sur le site du hero, vidéo de leçon (`assets/img/lecon.*`) dans la carte Formation.
-- **Nettoyage** : add-ons repliés à 6, liens légaux en fenêtre (texte provisoire à compléter), three.js non chargé sur mobile et en économie de données.
+- **Nettoyage** : add-ons repliés à 6, liens légaux en fenêtre, three.js non chargé sur mobile et en économie de données.
 
 ## Fond jour / nuit
 
 `assets/js/bg.js` dessine le ciel derrière la page (WebGL, environ 10 Ko) : ciel de jour avec nuages et soleil sur les sections claires, nuit étoilée (Voie lactée, étoiles filantes, étoile Aivelo) sur les sections marquées `data-bg="ink"`, crépuscule violet sur `data-bg="indigo"`. Sans WebGL ou avec « réduire les animations », le fond d'origine reste.
+
+## Conversion, simulateur et réservation
+
+- **Fichiers minifiés** : la page charge les `.min.js` / `.min.css`. Après toute modification d'un fichier source, régénérer son `.min` avec esbuild, par exemple `npx esbuild assets/js/sections.js --minify --target=es2019 --outfile=assets/js/sections.min.js`.
+- **Simulateur** (`#estimation`) : tarifs, options et délais dans l'objet `PRICING` de `assets/js/sections.js`. Les inclusions Signature / Académie suivent les cartes d'offres.
+- **Réservation** : tous les boutons `[data-book]` ouvrent l'atelier Calendly dans une fenêtre du site (constante `BOOKING`). Depuis le simulateur, le nom, l'e-mail, le téléphone et l'estimation pré-remplissent la réservation (questions 1 et 2 de l'événement Calendly).
+- **Mobile** : barre d'action fixe (WhatsApp, Estimer, Réserver) ; expertises en carrousel.
+- **Votre interlocuteur** (`#interlocuteur`) : présentation d'Arthur Semelier et lien LinkedIn.
+- **Mentions légales / RGPD** : objet `LEGAL` de `assets/js/sections.js`. À compléter : SIRET et adresse dès l'immatriculation.
+- **SEO** : Open Graph (`assets/img/og-aivelo.jpg`), URL canonique `https://aivelo.fr/`, JSON-LD, `sitemap.xml`, `robots.txt`.

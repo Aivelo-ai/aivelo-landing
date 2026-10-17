@@ -10,14 +10,25 @@
 <meta property="og:title" content="Aivelo — Le digital qui valorise votre métier" />
 <meta property="og:description" content="Sites web sur-mesure, plateformes de formation, gestion & maintenance, CRM IA immobilier. Conçu en France." />
 <meta property="og:locale" content="fr_FR" />
+<meta property="og:url" content="https://aivelo.fr/" />
+<meta property="og:site_name" content="Aivelo" />
+<meta property="og:image" content="https://aivelo.fr/assets/img/og-aivelo.jpg" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:alt" content="Aivelo, studio digital et IA à Bordeaux : sites web sur-mesure et plateformes de formation" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Aivelo — Le digital qui valorise votre métier" />
+<meta name="twitter:description" content="Sites web sur-mesure, plateformes de formation, gestion & maintenance, CRM IA immobilier. Conçu à Bordeaux." />
+<meta name="twitter:image" content="https://aivelo.fr/assets/img/og-aivelo.jpg" />
+<link rel="canonical" href="https://aivelo.fr/" />
 <link rel="icon" type="image/png" href="assets/img/aivelo-icon-64.png" />
 <link rel="apple-touch-icon" href="assets/img/aivelo-logo.png" />
 
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" />
-<link rel="stylesheet" href="assets/css/main.css" />
-<link rel="stylesheet" href="assets/css/sections.css" />
+<link rel="stylesheet" href="assets/css/main.min.css" />
+<link rel="stylesheet" href="assets/css/sections.min.css" />
 
 <script>
   (function (d) {
@@ -34,7 +45,17 @@
   "description": "Studio digital & IA : sites web sur-mesure, plateformes de formation, gestion & maintenance, CRM immobilier IA.",
   "email": "arthur.s@aivelo.fr",
   "areaServed": "FR",
-  "address": { "@type": "PostalAddress", "addressLocality": "Bordeaux", "addressCountry": "FR" }
+  "address": { "@type": "PostalAddress", "addressLocality": "Bordeaux", "addressCountry": "FR" },
+  "url": "https://aivelo.fr/",
+  "logo": "https://aivelo.fr/assets/img/aivelo-logo.png",
+  "image": "https://aivelo.fr/assets/img/og-aivelo.jpg",
+  "founder": { "@type": "Person", "name": "Arthur Semelier", "jobTitle": "Fondateur", "sameAs": ["https://www.linkedin.com/in/arthursemelier/"] },
+  "knowsAbout": ["Création de sites web", "Plateformes e-learning", "Maintenance de sites", "CRM immobilier", "SEO local"],
+  "makesOffer": [
+    { "@type": "Offer", "name": "Site Essentiel", "price": "2000", "priceCurrency": "EUR" },
+    { "@type": "Offer", "name": "Site Signature", "price": "3500", "priceCurrency": "EUR" },
+    { "@type": "Offer", "name": "Plateforme de formation Lancement", "price": "2490", "priceCurrency": "EUR" }
+  ]
 }
 </script>
 </head>
@@ -43,15 +64,6 @@
 <a class="skip-link" href="#main">Aller au contenu</a>
 
 <div class="aurora" aria-hidden="true"><i></i><i></i></div>
-
-<!-- ============================ PRELOADER ============================ -->
-<div class="preloader" id="preloader" aria-hidden="true">
-  <div class="preloader-inner">
-    <img class="logo-img logo-img--lg" src="assets/img/aivelo-logo.png" alt="" width="64" height="64" />
-    <div class="preloader-word"><span>A</span><span>i</span><span>v</span><span>e</span><span>l</span><span>o</span></div>
-    <div class="preloader-bar"><i id="preloader-bar"></i></div>
-  </div>
-</div>
 
 <!-- ============================ CURSOR + PROGRESS ============================ -->
 <div class="cursor" id="cursor" aria-hidden="true"><span class="cursor-label" id="cursor-label"></span></div>
@@ -69,13 +81,13 @@
       <a href="#expertises" class="roll"><span>Expertises</span></a>
       <a href="#realisations" class="roll"><span>Réalisations</span></a>
       <a href="#secteurs" class="roll"><span>Pour qui</span></a>
+      <a href="#demo" class="roll nav-try"><span>Votre projet</span><i class="nav-new">Simulateur</i></a>
       <a href="#methode" class="roll"><span>Méthode</span></a>
       <a href="#offres" class="roll"><span>Offres</span></a>
           </nav>
 
     <div class="nav-cta">
-      <a href="#offres" class="nav-login" data-tab-link="crm">CRM immobilier</a>
-      <a href="#contact" class="btn btn-primary btn-sm magnetic nav-btn"><span class="btn-roll">Démarrer un projet</span></a>
+      <a href="#demo" class="btn btn-primary btn-sm magnetic nav-btn"><span class="btn-roll">Démarrer un projet</span></a>
       <button class="burger" id="burger" aria-label="Ouvrir le menu" aria-expanded="false" aria-controls="mobile-menu"><span></span><span></span></button>
     </div>
   </div>
@@ -86,9 +98,9 @@
     <a href="#expertises"><span>01</span>Expertises</a>
     <a href="#realisations"><span>02</span>Réalisations</a>
     <a href="#secteurs"><span>03</span>Pour qui</a>
-    <a href="#demo"><span>04</span>Essayer</a>
+    <a href="#demo"><span>04</span>Votre projet</a>
     <a href="#offres"><span>05</span>Offres</a>
-    <a href="#addons"><span>06</span>Add-ons</a>
+    <a href="#offres"><span>06</span>Offres</a>
     <a href="#contact"><span>07</span>Contact</a>
   </nav>
   <div class="mobile-menu-foot">
@@ -116,7 +128,7 @@
   <form method="dialog"><button class="legal-close" aria-label="Fermer">×</button></form>
   <h2 id="legal-title">Mentions légales</h2>
   <div class="legal-body" id="legal-body"></div>
-  <p class="legal-todo">Texte provisoire · à compléter avant la mise en ligne</p>
+  <p class="legal-todo">Mis à jour en octobre 2026</p>
 </dialog>
 <main id="main">
 
@@ -133,20 +145,20 @@
         <span class="line"><span><em class="serif">à sa hauteur.</em></span></span>
       </h1>
 
-      <p class="hero-sub" data-hero-fade>
+      <p class="hero-sub">
         Sites web sur-mesure et plateformes de formation, avec un CRM IA en option pour les agences immobilières.
         On conçoit, on développe et on gère des outils qui mettent en lumière votre travail,
         vos valeurs, et qui font revenir vos clients.
       </p>
 
       <div class="hero-ctas" data-hero-fade>
-        <a href="#contact" class="btn btn-primary btn-lg magnetic"><span class="btn-roll">Démarrer un projet</span>
+        <a href="#demo" class="btn btn-primary btn-lg magnetic"><span class="btn-roll">Démarrer un projet</span>
           <svg class="arr" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg></a>
         <a href="#expertises" class="btn btn-ghost btn-lg magnetic"><span class="btn-roll">Nos expertises</span></a>
       </div>
 
       <ul class="hero-trust" data-hero-fade>
-        <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>RGPD &amp; hébergement européen</li>
+        <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>Conforme RGPD, sans pistage</li>
         <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>Première maquette en 7 jours</li>
         <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Vous êtes propriétaire de tout</li>
       </ul>
@@ -204,11 +216,11 @@
         <pre id="ls-code"></pre>
       </div>
 
-      <div class="ls-chip"><span class="dot dot-green"></span>Chargement · 0,8 s</div>
+      <div class="ls-chip"><span class="dot dot-green"></span>Objectif · moins d'1 s</div>
 
       <div class="ls-score">
         <svg viewBox="0 0 120 120"><circle cx="60" cy="60" r="50" class="g-bg"/><circle cx="60" cy="60" r="50" class="g-fg ls-ring"/></svg>
-        <b>98</b><small>Performance</small>
+        <b>98</b><small>Score visé</small>
       </div>
     </div>
   </div>
@@ -297,12 +309,12 @@
         <div class="stack-copy">
           <span class="stack-num">02</span>
           <h3>Plateformes de formation</h3>
-          <p>Votre expertise transformée en parcours : vidéos, quiz, attestations, suivi des apprenants et paiement en ligne. Une expérience d'apprentissage fluide, à vos couleurs, pensée pour faciliter vos démarches qualité.</p>
+          <p>Votre expertise transformée en parcours : vidéos, quiz, attestations, suivi des apprenants et paiement en ligne. Une expérience d'apprentissage fluide, à vos couleurs, pensée pour suivre la progression de chaque apprenant.</p>
           <ul class="ticks">
             <li>Parcours, modules &amp; classes virtuelles</li>
             <li>Quiz, évaluations &amp; attestations auto</li>
             <li>Inscriptions, paiement &amp; relances</li>
-            <li>Indicateurs de suivi pour vos audits</li>
+            <li>Suivi de progression des apprenants</li>
           </ul>
           <a href="#offres" class="link-arrow" data-tab-link="formation">Voir les offres formation <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg></a>
         </div>
@@ -332,7 +344,7 @@
             <li>Mises à jour &amp; surveillance 24/7</li>
             <li>Modifications incluses chaque mois</li>
           </ul>
-          <a href="#addons" class="link-arrow">Voir l'add-on maintenance <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg></a>
+          <a href="#estimation" class="link-arrow" data-sim="site" data-sim-opt="maint">Ajouter la maintenance à mon projet <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg></a>
         </div>
         <div class="stack-visual vis-ops" aria-hidden="true">
           <div class="vo-panel">
@@ -474,7 +486,7 @@
       <p class="eyebrow" data-reveal>Pour qui</p>
       <h2 class="section-title" data-split>Des métiers <em class="serif">exigeants,</em> des outils qui leur ressemblent.</h2>
     </div>
-    <div class="secteurs-viewport">
+    <div class="secteurs-viewport" tabindex="0" role="region" aria-label="Métiers accompagnés, faire défiler horizontalement">
       <div class="secteurs-track" id="secteurs-track">
         <article class="sector" style="--c1:#4F7EF7;--c2:#2E5BD9">
           <div class="sector-media">
@@ -485,6 +497,7 @@
           <h3>Agences immobilières</h3>
           <p>Site vitrine avec vos biens, estimation en ligne et prise de contact simplifiée, plus le CRM IA si vous le souhaitez. Votre réputation locale, enfin à la hauteur de votre exigence.</p>
           <div class="tags"><span>Site + biens</span><span>Estimation</span><span>CRM en option</span></div>
+          <a href="#demo" class="sector-go" data-metier-go="immo">Esquisser mon site <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 5l7 7-7 7"/></svg></a>
         </article>
         <article class="sector" style="--c1:#8B7CFF;--c2:#5B47E0">
           <div class="sector-media">
@@ -493,8 +506,9 @@
             <div class="sector-art"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10 12 5 2 10l10 5 10-5z"/><path d="M6 12v5c3 2 9 2 12 0v-5"/></svg></div>
           </div>
           <h3>Organismes de formation</h3>
-          <p>Catalogue, inscriptions, plateforme e-learning et suivi qualité dans un seul écosystème. Vos apprenants vivent une expérience à la hauteur de vos contenus.</p>
-          <div class="tags"><span>Catalogue</span><span>E-learning</span><span>Suivi qualité</span></div>
+          <p>Catalogue, inscriptions, plateforme e-learning et suivi des apprenants dans un seul écosystème. Vos apprenants vivent une expérience à la hauteur de vos contenus.</p>
+          <div class="tags"><span>Catalogue</span><span>E-learning</span><span>Suivi apprenants</span></div>
+          <a href="#demo" class="sector-go" data-metier-go="formation">Esquisser ma plateforme <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 5l7 7-7 7"/></svg></a>
         </article>
         <article class="sector" style="--c1:#2EE19C;--c2:#0FA36B">
           <div class="sector-media">
@@ -505,6 +519,7 @@
           <h3>Formateurs &amp; coachs</h3>
           <p>Transformez votre méthode en programme en ligne : pages de vente, paiement, espace membre. Vous partagez votre savoir, la plateforme gère le reste.</p>
           <div class="tags"><span>Page de vente</span><span>Espace membre</span><span>Paiement</span></div>
+          <a href="#demo" class="sector-go" data-metier-go="coach">Esquisser mon site <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 5l7 7-7 7"/></svg></a>
         </article>
         <article class="sector" style="--c1:#14B8A6;--c2:#0F766E">
           <div class="sector-media">
@@ -515,6 +530,7 @@
           <h3>Finance &amp; patrimoine</h3>
           <p>Conseillers en gestion de patrimoine, courtiers, cabinets comptables : une présence qui inspire confiance, des mentions réglementaires en ordre et un espace client sécurisé.</p>
           <div class="tags"><span>Confiance</span><span>Conformité</span><span>Espace client</span></div>
+          <a href="#demo" class="sector-go" data-metier-go="finance">Esquisser mon site <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 5l7 7-7 7"/></svg></a>
         </article>
         <article class="sector" style="--c1:#FFB547;--c2:#E07A12">
           <div class="sector-media">
@@ -525,6 +541,7 @@
           <h3>Artisans &amp; commerces</h3>
           <p>Un site qui montre la qualité de votre travail, vos réalisations et vos avis clients. Trouvé sur Google par ceux qui cherchent exactement ce que vous faites.</p>
           <div class="tags"><span>Réalisations</span><span>SEO local</span><span>Prise de RDV</span></div>
+          <a href="#demo" class="sector-go" data-metier-go="artisan">Esquisser mon site <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 5l7 7-7 7"/></svg></a>
         </article>
         <article class="sector" style="--c1:#FF5C7A;--c2:#D12D50">
           <div class="sector-media">
@@ -535,6 +552,7 @@
           <h3>Professions libérales</h3>
           <p>Cabinets, conseils, santé : une présence sobre, rassurante et conforme. Vos valeurs et votre déontologie au premier plan, la prise de contact simplifiée.</p>
           <div class="tags"><span>Sobriété</span><span>Conformité</span><span>Contact simplifié</span></div>
+          <a href="#demo" class="sector-go" data-metier-go="liberal">Esquisser mon site <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 5l7 7-7 7"/></svg></a>
         </article>
       </div>
     </div>
@@ -546,7 +564,10 @@
 <section class="section demo" id="demo" data-bg="indigo">
   <div class="container">
     <header class="section-head section-head--center demo-head">
-      <p class="eyebrow eyebrow--dark" data-reveal>Essayez</p>
+      <ol class="proj-steps" data-reveal aria-label="Votre projet en deux étapes">
+        <li class="is-on"><a href="#demo"><b>1</b>Esquisse</a></li>
+        <li><a href="#estimation"><b>2</b>Estimation</a></li>
+      </ol>
       <h2 class="section-title" data-split>Esquissez l'ambiance de votre site en <em class="serif">10 secondes.</em></h2>
       <p class="section-lead" data-reveal>Choisissez un métier, une ambiance et une couleur pour poser une première intention. Ce n'est pas un modèle : votre vrai site naîtra de l'atelier, de votre histoire et de vos clients.</p>
     </header>
@@ -584,8 +605,8 @@
           </div>
         </fieldset>
         <label class="demo-name"><span>Le nom de votre structure <em>(facultatif)</em></span><input type="text" id="demo-name" maxlength="28" placeholder="Maison Lumière" autocomplete="organization" /></label>
-        <a href="#contact" class="btn btn-primary btn-block magnetic" id="demo-cta"><span class="btn-roll">Partir de cette esquisse</span></a>
-        <p class="demo-note">Votre choix nous est envoyé comme point de départ de l'atelier.</p>
+        <a href="#estimation" class="btn btn-primary btn-block magnetic" id="demo-cta"><span class="btn-roll">Estimer ce projet</span><svg class="arr" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12l7 7 7-7"/></svg></a>
+        <p class="demo-note">Étape suivante : budget et délai, calculés en direct.</p>
       </form>
 
       <div class="demo-preview" data-reveal>
@@ -618,6 +639,95 @@
         </ol>
       </div>
     </div>
+
+    <!-- ============================ ESTIMATION (étape 2) ============================ -->
+    <div class="sim" id="estimation">
+      <header class="sim-head" data-reveal>
+        <span class="sim-step">Étape 2</span>
+        <h3>Estimez votre projet <em class="serif">en direct.</em></h3>
+        <p>Choisissez le type de projet, sa taille et les options : la fourchette de budget et le délai se calculent à chaque clic.</p>
+      </header>
+      <div class="sim-grid">
+        <form class="sim-panel" id="sim-form" data-reveal onsubmit="return false">
+          <fieldset class="demo-field">
+            <legend><span>1</span>Type de projet</legend>
+            <div class="sim-types" role="radiogroup" aria-label="Type de projet">
+              <label class="sim-type"><input type="radio" name="type" value="site" checked /><span><b>Site web</b><small>Vitrine, agence, catalogue</small></span></label>
+              <label class="sim-type"><input type="radio" name="type" value="formation" /><span><b>Plateforme de formation</b><small>Intégration de vos contenus</small></span></label>
+              <label class="sim-type sim-type--custom"><input type="radio" name="type" value="custom" /><span><b>Projet sur-mesure</b><small>Sur devis · audit offert</small></span></label>
+            </div>
+          </fieldset>
+          <fieldset class="demo-field sim-std">
+            <legend><span>2</span><em id="sim-size-label">Nombre de pages</em><output class="sim-out" id="sim-size-out" for="sim-size">5</output></legend>
+            <input class="sim-range" type="range" id="sim-size" name="size" min="1" max="25" value="5" aria-describedby="sim-size-hint" />
+            <small class="sim-hint" id="sim-size-hint">Accueil, services, à propos, contact… chaque page compte.</small>
+          </fieldset>
+          <fieldset class="demo-field sim-std">
+            <legend><span>3</span>Niveau</legend>
+            <div class="sim-levels" id="sim-levels" role="radiogroup" aria-label="Niveau">
+              <label class="mood" data-level="std"><input type="radio" name="level" value="std" checked /><span><b class="mood-aa">Soigné</b><small>Design personnalisé</small></span></label>
+              <label class="mood" data-level="sig"><input type="radio" name="level" value="sig" /><span><b class="mood-aa">Signature</b><small>DA, motion &amp; back-office</small></span></label>
+            </div>
+          </fieldset>
+          <fieldset class="demo-field sim-std">
+            <legend><span>4</span>Options <small class="sim-legend-note">★ recommandées</small></legend>
+            <div class="sim-opts" id="sim-opts"></div>
+          </fieldset>
+          <fieldset class="demo-field sim-std">
+            <legend><span>5</span>Livraison souhaitée</legend>
+            <div class="sim-speed" role="radiogroup" aria-label="Livraison souhaitée">
+              <label class="mood"><input type="radio" name="speed" value="std" checked /><span><b class="mood-aa">Standard</b><small>Le bon rythme</small></span></label>
+              <label class="mood"><input type="radio" name="speed" value="fast" /><span><b class="mood-aa">Prioritaire</b><small>−30 % de délai · +20 %</small></span></label>
+              <label class="mood"><input type="radio" name="speed" value="express" /><span><b class="mood-aa">Express</b><small>Délai divisé par 2 · +40 %</small></span></label>
+            </div>
+          </fieldset>
+          <fieldset class="demo-field sim-cust">
+            <legend><span>2</span>Ce dont vous avez besoin</legend>
+            <div class="sim-opts">
+              <label class="sim-opt"><input type="checkbox" name="need" value="Application ou outil métier" /><span><i aria-hidden="true"></i>Application ou outil métier</span></label>
+              <label class="sim-opt"><input type="checkbox" name="need" value="Plusieurs sites ou marques" /><span><i aria-hidden="true"></i>Plusieurs sites ou marques</span></label>
+              <label class="sim-opt"><input type="checkbox" name="need" value="Intégrations (CRM, ERP, API)" /><span><i aria-hidden="true"></i>Intégrations (CRM, ERP, API)</span></label>
+              <label class="sim-opt"><input type="checkbox" name="need" value="Refonte d'un site existant" /><span><i aria-hidden="true"></i>Refonte d'un site existant</span></label>
+              <label class="sim-opt"><input type="checkbox" name="need" value="Automatisations & IA" /><span><i aria-hidden="true"></i>Automatisations &amp; IA</span></label>
+              <label class="sim-opt"><input type="checkbox" name="need" value="Je ne sais pas encore" /><span><i aria-hidden="true"></i>Je ne sais pas encore</span></label>
+            </div>
+          </fieldset>
+        </form>
+
+        <a class="sim-peek" href="#sim-result" aria-hidden="true" tabindex="-1"><span><small>Budget estimé</small><b id="sim-peek-price">2 000 – 2 400 € HT</b></span><em>Détail ↓</em></a>
+
+        <aside class="sim-result" id="sim-result" aria-live="polite" data-reveal>
+          <small class="sim-kicker" id="sim-plan">Formule Essentiel</small>
+          <div class="sim-price"><small>Budget estimé</small><b><span id="sim-low">2 000</span><i>–</i><span id="sim-high">2 400</span></b><em>€ HT</em></div>
+          <div class="sim-meta">
+            <div><small>Délai</small><b id="sim-delay">2 semaines</b></div>
+            <div><small>Abonnements</small><b id="sim-monthly">0 € / mois</b></div>
+          </div>
+          <div class="sim-bar" aria-hidden="true"><i id="sim-bar"></i></div>
+          <ul class="sim-lines" id="sim-lines"></ul>
+          <p class="sim-audit" id="sim-audit" hidden>Un projet de cette ampleur mérite un vrai cadrage. <a href="#estimation" id="sim-audit-link">Passer en sur-mesure avec audit offert →</a></p>
+          <div class="sim-custom">
+            <small class="sim-kicker">Projet sur-mesure</small>
+            <b class="sim-custom-title">Sur devis, après un audit offert.</b>
+            <ol>
+              <li><b>1</b>Atelier de 30 min : on écoute votre métier et vos objectifs.</li>
+              <li><b>2</b>Audit de votre présence actuelle et de vos outils.</li>
+              <li><b>3</b>Devis détaillé ligne par ligne, sous 72 h.</li>
+            </ol>
+          </div>
+          <div class="sim-contact" id="sim-contact">
+            <small class="sim-kicker">Pour vous réserver un créneau</small>
+            <input type="text" id="sim-c-name" autocomplete="name" placeholder="Prénom et nom" aria-label="Prénom et nom" />
+            <input type="email" id="sim-c-email" autocomplete="email" inputmode="email" placeholder="E-mail" aria-label="E-mail" />
+            <input type="tel" id="sim-c-tel" autocomplete="tel" inputmode="tel" placeholder="Téléphone (facultatif)" aria-label="Téléphone, facultatif" />
+            <small class="sim-contact-note">Sans compte : vos réponses et votre estimation remplissent la réservation pour vous.</small>
+          </div>
+          <a href="https://calendly.com/arthur-s-aivelo/atelier-decouverte" target="_blank" rel="noreferrer" class="btn btn-primary btn-block magnetic" id="sim-book" data-book><span class="btn-roll">Réserver l'atelier avec ce projet</span></a>
+          <a href="#contact" class="sim-mail" id="sim-send">ou recevoir le récapitulatif par e-mail</a>
+          <p class="sim-note">Fourchette indicative, hors taxes. Le devis définitif est établi après l'atelier découverte, ligne par ligne.</p>
+        </aside>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -628,7 +738,7 @@
       <p class="eyebrow" data-reveal>Méthode</p>
       <h2 class="section-title" data-split>Cinq étapes. <em class="serif">Zéro</em> mauvaise surprise.</h2>
       <p class="section-lead" data-reveal>Un process clair, des délais tenus, un interlocuteur unique. Vous savez à chaque instant où en est votre projet.</p>
-      <div data-reveal><a href="#contact" class="btn btn-ghost magnetic"><span class="btn-roll">Réserver l'atelier découverte</span></a></div>
+      <div data-reveal><a href="https://calendly.com/arthur-s-aivelo/atelier-decouverte" target="_blank" rel="noreferrer" class="btn btn-ghost magnetic" data-book><span class="btn-roll">Réserver l'atelier</span></a></div>
     </header>
 
     <div class="timeline">
@@ -724,8 +834,34 @@
 </section>
 
 
+<!-- ============================ VOTRE INTERLOCUTEUR ============================ -->
+<section class="section founder" id="interlocuteur">
+  <div class="container">
+    <div class="founder-card" data-reveal>
+      <div class="founder-id">
+        <span class="founder-mono" aria-hidden="true">AS</span>
+        <div><b>Arthur Semelier</b><small>Fondateur d'Aivelo · Bordeaux</small></div>
+      </div>
+      <div class="founder-copy">
+        <p class="eyebrow">Votre interlocuteur</p>
+        <h2 class="section-title" data-split>Une seule personne, <em class="serif">du premier atelier</em> à la maintenance.</h2>
+        <p class="founder-lead">Pas de commercial, pas de chef de projet intermédiaire : c'est moi que vous rencontrez à l'atelier, moi qui conçois et développe votre site, et moi qui reste joignable après la mise en ligne.</p>
+        <ul class="founder-facts">
+          <li><b>1</b><span>interlocuteur, du début à la fin</span></li>
+          <li><b>7 j</b><span>pour la première maquette</span></li>
+          <li><b>100 %</b><span>du code et des contenus vous appartiennent</span></li>
+        </ul>
+        <div class="founder-ctas">
+          <a href="https://www.linkedin.com/in/arthursemelier/" target="_blank" rel="noreferrer" class="btn btn-ghost founder-li"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.03-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.06 2.06 0 1 1 0-4.13 2.06 2.06 0 0 1 0 4.13zM7.12 20.45H3.56V9h3.56v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.73V1.73C24 .77 23.2 0 22.22 0z"/></svg><span class="btn-roll">Voir mon profil LinkedIn</span></a>
+          <a href="https://calendly.com/arthur-s-aivelo/atelier-decouverte" target="_blank" rel="noreferrer" class="btn btn-primary magnetic" data-book><span class="btn-roll">Réserver l'atelier</span></a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- ============================ TÉMOIGNAGES ============================ -->
-<section class="section quotes" id="temoignages" hidden>
+<section class="section quotes" id="temoignages" data-pending-validation hidden>
   <div class="container">
     <header class="section-head section-head--center">
       <p class="eyebrow" data-reveal>Ils en parlent</p>
@@ -733,17 +869,14 @@
     </header>
     <div class="quotes-grid">
       <figure class="quote" data-tilt data-reveal>
-        <span class="quote-sample">Exemple · à remplacer</span>
         <blockquote>« On a enfin un site qui ressemble à l'agence. Les clients nous disent qu'ils nous ont choisis en le voyant, et on ajoute nos biens nous-mêmes en deux minutes. »</blockquote>
         <figcaption><span class="avatar">AC</span><span><b>Direction</b><small>L'Avenue Carnot Immobilier</small></span></figcaption>
       </figure>
       <figure class="quote quote--accent" data-tilt data-reveal>
-        <span class="quote-sample">Exemple · à remplacer</span>
         <blockquote>« 443 modules, un panier, le paiement : la plateforme a absorbé tout notre catalogue sans qu'on change nos habitudes. Nos apprenants s'y retrouvent tout seuls. »</blockquote>
         <figcaption><span class="avatar avatar-2">OF</span><span><b>Responsable pédagogique</b><small>OpsForm Learning</small></span></figcaption>
       </figure>
       <figure class="quote" data-tilt data-reveal>
-        <span class="quote-sample">Exemple · à remplacer</span>
         <blockquote>« Un interlocuteur unique, des délais tenus et un rendu au-dessus de ce qu'on imaginait. On recommande sans hésiter. »</blockquote>
         <figcaption><span class="avatar avatar-3">EK</span><span><b>Associé</b><small>EKKOUT</small></span></figcaption>
       </figure>
@@ -783,7 +916,7 @@
             <li>Formulaire de contact</li>
             <li>Livraison en 2 semaines</li>
           </ul>
-          <a href="#contact" class="btn btn-ghost btn-block"><span class="btn-roll">Demander un devis</span></a>
+          <a href="#estimation" class="btn btn-ghost btn-block" data-sim="site" data-sim-level="std"><span class="btn-roll">Estimer ce projet</span></a>
         </article>
         <article class="plan plan-featured">
           <span class="plan-badge">Le plus choisi</span>
@@ -797,7 +930,7 @@
             <li>SEO local avancé</li>
             <li>Prise de rendez-vous &amp; avis Google</li>
           </ul>
-          <a href="#contact" class="btn btn-primary btn-block"><span class="btn-roll">Démarrer mon site</span></a>
+          <a href="#estimation" class="btn btn-primary btn-block" data-sim="site" data-sim-level="sig"><span class="btn-roll">Estimer ce projet</span></a>
         </article>
         <article class="plan">
           <h3>Sur-mesure</h3>
@@ -810,7 +943,7 @@
             <li>E-commerce &amp; paiement</li>
             <li>Chef de projet dédié</li>
           </ul>
-          <a href="#contact" class="btn btn-ghost btn-block"><span class="btn-roll">Parler de mon projet</span></a>
+          <a href="#estimation" class="btn btn-ghost btn-block" data-sim="custom"><span class="btn-roll">Demander un audit</span></a>
         </article>
       </div>
     </div>
@@ -827,9 +960,9 @@
             <li>Vidéos, PDF, quiz</li>
             <li>Attestations automatiques</li>
             <li>Espace apprenant à vos couleurs</li>
-            <li>Mise en ligne en 3 semaines</li>
+            <li>Mise en ligne en 2 à 3 semaines</li>
           </ul>
-          <a href="#contact" class="btn btn-ghost btn-block"><span class="btn-roll">Demander un devis</span></a>
+          <a href="#estimation" class="btn btn-ghost btn-block" data-sim="formation" data-sim-level="std"><span class="btn-roll">Estimer ce projet</span></a>
         </article>
         <article class="plan plan-featured">
           <span class="plan-badge">Recommandé</span>
@@ -841,9 +974,9 @@
             <li>Catalogue, inscriptions &amp; paiement</li>
             <li>Tableau de bord formateur</li>
             <li>Emails &amp; relances automatisés</li>
-            <li>Indicateurs de suivi qualité</li>
+            <li>Suivi de progression des apprenants</li>
           </ul>
-          <a href="#contact" class="btn btn-primary btn-block"><span class="btn-roll">Lancer mon académie</span></a>
+          <a href="#estimation" class="btn btn-primary btn-block" data-sim="formation" data-sim-level="sig"><span class="btn-roll">Estimer ce projet</span></a>
         </article>
         <article class="plan">
           <h3>Organisation</h3>
@@ -856,7 +989,7 @@
             <li>Reporting avancé</li>
             <li>Accompagnement dédié</li>
           </ul>
-          <a href="#contact" class="btn btn-ghost btn-block"><span class="btn-roll">Nous contacter</span></a>
+          <a href="#estimation" class="btn btn-ghost btn-block" data-sim="custom"><span class="btn-roll">Demander un audit</span></a>
         </article>
       </div>
     </div>
@@ -882,7 +1015,7 @@
             <li>Dashboard complet</li>
             <li>1 utilisateur</li>
           </ul>
-          <a href="https://calendar.app.google/uFepKqQYgaG9t9Hf6" target="_blank" rel="noreferrer" class="btn btn-ghost btn-block"><span class="btn-roll">Commencer</span></a>
+          <a href="https://calendly.com/arthur-s-aivelo/atelier-decouverte" target="_blank" rel="noreferrer" class="btn btn-ghost btn-block" data-book><span class="btn-roll">Réserver une démo</span></a>
         </article>
         <article class="plan plan-featured">
           <span class="plan-badge">Populaire</span>
@@ -897,7 +1030,7 @@
             <li>Matching temps réel</li>
             <li>Jusqu'à 5 utilisateurs</li>
           </ul>
-          <a href="https://calendar.app.google/uFepKqQYgaG9t9Hf6" target="_blank" rel="noreferrer" class="btn btn-primary btn-block"><span class="btn-roll">Réserver une démo</span></a>
+          <a href="https://calendly.com/arthur-s-aivelo/atelier-decouverte" target="_blank" rel="noreferrer" class="btn btn-primary btn-block" data-book><span class="btn-roll">Réserver une démo</span></a>
         </article>
         <article class="plan">
           <h3>Agency</h3>
@@ -911,87 +1044,25 @@
             <li>Support prioritaire 24/7</li>
             <li>Utilisateurs illimités</li>
           </ul>
-          <a href="https://calendar.app.google/uFepKqQYgaG9t9Hf6" target="_blank" rel="noreferrer" class="btn btn-ghost btn-block"><span class="btn-roll">Nous contacter</span></a>
+          <a href="https://calendly.com/arthur-s-aivelo/atelier-decouverte" target="_blank" rel="noreferrer" class="btn btn-ghost btn-block" data-book><span class="btn-roll">Réserver une démo</span></a>
         </article>
+      </div>
+      <div class="crm-addons">
+        <small>Options CRM</small>
+        <span><b>Analyse juridique IA</b> mandats &amp; compromis, score de conformité<em>+49 €/mois</em></span>
+        <span><b>Agent vocal</b> qualification téléphonique 24h/24, 200 min incluses<em>+79 €/mois</em></span>
       </div>
     </div>
 
+    <div class="offres-sim" data-reveal>
+      <p><b>Blog, multilingue, e-commerce, maintenance, identité visuelle…</b> Composez votre projet option par option et obtenez budget et délai en direct.</p>
+      <a href="#estimation" class="btn btn-primary magnetic" data-sim="site"><span class="btn-roll">Estimer mon projet</span></a>
+    </div>
     <p class="offres-note" data-reveal>Tous les prix sont indiqués hors taxes. Sites et plateformes : paiement en 3 fois sans frais possible.</p>
   </div>
 </section>
 
-<!-- ============================ ADD-ONS ============================ -->
-<section class="section addons" id="addons">
-  <div class="container">
-    <header class="section-head addons-head">
-      <div>
-        <p class="eyebrow" data-reveal>Add-ons</p>
-        <h2 class="section-title" data-split>Activez <em class="serif">uniquement</em> ce dont vous avez besoin.</h2>
-      </div>
-      <div class="filters" role="group" aria-label="Filtrer les add-ons" data-reveal>
-        <button class="filter active" data-filter="all" aria-pressed="true">Tous</button>
-        <button class="filter" data-filter="site" aria-pressed="false">Sites</button>
-        <button class="filter" data-filter="formation" aria-pressed="false">Formation</button>
-        <button class="filter" data-filter="crm" aria-pressed="false">CRM</button>
-      </div>
-    </header>
-
-    <div class="addons-grid" id="addons-grid">
-      <article class="addon" data-cat="site formation">
-        <span class="addon-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span>
-        <div class="addon-body"><h3>Gestion &amp; maintenance</h3><small>Hébergement EU · sauvegardes · évolutions</small><p>Mises à jour, sécurité, surveillance 24/7 et 1 h de modifications incluse chaque mois.</p></div>
-        <b class="addon-price">+49€<small>/mois</small></b>
-      </article>
-      <article class="addon" data-cat="site">
-        <span class="addon-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg></span>
-        <div class="addon-body"><h3>SEO local</h3><small>Google Business · avis · contenus</small><p>Optimisation continue, gestion de la fiche Google et un article de blog optimisé par mois.</p></div>
-        <b class="addon-price">+69€<small>/mois</small></b>
-      </article>
-      <article class="addon" data-cat="site formation">
-        <span class="addon-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><path d="M8 9h8M8 13h5"/></svg></span>
-        <div class="addon-body"><h3>Assistant IA sur votre site</h3><small>Réponses 24h/24 · prise de RDV</small><p>Entraîné sur vos contenus, il répond aux visiteurs, qualifie la demande et vous la transmet.</p></div>
-        <b class="addon-price">+59€<small>/mois</small></b>
-      </article>
-      <article class="addon" data-cat="site">
-        <span class="addon-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 0 1 0 20M12 2a15 15 0 0 0 0 20"/></svg></span>
-        <div class="addon-body"><h3>Version multilingue</h3><small>Traduction · SEO international</small><p>Une langue supplémentaire traduite, relue et optimisée pour le référencement.</p></div>
-        <b class="addon-price">+390€<small>/langue</small></b>
-      </article>
-      <article class="addon" data-cat="formation">
-        <span class="addon-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m23 7-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></span>
-        <div class="addon-body"><h3>Classes virtuelles</h3><small>Visio intégrée · replays</small><p>Sessions en direct dans la plateforme, émargement automatique et replays disponibles.</p></div>
-        <b class="addon-price">+39€<small>/mois</small></b>
-      </article>
-      <article class="addon" data-cat="formation">
-        <span class="addon-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="6"/><path d="M15.5 13 17 22l-5-3-5 3 1.5-9"/></svg></span>
-        <div class="addon-body"><h3>Certificats &amp; émargement</h3><small>Signature électronique · preuves</small><p>Attestations nominatives, feuilles d'émargement signées en ligne, archivage des preuves.</p></div>
-        <b class="addon-price">+29€<small>/mois</small></b>
-      </article>
-      <article class="addon" data-cat="crm">
-        <span class="addon-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18M5 7h14M3 15l2-8 2 8a3 3 0 0 1-4 0zM17 15l2-8 2 8a3 3 0 0 1-4 0z"/></svg></span>
-        <div class="addon-body"><h3>Analyse juridique IA</h3><small>Conformité documents</small><p>Scan mandat/compromis → score de conformité + extraction automatique. Alertes en temps réel.</p></div>
-        <b class="addon-price">+49€<small>/mois</small></b>
-      </article>
-      <article class="addon" data-cat="crm">
-        <span class="addon-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 10a7 7 0 0 0 14 0M12 19v3"/></svg></span>
-        <div class="addon-body"><h3>Agent vocal Vapi.ai</h3><small>Qualification 24h/24</small><p>Qualification téléphonique automatique. 200 min incluses, puis 0,15€/min supplémentaire.</p></div>
-        <b class="addon-price">+79€<small>/mois</small></b>
-      </article>
-      <article class="addon" data-cat="site formation crm">
-        <span class="addon-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="m7 15 4-4 3 3 5-6"/></svg></span>
-        <div class="addon-body"><h3>Analytics sans cookies</h3><small>Conforme RGPD · sans bandeau</small><p>Tableau de bord clair de vos visites et conversions, sans bandeau de consentement.</p></div>
-        <b class="addon-price">+19€<small>/mois</small></b>
-      </article>
-      <article class="addon" data-cat="site formation">
-        <span class="addon-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg></span>
-        <div class="addon-body"><h3>Pack contenus</h3><small>Rédaction · photo · vidéo</small><p>Rédaction de vos pages, shooting photo ou vidéo de présentation pour incarner votre marque.</p></div>
-        <b class="addon-price">dès 490€<small>/pack</small></b>
-      </article>
-    </div>
-    <div class="addons-more"><button type="button" class="btn btn-ghost" id="addons-more" aria-expanded="false" aria-controls="addons-grid"><span class="btn-roll">Voir tous les add-ons</span><em id="addons-more-n"></em></button></div>
-
-  </div>
-</section>
+<!-- Add-ons : désormais choisis dans le simulateur (#estimation) ; options CRM dans l'onglet CRM -->
 
 <!-- ============================ FAQ ============================ -->
 <section class="section faq" id="faq">
@@ -1008,7 +1079,7 @@
       </div>
       <div class="acc-item" data-reveal>
         <h3><button class="acc-btn" aria-expanded="false" aria-controls="acc-1" id="acc-btn-1">Combien de temps faut-il pour lancer mon site&nbsp;?<i aria-hidden="true"></i></button></h3>
-        <div class="acc-panel" id="acc-1" role="region" aria-labelledby="acc-btn-1"><div><p>Comptez 2 semaines pour un site Essentiel, 4 à 5 semaines pour un site Signature et 3 semaines pour un premier parcours de formation. La première maquette est présentée sous 7 jours après l'atelier découverte.</p></div></div>
+        <div class="acc-panel" id="acc-1" role="region" aria-labelledby="acc-btn-1"><div><p>Comptez environ 2 semaines pour un site Essentiel, 3 à 4 semaines pour un site Signature et 2 à 3 semaines pour une plateforme de formation. Besoin d'aller plus vite ? Les livraisons prioritaire et express raccourcissent ces délais. La première maquette est présentée sous 7 jours après l'atelier découverte.</p></div></div>
       </div>
       <div class="acc-item" data-reveal>
         <h3><button class="acc-btn" aria-expanded="false" aria-controls="acc-2" id="acc-btn-2">Est-ce que je suis propriétaire de mon site&nbsp;?<i aria-hidden="true"></i></button></h3>
@@ -1019,8 +1090,8 @@
         <div class="acc-panel" id="acc-3" role="region" aria-labelledby="acc-btn-3"><div><p>Oui. Chaque site Signature et chaque plateforme est livré avec un back-office simple et une session de prise en main. Pour le reste, l'add-on maintenance inclut des modifications chaque mois.</p></div></div>
       </div>
       <div class="acc-item" data-reveal>
-        <h3><button class="acc-btn" aria-expanded="false" aria-controls="acc-4" id="acc-btn-4">Ma plateforme de formation m'aidera-t-elle pour Qualiopi&nbsp;?<i aria-hidden="true"></i></button></h3>
-        <div class="acc-panel" id="acc-4" role="region" aria-labelledby="acc-btn-4"><div><p>La plateforme centralise les éléments que les auditeurs demandent souvent : émargements, évaluations, taux de complétion, satisfaction. Elle facilite la constitution de vos preuves ; la certification reste délivrée par un organisme certificateur.</p></div></div>
+        <h3><button class="acc-btn" aria-expanded="false" aria-controls="acc-4" id="acc-btn-4">Puis-je suivre la progression de mes apprenants&nbsp;?<i aria-hidden="true"></i></button></h3>
+        <div class="acc-panel" id="acc-4" role="region" aria-labelledby="acc-btn-4"><div><p>Oui. Chaque plateforme intègre un tableau de bord : progression par apprenant, taux de complétion, résultats aux quiz et attestations délivrées. Vous pouvez exporter ces données à tout moment.</p></div></div>
       </div>
       <div class="acc-item" data-reveal>
         <h3><button class="acc-btn" aria-expanded="false" aria-controls="acc-5" id="acc-btn-5">Le CRM IA se connecte-t-il à mon site d'agence&nbsp;?<i aria-hidden="true"></i></button></h3>
@@ -1042,11 +1113,12 @@
     <h2 class="contact-title" data-split>Parlons de <em class="serif">votre</em> projet.</h2>
     <p class="section-lead" data-reveal>On écoute votre métier, on analyse votre présence actuelle et vous repartez avec des recommandations concrètes, que vous travailliez avec nous ou non.</p>
     <div class="contact-ctas" data-reveal>
-      <a href="https://calendar.app.google/uFepKqQYgaG9t9Hf6" target="_blank" rel="noreferrer" class="btn btn-primary btn-xl magnetic">
-        <span class="btn-roll">Réserver un créneau</span>
+      <a href="https://calendly.com/arthur-s-aivelo/atelier-decouverte" target="_blank" rel="noreferrer" class="btn btn-primary btn-xl magnetic" data-book>
+        <span class="btn-roll">Réserver l'atelier</span>
         <svg class="arr" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
       </a>
       <a href="mailto:arthur.s@aivelo.fr" class="btn btn-ghost btn-xl magnetic"><span class="btn-roll">arthur.s@aivelo.fr</span></a>
+      <a href="https://wa.me/33624434801?text=Bonjour%20Arthur%2C%20je%20vous%20contacte%20depuis%20le%20site%20Aivelo%20au%20sujet%20d%E2%80%99un%20projet." target="_blank" rel="noreferrer" class="btn btn-ghost btn-xl magnetic btn-wa"><span class="btn-roll">WhatsApp</span></a>
     </div>
     <p class="contact-foot" data-reveal>Sans engagement · Données privées · RGPD</p>
   </div>
@@ -1066,7 +1138,7 @@
         <p>Studio digital &amp; IA. Sites web, plateformes de formation et CRM immobilier, conçus en France pour les métiers qui méritent d'être vus.</p>
       </div>
       <div>
-        <h4>Expertises</h4>
+        <h2 class="footer-h">Expertises</h2>
         <ul>
           <li><a href="#expertises">Sites web</a></li>
           <li><a href="#expertises">Plateformes de formation</a></li>
@@ -1075,7 +1147,7 @@
         </ul>
       </div>
       <div>
-        <h4>Studio</h4>
+        <h2 class="footer-h">Studio</h2>
         <ul>
           <li><a href="#manifeste">Manifeste</a></li>
           <li><a href="#methode">Méthode</a></li>
@@ -1084,7 +1156,7 @@
         </ul>
       </div>
       <div>
-        <h4>Légal</h4>
+        <h2 class="footer-h">Légal</h2>
         <ul>
           <li><button type="button" class="link-btn" data-legal="mentions">Mentions légales</button></li>
           <li><button type="button" class="link-btn" data-legal="confidentialite">Confidentialité &amp; RGPD</button></li>
@@ -1105,10 +1177,10 @@
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/SplitText.min.js" defer></script>
 <script src="https://unpkg.com/lenis@1.1.13/dist/lenis.min.js" defer></script>
-<script src="assets/js/hero-3d.js" defer></script>
-<script src="assets/js/main.js" defer></script>
-<script src="assets/js/water.js" defer></script>
-<script src="assets/js/sections.js" defer></script>
-<script src="assets/js/bg.js" defer></script>
+<script src="assets/js/hero-3d.min.js" defer></script>
+<script src="assets/js/main.min.js" defer></script>
+<script src="assets/js/water.min.js" defer></script>
+<script src="assets/js/sections.min.js" defer></script>
+<script src="assets/js/bg.min.js" defer></script>
 </body>
 </html>

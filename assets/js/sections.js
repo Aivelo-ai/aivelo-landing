@@ -161,14 +161,324 @@
       const label = form.querySelector(`input[name="color"][value="${s.color}"]`).parentElement.textContent.trim();
       const subject = `Mon esquisse Aivelo : ${DEMO[s.metier].eyebrow.split(' · ')[0]}, ambiance ${MOODS[s.mood].toLowerCase()}, ${label.toLowerCase()}`;
       const body = `Bonjour Arthur,\n\nJ'ai composé cette esquisse sur votre site, comme point de départ :\n· Métier : ${DEMO[s.metier].eyebrow}\n· Ambiance : ${MOODS[s.mood]}\n· Couleur : ${label} (${s.color})\n· Nom : ${s.name || '(à préciser)'}\n\nJe souhaite réserver l'atelier découverte pour en parler.\n`;
-      el('demo-cta').href = `mailto:arthur.s@aivelo.fr?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+      // step 1 hands its choices over to step 2 (the estimate), which sends everything at once
+      window.labSketch = { metier: DEMO[s.metier].eyebrow, kind: s.metier, mood: MOODS[s.mood], color: `${label} (${s.color})`, name: s.name, subject, body };
+      document.dispatchEvent(new CustomEvent('lab:sketch'));
     };
     form.addEventListener('change', render);
+    // « Pour qui » → the sketch starts from the visitor's trade
+    $$('[data-metier-go]').forEach((a) => a.addEventListener('click', () => {
+      const r = form.querySelector(`[name="metier"][value="${a.dataset.metierGo}"]`);
+      if (r && !r.checked) { r.checked = true; form.dispatchEvent(new Event('change', { bubbles: true })); }
+    }));
     let typing;
     el('demo-name').addEventListener('input', () => { clearTimeout(typing); typing = setTimeout(render, 120); });
     fillText(last);
     updateCta();
   }
+
+  /* ------------------------------------------------------------------
+     2b. Estimation : budget et délai calculés en direct (grille dans PRICING)
+         Le niveau de design change toujours le prix ; la taille du projet
+         s'ajoute par-dessus. « Sur-mesure » n'a pas de prix : il mène à l'audit.
+     ------------------------------------------------------------------ */
+  const PRICING = {
+    site: {
+      sizeLabel: 'Nombre de pages', hint: 'Accueil, services, à propos, contact… chaque page compte.', max: 25, def: 5, unit: ['page', 'pages'],
+      levels: {
+        std: { name: 'Essentiel', label: 'Soigné', sub: 'Design personnalisé', base: 2000, incl: 5, extra: 150, days: 10 },
+        sig: { name: 'Signature', label: 'Signature', sub: 'DA, motion & back-office', base: 3500, incl: 12, extra: 220, days: 15, includes: ['cms', 'blog', 'rdv'] },
+      },
+      daysPerExtra: 1,
+      options: [
+        { id: 'brand', label: 'Identité visuelle (logo & charte)', price: 890, days: 5, tag: 'Valeur' },
+        { id: 'cms', label: 'Back-office autonome & SEO automatisé', price: 690, days: 3, tag: 'Valeur' },
+        { id: 'content', label: 'Rédaction des contenus & SEO', price: 490, days: 3 },
+        { id: 'migrate', label: 'Reprise de l’ancien site & redirections SEO', price: 390, days: 2, tag: 'Valeur' },
+        { id: 'blog', label: 'Blog & actualités', price: 390, days: 1 },
+        { id: 'rdv', label: 'Prise de rendez-vous en ligne', price: 290, days: 1 },
+        { id: 'lang', label: 'Version multilingue (1 langue)', price: 390, days: 3 },
+        { id: 'client', label: 'Espace client', price: 990, days: 5 },
+        { id: 'shop', label: 'E-commerce & paiement', price: 1500, days: 7 },
+        { id: 'maint', label: 'Gestion & maintenance', monthly: 49 },
+        { id: 'seo', label: 'SEO local suivi', monthly: 69 },
+        { id: 'ai', label: 'Assistant IA sur le site', monthly: 59 },
+      ],
+    },
+    formation: {
+      sizeLabel: 'Modules à intégrer', hint: 'Vous fournissez vos contenus (vidéos, PDF, quiz) : nous les intégrons et les mettons en forme.', max: 60, def: 10, unit: ['module', 'modules'],
+      levels: {
+        std: { name: 'Lancement', label: 'Plateforme', sub: 'Parcours, quiz, attestations', base: 2490, incl: 10, extra: 45, days: 11 },
+        sig: { name: 'Académie', label: 'Académie', sub: 'Catalogue, paiement, suivi', base: 4990, incl: 20, extra: 35, days: 20, includes: ['report'] },
+      },
+      daysPerExtra: .25,
+      options: [
+        { id: 'import', label: 'Mise en forme avancée de vos supports', price: 690, days: 4 },
+        { id: 'report', label: 'Tableau de bord de progression des apprenants', price: 590, days: 3 },
+        { id: 'sso', label: 'Connexion à vos outils (CRM, SSO)', price: 790, days: 4, tag: 'Valeur' },
+        { id: 'train', label: 'Prise en main de vos formateurs (2 h)', price: 290, days: 1, tag: 'Valeur' },
+        { id: 'brand', label: 'Identité visuelle de la plateforme', price: 690, days: 4 },
+        { id: 'live', label: 'Classes virtuelles', monthly: 39 },
+        { id: 'cert', label: 'Certificats & émargement', monthly: 29 },
+        { id: 'maint', label: 'Gestion & maintenance', monthly: 49 },
+      ],
+    },
+  };
+  const SPEED = { std: { label: 'Standard', k: 1, add: 0 }, fast: { label: 'Prioritaire', k: .7, add: .2 }, express: { label: 'Express', k: .5, add: .4 } };
+  const sim = $('#sim-form');
+  if (sim) {
+    const out = (id) => document.getElementById(id);
+    const fmt = (n) => Math.round(n).toLocaleString('fr-FR').replace(/ | /g, ' ');
+    const round = (n, step) => Math.round(n / step) * step;
+    const optsBox = out('sim-opts');
+    const checked = new Set();
+    let type = 'site';
+    let prev = { low: null, high: null };
+    const half = (d) => String(Math.round(d / 5 * 2) / 2).replace('.', ',');
+    const delayText = (lo, hi) => (hi <= 7 ? `${lo} à ${hi} jours ouvrés` : (half(lo) === half(hi) ? `${half(lo)} semaines` : `${half(lo)} à ${half(hi)} semaines`));
+
+    const buildOptions = () => {
+      const P = PRICING[type];
+      if (!P) { optsBox.innerHTML = ''; return; }
+      const inc = (P.levels[sim.level.value].includes || []);
+      optsBox.innerHTML = P.options.map((o) => {
+        const isInc = inc.includes(o.id);
+        return `
+        <label class="sim-opt${isInc ? ' is-included' : ''}"><input type="checkbox" value="${o.id}" ${isInc || checked.has(type + o.id) ? 'checked' : ''} ${isInc ? 'disabled' : ''} />
+          <span><i aria-hidden="true"></i>${o.label}${o.tag && !isInc ? ' <u>★</u>' : ''}<em>${isInc ? `Inclus ${P.levels[sim.level.value].name}` : (o.monthly ? `+${o.monthly} €/mois` : `+${fmt(o.price)} €`)}</em></span></label>`;
+      }).join('');
+      out('sim-size').max = P.max;
+      out('sim-size-label').textContent = P.sizeLabel;
+      out('sim-size-hint').textContent = P.hint;
+      $$('#sim-levels [data-level]').forEach((lv) => {
+        const L = P.levels[lv.dataset.level];
+        $('b', lv).textContent = L.label;
+        $('small', lv).textContent = L.sub;
+      });
+    };
+
+    const compute = () => {
+      const P = PRICING[type];
+      const size = +out('sim-size').value;
+      const L = P.levels[sim.level.value];
+      const speed = SPEED[sim.speed.value];
+      const extraUnits = Math.max(0, size - L.incl);
+      let total = L.base + extraUnits * L.extra;
+      let days = L.days + extraUnits * P.daysPerExtra;
+      let monthly = 0;
+      const lines = [[`${L.name} · ${L.incl} ${P.unit[1]} inclus`, L.base]];
+      if (extraUnits) lines.push([`${extraUnits} ${P.unit[extraUnits > 1 ? 1 : 0]} en plus`, extraUnits * L.extra]);
+      const inc = L.includes || [];
+      const incLabels = P.options.filter((o) => inc.includes(o.id)).map((o) => o.label.split(' & ')[0].split(' (')[0]);
+      if (incLabels.length) lines.push([`Inclus : ${incLabels.join(', ')}`, 0, false, true]);
+      P.options.forEach((o) => {
+        if (inc.includes(o.id) || !checked.has(type + o.id)) return;
+        if (o.monthly) { monthly += o.monthly; lines.push([o.label, o.monthly, true]); }
+        else { total += o.price; days += (o.days || 0) * .6; lines.push([o.label, o.price]); }  // options are built in parallel
+      });
+      if (speed.add) { const fee = round(total * speed.add, 10); lines.push([`Livraison ${speed.label.toLowerCase()}`, fee]); total += fee; }
+      days *= speed.k;
+      const low = total;
+      const high = round(total * 1.15, 100);
+      // projects this large or this connected deserve an audit first
+      const big = total > 9000 || checked.has('siteshop') && checked.has('siteclient');
+      return { P, L, size, low, high, dLow: Math.max(5, Math.round(days)), dHigh: Math.round(days * 1.25), monthly, lines, speed, big };
+    };
+
+    const render = () => {
+      const custom = type === 'custom';
+      sim.classList.toggle('is-custom', custom);
+      out('sim-result').classList.toggle('is-custom', custom);
+      if (custom) { updateSend(); return; }
+      const r = compute();
+      out('sim-size-out').textContent = r.size;
+      out('sim-plan').textContent = `Formule ${r.L.name}`;
+      const lowEl = out('sim-low'); const highEl = out('sim-high');
+      if (window.labOdo && prev.low !== null) { window.labOdo(lowEl, fmt(r.low)); window.labOdo(highEl, fmt(r.high)); }
+      else { lowEl.textContent = fmt(r.low); highEl.textContent = fmt(r.high); }
+      prev = { low: r.low, high: r.high };
+      out('sim-peek-price').textContent = `${fmt(r.low)} – ${fmt(r.high)} € HT`;
+      out('sim-delay').textContent = delayText(r.dLow, r.dHigh);
+      out('sim-monthly').textContent = r.monthly ? `${r.monthly} € / mois` : 'Aucun';
+      out('sim-bar').style.transform = `scaleX(${Math.min(1, r.high / 12000)})`;
+      out('sim-lines').innerHTML = r.lines.map(([l, v, m, inc]) => `<li${inc ? ' class="is-inc"' : ''}><span>${l}</span><b>${inc ? 'inclus' : (m ? `${v} €/mois` : `${fmt(v)} €`)}</b></li>`).join('');
+      out('sim-audit').hidden = !r.big;
+      updateSend(r);
+    };
+
+    const updateSend = (r) => {
+      const sk = window.labSketch;
+      const sketch = sk ? `   · Métier : ${sk.metier}\n   · Ambiance : ${sk.mood}\n   · Couleur : ${sk.color}\n   · Nom : ${sk.name || '(à préciser)'}` : '   · (non renseignée)';
+      let subject; let body;
+      if (type === 'custom') {
+        const needs = [...sim.querySelectorAll('[name="need"]:checked')].map((c) => `   · ${c.value}`).join('\n') || '   · (à préciser ensemble)';
+        subject = 'Mon projet sur-mesure Aivelo : demande d’audit';
+        body = `Bonjour Arthur,\n\nJ'ai un projet sur-mesure et je souhaite l'audit offert.\n\n1. ESQUISSE\n${sketch}\n\n2. MES BESOINS\n${needs}\n\n3. EN QUELQUES MOTS\n   (décrivez votre projet ici)\n\nQuand pouvons-nous en parler ?\n`;
+        out('sim-book').querySelector('.btn-roll').textContent = 'Réserver mon audit offert';
+      } else {
+        const opts = r.lines.slice(1).map(([l, v, m, inc]) => `   · ${l}${inc ? '' : ` (${m ? `${v} €/mois` : `${fmt(v)} €`})`}`).join('\n') || '   · aucune';
+        subject = `Mon projet Aivelo : ${type === 'site' ? 'site web' : 'plateforme de formation'}, ${fmt(r.low)} à ${fmt(r.high)} € HT`;
+        body = `Bonjour Arthur,\n\nVoici mon projet, composé sur votre site.\n\n1. ESQUISSE\n${sketch}\n\n2. ESTIMATION\n   · Formule ${r.L.name}, ${r.size} ${r.P.unit[1]}\n${opts}\n   · Livraison : ${r.speed.label}\n   · Budget estimé : ${fmt(r.low)} à ${fmt(r.high)} € HT\n   · Délai estimé : ${out('sim-delay').textContent}\n${r.monthly ? `   · Abonnements : ${r.monthly} €/mois\n` : ''}\nJe souhaite réserver l'atelier découverte pour affiner tout ça.\n`;
+        out('sim-book').querySelector('.btn-roll').textContent = 'Réserver l\u2019atelier avec ce projet';
+      }
+      out('sim-send').href = `mailto:arthur.s@aivelo.fr?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+      // the brief that follows the visitor into the booking window
+      window.labBrief = body.replace(/^Bonjour Arthur,\n\n/, '').replace(/\nJe souhaite[^\n]*\n?$|\nQuand pouvons[^\n]*\n?$/, '').trim();
+    };
+
+    sim.addEventListener('change', (e) => {
+      if (e.target.name === 'level') buildOptions();
+      if (e.target.name === 'type') {
+        type = e.target.value;
+        if (PRICING[type]) { out('sim-size').value = PRICING[type].def; buildOptions(); }
+      } else if (e.target.type === 'checkbox' && e.target.name !== 'need') {
+        e.target.checked ? checked.add(type + e.target.value) : checked.delete(type + e.target.value);
+      }
+      render();
+    });
+    out('sim-size').addEventListener('input', render);
+    document.addEventListener('lab:sketch', () => {
+      const sk = window.labSketch;
+      if (sk && sk.kind === 'formation' && type === 'site' && prev.low !== null && !sim.dataset.touched) {
+        sim.type.value = 'formation'; type = 'formation'; out('sim-size').value = PRICING.formation.def; buildOptions(); render();
+      } else if (type === 'custom') updateSend();
+      else updateSend(compute());
+    });
+    sim.addEventListener('pointerdown', () => { sim.dataset.touched = '1'; }, { once: true });
+    const auditLink = out('sim-audit-link');
+    if (auditLink) auditLink.addEventListener('click', (e) => { e.preventDefault(); sim.type.value = 'custom'; type = 'custom'; render(); out('estimation').scrollIntoView({ behavior: 'smooth', block: 'start' }); });
+
+    const steps = $$('.proj-steps li');
+    if (steps.length) {
+      new IntersectionObserver(([e]) => {
+        steps[0].classList.toggle('is-on', !e.isIntersecting);
+        steps[1].classList.toggle('is-on', e.isIntersecting);
+      }, { rootMargin: '-45% 0px -45% 0px' }).observe(out('estimation'));
+    }
+
+    // booking from the estimate: the brief and the contact details travel into the booking form
+    out('sim-book').addEventListener('click', () => { window.labBriefArmed = true; });
+    $$('#sim-contact input').forEach((i) => i.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); out('sim-book').click(); } }));
+
+    // any « Estimer ce projet » button on the page can pre-fill the estimate
+    window.labSimPreset = ({ type: t, level, opt } = {}) => {
+      if (t && t !== type) { sim.type.value = t; type = t; if (PRICING[t]) out('sim-size').value = PRICING[t].def; }
+      if (level && sim.level) sim.level.value = level;
+      if (opt) checked.add(type + opt);
+      buildOptions();
+      render();
+    };
+    $$('[data-sim]').forEach((a) => a.addEventListener('click', () => {
+      window.labSimPreset({ type: a.dataset.sim, level: a.dataset.simLevel, opt: a.dataset.simOpt });
+    }));
+
+    buildOptions();
+    render();
+  }
+
+  /* ------------------------------------------------------------------
+     Réservation de l'atelier : l'agenda s'ouvre dans le site
+     ------------------------------------------------------------------ */
+  // Changer d'agenda = changer cette ligne. Un lien Calendly (https://calendly.com/…) est reconnu :
+  // le récapitulatif du simulateur y est alors pré-rempli, sans copier-coller.
+  const BOOKING = 'https://calendly.com/arthur-s-aivelo/atelier-decouverte';
+  const BOOKING_PUBLIC = BOOKING;
+  const isCalendly = /calendly\.com/.test(BOOKING);
+  // what the visitor typed at the end of the estimate, ready for the booking form
+  const contactInfo = () => {
+    const v = (id) => (document.getElementById(id)?.value || '').trim();
+    let tel = v('sim-c-tel').replace(/[^\d+]/g, '');
+    if (/^0\d{9}$/.test(tel)) tel = '+33' + tel.slice(1);
+    const email = v('sim-c-email');
+    return { name: v('sim-c-name'), email: /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) ? email : '', tel };
+  };
+  // Calendly : nom, e-mail, question 1 (le projet) et question 2 (téléphone) arrivent pré-remplis
+  const bookingUrl = (brief, embed) => {
+    if (!isCalendly) return BOOKING;
+    const u = new URL(BOOKING);
+    if (embed) {
+      u.searchParams.set('embed_domain', location.hostname || 'aivelo.fr');
+      u.searchParams.set('embed_type', 'Inline');
+    }
+    u.searchParams.set('hide_gdpr_banner', '1');
+    if (brief) {
+      const c = contactInfo();
+      if (c.name) u.searchParams.set('name', c.name);
+      if (c.email) u.searchParams.set('email', c.email);
+      u.searchParams.set('a1', brief.slice(0, 9000));
+      if (c.tel) u.searchParams.set('a2', c.tel);
+    }
+    return u.toString();
+  };
+  const book = document.createElement('dialog');
+  book.className = 'book';
+  book.setAttribute('aria-label', 'Réserver l\u2019atelier découverte');
+  book.innerHTML = `
+    <div class="book-head">
+      <div><small>Atelier découverte · 30 min · offert</small><b>Choisissez votre créneau</b></div>
+      <form method="dialog"><button class="book-close" aria-label="Fermer">×</button></form>
+    </div>
+    <div class="book-brief" hidden><div class="book-brief-txt"></div><details><summary>Voir le récapitulatif</summary><pre></pre></details></div>
+    <div class="book-body"><span class="book-loading">Chargement de l\u2019agenda…</span>
+      <div class="book-fallback" hidden><b>L\u2019agenda ne peut pas s\u2019afficher ici.</b><p>Votre navigateur ou cet aperçu bloque les agendas intégrés. Ouvrez-le dans un nouvel onglet, la réservation prend une minute.</p><a class="btn btn-primary" href="${BOOKING_PUBLIC}" target="_blank" rel="noreferrer"><span class="btn-roll">Ouvrir l\u2019agenda</span></a></div></div>
+    <p class="book-foot">Vous préférez écrire ? <a href="mailto:arthur.s@aivelo.fr">arthur.s@aivelo.fr</a> · <a href="https://wa.me/33624434801" target="_blank" rel="noreferrer">WhatsApp</a></p>`;
+  document.body.appendChild(book);
+  if (typeof book.showModal === 'function') {
+    const body = $('.book-body', book);
+    let blocked = false;
+    const fallback = (hard) => { blocked = blocked || hard; body.classList.add('is-blocked'); $('.book-fallback', body).hidden = false; };
+    // an embedded calendar refused by a Content-Security-Policy reports here: show the way out instead of an error page
+    document.addEventListener('securitypolicyviolation', (e) => {
+      if (/calendar\.google|calendly/.test(e.blockedURI || '')) fallback(true);
+    });
+    let lastSrc = '';
+    const open = () => {
+      const brief = window.labBriefArmed && window.labBrief ? window.labBrief : '';
+      window.labBriefArmed = false;
+      const src = bookingUrl(brief, true);
+      $('.book-fallback a', body).href = bookingUrl(brief, false);
+      if (src !== lastSrc && !blocked) {
+        $('iframe', body)?.remove(); body.classList.remove('is-ready');
+        const f = document.createElement('iframe');
+        f.src = src; f.title = 'Agenda de réservation';
+        // a slow agenda that arrives after the fallback still takes its place; a refused one never does
+        f.addEventListener('load', () => setTimeout(() => { if (blocked) return; body.classList.add('is-ready'); body.classList.remove('is-blocked'); $('.book-fallback', body).hidden = true; }, 120));
+        body.appendChild(f); lastSrc = src;
+        setTimeout(() => { if (!body.classList.contains('is-ready')) fallback(false); }, 9000);
+      }
+      const box = $('.book-brief', book);
+      box.hidden = !brief;
+      if (brief) {
+        $('.book-brief-txt', box).innerHTML = isCalendly
+          ? '<b>Votre projet est joint à la réservation.</b> Il est déjà dans le formulaire : choisissez simplement votre créneau.'
+          : '<b>Votre projet est copié.</b> Collez-le (Ctrl + V) dans le champ « Informations supplémentaires » de la réservation : j\u2019arriverai à l\u2019atelier en le connaissant déjà.';
+        $('pre', box).textContent = brief;
+      }
+      book.showModal();
+    };
+    window.labBook = open;
+    // the triggers become buttons: no link, so nothing can open a second tab behind the window
+    $$('[data-book]').forEach((a) => {
+      a.removeAttribute('target'); a.setAttribute('href', '#reserver'); a.setAttribute('role', 'button');
+      a.addEventListener('click', (e) => { e.preventDefault(); open(); });
+    });
+    book.addEventListener('click', (e) => { if (e.target === book) book.close(); });
+  }
+
+  /* ------------------------------------------------------------------
+     Mobile : une barre d'action toujours à portée de pouce
+     ------------------------------------------------------------------ */
+  const dock = document.createElement('div');
+  dock.className = 'm-dock';
+  dock.innerHTML = `<a href="https://wa.me/33624434801?text=${encodeURIComponent('Bonjour Arthur, je vous contacte depuis le site Aivelo au sujet d\u2019un projet.')}" class="m-dock-wa" target="_blank" rel="noreferrer" aria-label="Écrire sur WhatsApp"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.1l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8s-.4-.1-.6.1-.7.8-.8 1-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.3-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6a2.7 2.7 0 0 0 1.8-1.3 2.2 2.2 0 0 0 .2-1.3c-.1-.1-.3-.2-.5-.3z"/></svg></a><a href="#demo" class="m-dock-ghost">Estimer</a><a href="https://calendly.com/arthur-s-aivelo/atelier-decouverte" target="_blank" rel="noreferrer" class="m-dock-main" data-book>Réserver l\u2019atelier</a>`;
+  document.body.appendChild(dock);
+  if (window.labBook) { const d = $('[data-book]', dock); d.removeAttribute('target'); d.setAttribute('href', '#reserver'); d.setAttribute('role', 'button'); d.addEventListener('click', (e) => { e.preventDefault(); window.labBook(); }); }
+  const hero = $('.hero'); const contact = $('#contact'); const est = $('#estimation');
+  const dockState = { hero: true, contact: false, est: false };
+  const syncDock = () => dock.classList.toggle('is-on', !dockState.hero && !dockState.contact && !dockState.est);
+  [[hero, 'hero', 0], [contact, 'contact', 0], [est, 'est', 0]].forEach(([el, k]) => {
+    if (el) new IntersectionObserver(([e]) => { dockState[k] = e.isIntersecting; syncDock(); }, { threshold: 0 }).observe(el);
+  });
 
   /* ------------------------------------------------------------------
      4a. Prix en compteur mécanique
@@ -426,15 +736,17 @@
      ------------------------------------------------------------------ */
   const LEGAL = {
     mentions: ['Mentions légales', `
-      <h3>Éditeur</h3><p>Aivelo · [forme juridique, capital, SIRET et adresse à compléter]. Directeur de la publication : Arthur S.</p>
-      <h3>Contact</h3><p><a href="mailto:arthur.s@aivelo.fr">arthur.s@aivelo.fr</a></p>
-      <h3>Hébergement</h3><p>[Nom, adresse et téléphone de l'hébergeur à compléter.] Données hébergées dans l'Union européenne.</p>
-      <h3>Propriété intellectuelle</h3><p>Les contenus de ce site (textes, visuels, logo) appartiennent à Aivelo, sauf mention contraire. Les captures des sites clients sont présentées avec leur accord.</p>`],
+      <h3>Éditeur</h3><p>Aivelo, entreprise d'Arthur Semelier, en cours d'immatriculation (le numéro SIRET sera publié ici dès son attribution). Bordeaux, France.<br>Directeur de la publication : Arthur Semelier.</p>
+      <h3>Contact</h3><p><a href="mailto:arthur.s@aivelo.fr">arthur.s@aivelo.fr</a> · <a href="https://wa.me/33624434801" target="_blank" rel="noreferrer">+33 6 24 43 48 01</a></p>
+      <h3>Hébergement</h3><p>Vercel Inc., 440 N Barranca Ave #4133, Covina, CA 91723, États-Unis · <a href="https://vercel.com" target="_blank" rel="noreferrer">vercel.com</a></p>
+      <h3>Nom de domaine</h3><p>OVH SAS, 2 rue Kellermann, 59100 Roubaix, France · <a href="https://www.ovhcloud.com" target="_blank" rel="noreferrer">ovhcloud.com</a></p>
+      <h3>Propriété intellectuelle</h3><p>Les contenus de ce site (textes, visuels, logo) appartiennent à Aivelo, sauf mention contraire. Les sites clients sont présentés avec leur accord.</p>`],
     confidentialite: ['Confidentialité & RGPD', `
-      <p>Ce site ne dépose aucun cookie publicitaire ni de suivi tiers.</p>
-      <h3>Données collectées</h3><p>Uniquement celles que vous nous transmettez (e-mail, prise de rendez-vous), pour répondre à votre demande. Elles ne sont ni vendues ni cédées.</p>
-      <h3>Durée de conservation</h3><p>[À compléter, par exemple 3 ans après le dernier contact.]</p>
-      <h3>Vos droits</h3><p>Accès, rectification, effacement, opposition : écrivez à <a href="mailto:arthur.s@aivelo.fr">arthur.s@aivelo.fr</a>. Vous pouvez aussi saisir la CNIL.</p>`],
+      <p>Ce site ne dépose aucun cookie publicitaire ni de suivi. Le responsable du traitement est Arthur Semelier (Aivelo).</p>
+      <h3>Données collectées</h3><p>Uniquement celles que vous nous transmettez : nom, e-mail et téléphone lorsque vous réservez un atelier ou nous écrivez, ainsi que l'estimation composée sur le site si vous choisissez de la joindre. Elles servent à préparer l'atelier et à répondre à votre demande. Elles ne sont ni vendues ni cédées.</p>
+      <h3>Prestataires</h3><p>Réservation : Calendly. Visioconférence et agenda : Google. Hébergement : Vercel. Ces prestataires peuvent traiter des données hors de l'Union européenne, encadrés par le Data Privacy Framework UE–États-Unis ou par les clauses contractuelles types de la Commission européenne.</p>
+      <h3>Durée de conservation</h3><p>Demandes de contact et rendez-vous sans suite : 3 ans après le dernier échange. Clients : pendant toute la durée du contrat, puis 3 ans. Factures et pièces comptables : 10 ans, comme l'impose la loi.</p>
+      <h3>Vos droits</h3><p>Accès, rectification, effacement, limitation, opposition et portabilité : écrivez à <a href="mailto:arthur.s@aivelo.fr">arthur.s@aivelo.fr</a>, réponse sous un mois. Vous pouvez aussi adresser une réclamation à la <a href="https://www.cnil.fr" target="_blank" rel="noreferrer">CNIL</a>.</p>`],
     cgv: ['Conditions générales', `
       <p>Chaque projet fait l'objet d'un devis détaillé ligne par ligne.</p>
       <h3>Paiement</h3><p>Acompte à la signature, solde à la mise en ligne, paiement en 3 fois sans frais possible. Abonnements CRM et add-ons sans engagement.</p>
@@ -450,5 +762,23 @@
       dlg.showModal();
     }));
     dlg.addEventListener('click', (e) => { if (e.target === dlg) dlg.close(); });
+  }
+
+  /* Expertises sur mobile : points de position du carrousel */
+  const stack = $('.stack');
+  if (stack) {
+    const cards = $$('.stack-card', stack);
+    const hint = document.createElement('div');
+    hint.className = 'stack-hint'; hint.setAttribute('aria-hidden', 'true');
+    hint.innerHTML = cards.map(() => '<i></i>').join('');
+    stack.after(hint);
+    const dots = $$('i', hint);
+    const sync = () => {
+      const mid = stack.scrollLeft + stack.clientWidth / 2;
+      let best = 0; let d = Infinity;
+      cards.forEach((c, i) => { const k = Math.abs(c.offsetLeft + c.offsetWidth / 2 - mid); if (k < d) { d = k; best = i; } });
+      dots.forEach((x, i) => x.classList.toggle('is-on', i === best));
+    };
+    stack.addEventListener('scroll', sync, { passive: true }); sync();
   }
 })();

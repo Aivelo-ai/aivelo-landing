@@ -95,10 +95,8 @@
         sectionLinks.forEach((a) => a.classList.toggle('is-active', a.getAttribute('href') === '#' + id));
       });
     }, { rootMargin: '-45% 0px -50% 0px' });
-    ['expertises', 'secteurs', 'methode', 'offres', 'addons'].forEach((id) => {
-      const el = document.getElementById(id);
-      if (el) io.observe(el);
-    });
+    // every section counts: the hero, the FAQ or the contact clear the highlight instead of leaving a stale one
+    $$('section[id]').forEach((el) => io.observe(el));
   }
 
   const setMenu = (open) => {
@@ -355,7 +353,15 @@
         const target = id === '#top' ? 0 : document.querySelector(id);
         if (target === null) return;
         e.preventDefault();
-        lenis.scrollTo(target, { duration: 1.6, easing: (t) => 1 - Math.pow(1 - t, 4), force: true });
+        // images loading and pinned sections can move the target while we travel:
+        // when the scroll lands, check where the section really is and finish the move
+        let tries = 0;
+        const land = () => {
+          if (target === 0 || tries++ > 2) return;
+          const off = target.getBoundingClientRect().top;
+          if (Math.abs(off) > 6) lenis.scrollTo(target, { duration: .5, easing: (t) => 1 - Math.pow(1 - t, 3), force: true, onComplete: land });
+        };
+        lenis.scrollTo(target, { duration: 1.6, easing: (t) => 1 - Math.pow(1 - t, 4), force: true, onComplete: land });
         history.replaceState(null, '', id === '#top' ? location.pathname : id);
       });
     });
@@ -540,7 +546,7 @@
     });
     const manifesto = $('[data-scrub-words]');
     if (manifesto) {
-      const split = SplitText.create(manifesto, { type: 'words', wordsClass: 'word' });
+      const split = SplitText.create(manifesto, { type: 'words', wordsClass: 'word', aria: 'none' }); // a <p> may not carry aria-label
       gsap.fromTo(split.words, { opacity: .14 }, {
         opacity: 1, stagger: .1, ease: 'none',
         scrollTrigger: { trigger: manifesto, start: 'top 78%', end: 'bottom 50%', scrub: true },
@@ -610,8 +616,8 @@
         },
       });
       $$('.sector', trackEl).forEach((s) => {
-        gsap.from($$('.sector-media, h3, p, .tags', s), {
-          y: 60, opacity: 0, duration: 1, stagger: .06,
+        gsap.from(s, {
+          y: 60, opacity: 0, duration: 1,
           scrollTrigger: { trigger: s, containerAnimation: tween, start: 'left 88%', toggleActions: 'play none none reverse' },
         });
       });

@@ -270,7 +270,7 @@ void main(){
 
   /* ---------- on / off (Lab: compare with the original background) ---------- */
   const sw = document.createElement('div');
-  sw.className = 'bgfx-switch';
+  sw.className = 'bgfx-switch'; sw.setAttribute('role', 'group'); sw.setAttribute('aria-label', 'Fond animé');
   sw.innerHTML = '<span>Fond</span><button type="button" data-bg-mode="sky">Jour / nuit</button><button type="button" data-bg-mode="off">Aucun</button>';
   document.body.appendChild(sw);
   const apply = () => {
