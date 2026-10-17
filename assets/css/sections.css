@@ -3,6 +3,11 @@
    1 Réalisations · 2 Démo · 3 Ambiances · 4 Effets signature · 5 Hero
    6 Preuve sociale · 7 Nettoyage
    ========================================================================== */
+/* Polices hébergées sur le site : aucune requête vers Google (RGPD), affichage plus rapide */
+@font-face { font-family: 'Plus Jakarta Sans'; font-style: normal; font-weight: 200 800; font-display: swap; src: url(../fonts/plus-jakarta-sans.woff2) format('woff2'); }
+@font-face { font-family: 'Instrument Serif'; font-style: normal; font-weight: 400; font-display: swap; src: url(../fonts/instrument-serif.woff2) format('woff2'); }
+@font-face { font-family: 'Instrument Serif'; font-style: italic; font-weight: 400; font-display: swap; src: url(../fonts/instrument-serif-italic.woff2) format('woff2'); }
+@font-face { font-family: 'JetBrains Mono'; font-style: normal; font-weight: 100 800; font-display: swap; src: url(../fonts/jetbrains-mono.woff2) format('woff2'); }
 
 /* ---------- 3. Ambiances : fondu de couleur de fond au défilement ---------- */
 .bg-fade { position: fixed; inset: 0; z-index: -1; pointer-events: none; opacity: 0; background: #0B0D17; }
@@ -31,6 +36,8 @@
 .wl-vendome b { font-family: var(--font-serif); font-size: 26px; letter-spacing: .32em; }
 .wl-ekkout b { font-weight: 800; font-size: 24px; letter-spacing: .12em; }
 .wl-opsform b { font-weight: 800; font-size: 25px; letter-spacing: -.04em; }
+.wl-patrimoine b { font-family: var(--font-serif); font-size: 27px; letter-spacing: -.01em; }
+.wl-patrimoine em { font-style: italic; color: #C9A26B; }
 /* nav over the dark scenes */
 .nav .logo, .nav-login { transition: color .6s var(--ease); }
 html.is-dark-scene .nav .logo, html.is-dark-scene .nav-login { color: #fff; }
@@ -70,7 +77,7 @@ html.is-dark-scene .nav .logo, html.is-dark-scene .nav-login { color: #fff; }
 .ba-tag--r { right: 14px; }
 
 /* grid: screenshots that scroll on hover */
-.works-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(22px, 2.6vw, 36px); }
+.works-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: clamp(22px, 2.6vw, 36px); }
 .work-shot { position: relative; margin-bottom: 18px; }
 .work-shot > .ws-bar { border-radius: 14px 14px 0 0; }
 .ws-screen { position: relative; aspect-ratio: 16 / 11; overflow: hidden; border-radius: 0 0 14px 14px; background: #fff; container-type: size; box-shadow: 0 0 0 1px rgba(255,255,255,.12), 0 30px 60px -28px rgba(0,0,0,.75); }
@@ -257,9 +264,6 @@ html.water .step:not(.is-wet) p { color: var(--text-dim); }
 
 /* ---------- Responsive ---------- */
 @media (max-width: 1100px) {
-  .works-grid { grid-template-columns: repeat(2, 1fr); }
-  .works-grid .work:last-child { grid-column: 1 / -1; }
-  .works-grid .work:last-child .work-shot { max-width: 640px; }
 }
 @media (max-width: 960px) {
   .work--featured { grid-template-columns: 1fr; }
@@ -271,7 +275,7 @@ html.water .step:not(.is-wet) p { color: var(--text-dim); }
   .works-grid { grid-template-columns: 1fr; }
   .works-logos { justify-content: flex-start; gap: 14px 28px; }
   .wl-carnot b { font-size: 24px; } .wl-lysim b { font-family: var(--font-serif); font-size: 26px; letter-spacing: .26em; }
-.wl-vendome b { font-size: 21px; } .wl-ekkout b, .wl-opsform b { font-size: 20px; }
+.wl-vendome b { font-size: 21px; } .wl-ekkout b, .wl-opsform b { font-size: 20px; } .wl-patrimoine b { font-size: 22px; }
   .demo-panel { padding: 20px; }
   .perf-metrics { grid-template-columns: 1fr 1fr 1fr; }
   .perf-metrics li { padding: 8px; }
@@ -722,4 +726,10 @@ html.has-bgfx .manifesto-text { filter: drop-shadow(0 0 18px rgba(150,180,255,.1
   .founder-facts { grid-template-columns: 1fr; }
   .founder-facts li { grid-template-columns: auto 1fr; align-items: center; gap: 12px; }
 }
+/* Hero : après « En ligne », les vrais sites clients défilent dans la fenêtre */
+.ls-reals { position: absolute; inset: 0; z-index: 6; overflow: hidden; background: #fff; opacity: 0; visibility: hidden; transition: opacity .6s var(--ease), visibility 0s .6s; pointer-events: none; }
+.live-site.is-real .ls-reals { opacity: 1; visibility: visible; transition: opacity .6s var(--ease); }
+.ls-reals img { position: absolute; top: 0; left: 0; width: 100%; height: auto; opacity: 0; transition: opacity .5s var(--ease); will-change: transform; }
+.ls-reals img.is-on { opacity: 1; }
+.live-site.is-real .ls-badge { color: #fff; background: var(--accent-btn, #2E5BD9); }
 .bgfx-switch { display: none !important; }

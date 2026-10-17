@@ -21,7 +21,7 @@ Si les CDN ne répondent pas, ou si le visiteur a activé « réduire les animat
 ## Modifier le contenu
 
 - **Réalisations** : cartes `.work` dans `#realisations`. Captures dans `assets/img/real-*.webp` (pleine page ordinateur + mobile) ; le curseur « Maquette / Site livré » compare `real-carnot-wire.webp` et `real-carnot-top.webp`.
-- **Témoignages** : `#temoignages`, masqué (`hidden`) tant que chaque client n'a pas validé sa citation. Retirer `hidden` une fois les trois accords obtenus.
+- **Témoignages** : `#temoignages`, citations validées par les clients.
 - **Démo** : contenus par métier dans l'objet `DEMO` de `assets/js/sections.js`.
 - **Tarifs sites / formation** : directement dans les cartes `.plan` des panneaux `#panel-sites` et `#panel-formation` (`index.html`).
 - **Tarifs CRM** : prix mensuels dans `#panel-crm`, remises 6 mois / annuel dans `pricingData` (`assets/js/main.js`).
@@ -69,5 +69,8 @@ Rendu WebGL2 en deux passes (metaballs dans une texture flottante, puis ombrage 
 - **Réservation** : tous les boutons `[data-book]` ouvrent l'atelier Calendly dans une fenêtre du site (constante `BOOKING`). Depuis le simulateur, le nom, l'e-mail, le téléphone et l'estimation pré-remplissent la réservation (questions 1 et 2 de l'événement Calendly).
 - **Mobile** : barre d'action fixe (WhatsApp, Estimer, Réserver) ; expertises en carrousel.
 - **Votre interlocuteur** (`#interlocuteur`) : présentation d'Arthur Semelier et lien LinkedIn.
-- **Mentions légales / RGPD** : objet `LEGAL` de `assets/js/sections.js`. À compléter : SIRET et adresse dès l'immatriculation.
+- **Mentions légales / RGPD** : objet `LEGAL` de `assets/js/sections.js`. À compléter : SIRET dès l'immatriculation.
 - **SEO** : Open Graph (`assets/img/og-aivelo.jpg`), URL canonique `https://aivelo.fr/`, JSON-LD, `sitemap.xml`, `robots.txt`.
+- **Polices** : hébergées dans `assets/fonts/` (`@font-face` en tête de `assets/css/sections.css`), aucune requête vers Google Fonts.
+- **Fond** : le soleil descend et se dore au fil de la page ; dans les sections de nuit, la constellation du logo se dessine (`assets/js/bg.js`).
+- **Hero** : après « En ligne », la fenêtre fait défiler les vrais sites clients (`REALS` dans `assets/js/main.js`, captures `assets/img/real-*.webp`).

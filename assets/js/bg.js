@@ -27,7 +27,8 @@
   const FRAG = `
 precision highp float;
 uniform vec2 uRes, uMouse;
-uniform float uTime, uScroll, uDark, uDusk, uContent, uPx;
+uniform float uTime, uScroll, uDark, uDusk, uContent, uPx, uSun, uConst;
+uniform vec4 uEdge[19];   // the constellation of the logo: segment a.xy → b.xy, in sky units around the north star
 uniform vec3 uBase, uA, uB;
 
 float hash(vec2 p){ return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
@@ -92,12 +93,18 @@ void main(){
   if (day > .01) {
     vec3 azure = mix(uA, vec3(.6, .74, 1.), .55);
     col = mix(col, mix(uBase, azure, .62), smoothstep(.05, 1.05, uv.y) * day);
-    vec2 sun = vec2(.58 * asp, 1.02 - .03 * sin(t * .05));
+    // the sun goes down as the page is read: high and white at the top, low and golden at the end
+    float set = smoothstep(.02, .97, uSun);
+    vec2 sun = vec2(mix(.58, .42, set) * asp, mix(1.02, .2, set) - .03 * sin(t * .05));
+    vec3 sunCol = mix(vec3(1., .96, .88), vec3(1., .66, .38), smoothstep(.3, 1., set));
+    // golden hour: the low sky warms up, gently enough to keep the text calm
+    col = mix(col, mix(col, vec3(1., .8, .64), .55), smoothstep(.35, 1., set) * smoothstep(.75, 0., uv.y) * day * .6);
     vec2 dv = q - sun;
     float sd = length(dv);
-    col += vec3(1., .96, .88) * (exp(-sd * 3.) * .32 + exp(-sd * sd * 380.) * .35) * day;
+    float grow = 1. + .6 * set;
+    col += sunCol * (exp(-sd * 3. / grow) * (.32 + .12 * set) + exp(-sd * sd * 380. / grow) * .35) * day;
     float rays = pow(fbm(vec2(atan(dv.y, dv.x) * 7., t * .05)), 3.) * exp(-sd * 1.5);
-    col += vec3(1., .97, .9) * rays * .3 * day;
+    col += sunCol * rays * .3 * day;
     // three layers of cumulus, lit from the sun, thicker on the edges and in the low corners
     float edgeW = mix(.5, 1., side) * (.8 + .5 * smoothstep(.65, 0., uv.y));
     for (int l = 0; l < 3; l++) {
@@ -108,9 +115,13 @@ void main(){
       float c2 = fbm(cq + vec2(-.07, .1) + .6 * w);          // towards the sun: lit tops, soft shaded bellies
       float dens = smoothstep(.44 - .08 * edgeW, .72, c) * edgeW;
       float lit = clamp((c - c2) * 7. + .6, 0., 1.);
-      vec3 cc = mix(mix(uBase, uA, .42) * .86, vec3(1.), lit);
+      vec3 cc = mix(mix(uBase, uA, .42) * .86, mix(vec3(1.), vec3(1., .86, .74), smoothstep(.4, 1., set)), lit);
       col = mix(col, cc, dens * (.95 - fl * .15) * day);
     }
+    // as it gets lower, the sun becomes a visible disc, in front of the thin clouds
+    float disc = smoothstep(.046 * grow, .026 * grow, sd) * smoothstep(.15, .6, set);
+    col = mix(col, mix(vec3(1., .96, .88), vec3(1., .78, .54), smoothstep(.5, 1., set)), disc * .75 * day);
+    col += sunCol * exp(-sd * sd * 60. / grow) * .24 * smoothstep(.15, .6, set) * day;
   }
 
   /* ---------- night: milky way, stars, shooting stars ---------- */
@@ -134,7 +145,7 @@ void main(){
     col += s * night * mix(.7, 1., side) * (1. + near * 1.2);
 
     // the Aivelo star: the four-pointed star of the logo, as the north star of the sky
-    vec2 ns = vec2(.42 * asp, .8) + vec2(m.x * .02, m.y * .02);
+    vec2 ns = vec2(min(.42 * asp, .5 * asp - .09), .8) + vec2(m.x * .02, m.y * .02);
     vec2 dn = q - ns;
     float pulse = .85 + .15 * sin(t * 1.3);
     float four = exp(-abs(dn.x) * 160.) * exp(-abs(dn.y) * 30.) + exp(-abs(dn.y) * 160.) * exp(-abs(dn.x) * 30.);
@@ -142,6 +153,23 @@ void main(){
     float nGlow = exp(-length(dn) * 26.) * .14;
     vec3 brand = vec3(.098, .404, .969);
     col += (mix(brand, vec3(1.), .5) * (four * .5 + nGlow) + vec3(1.) * nCore * .8) * pulse * night;
+
+    // the constellation of the Aivelo logo draws itself, line after line, from the north star
+    if (uConst > .001) {
+      vec3 cst = vec3(0.);
+      for (int e = 0; e < 19; e++) {
+        float f = clamp(uConst * 19. - float(e), 0., 1.);
+        if (f <= 0.) break;
+        vec2 a = ns + uEdge[e].xy; vec2 b = ns + mix(uEdge[e].xy, uEdge[e].zw, f);
+        vec2 pa = q - a, ba = b - a;
+        float hh = clamp(dot(pa, ba) / max(dot(ba, ba), 1e-6), 0., 1.);
+        float dl = length(pa - ba * hh);
+        cst += vec3(.62, .74, 1.) * exp(-dl / (uPx * 1.3)) * .38;
+        float star = exp(-dot(q - b, q - b) * 60000.) * (f < 1. ? 1.6 : .9) + exp(-dot(q - a, q - a) * 60000.) * .9;
+        cst += vec3(.9, .94, 1.) * star;
+      }
+      col += cst * night * (.85 + .15 * sin(t * .9));
+    }
 
     // shooting stars: three independent streams, one every ~2 s on average
     for (int st = 0; st < 3; st++) {
@@ -194,7 +222,7 @@ void main(){
   gl.enableVertexAttribArray(loc);
   gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
   const U = {};
-  ['uRes', 'uMouse', 'uTime', 'uScroll', 'uDark', 'uDusk', 'uContent', 'uPx', 'uBase', 'uA', 'uB'].forEach((n) => { U[n] = gl.getUniformLocation(prog, n); });
+  ['uRes', 'uMouse', 'uTime', 'uScroll', 'uDark', 'uDusk', 'uContent', 'uPx', 'uBase', 'uA', 'uB', 'uSun', 'uConst', 'uEdge'].forEach((n) => { U[n] = gl.getUniformLocation(prog, n); });
 
   document.body.prepend(canvas);
 
@@ -216,6 +244,29 @@ void main(){
     return SCENES.light;
   };
 
+  /* ---------- the logo as a constellation: towers, roofs and the swoosh, hung from the north star ---------- */
+  const P = [[69, 429], [69, 269], [126, 235], [126, 409], [146, 286], [146, 172], [237, 116], [237, 380], [257, 376], [257, 182], [296, 155], [322, 171], [322, 367], [342, 366], [342, 236], [393, 267], [393, 366], [200, 397], [323, 386]];
+  const E = [[6, 5], [5, 4], [6, 7], [10, 9], [9, 8], [10, 11], [11, 12], [2, 1], [1, 0], [2, 3], [15, 14], [14, 13], [15, 16], [0, 17], [17, 18], [18, 16], [7, 17], [12, 18], [3, 0]];
+  const edges = new Float32Array(19 * 4);
+  const layoutConst = (asp) => {
+    const s = .36 / 410 * Math.min(1, asp / 1.3);
+    E.forEach(([a, b], i) => {
+      edges.set([(P[a][0] - 266) * s, -(P[a][1] - 75) * s, (P[b][0] - 266) * s, -(P[b][1] - 75) * s], i * 4);
+    });
+  };
+  // drawn while a night section crosses the screen, erased when the day comes back
+  const constTarget = () => {
+    const vh = window.innerHeight;
+    let v = 0;
+    for (const el of scenes) {
+      const r = el.getBoundingClientRect();
+      if (r.bottom < vh * .2 || r.top > vh * .8) continue;
+      v = Math.max(v, Math.min(1, Math.max(0, (vh * .85 - r.top) / Math.min(r.height * .55, vh * 1.1))));
+    }
+    return v;
+  };
+  let constV = 0;
+
   const container = document.querySelector('.container');
   let content = .8; let scale = 1; let quality = 1;
   const resize = () => {
@@ -227,6 +278,7 @@ void main(){
     gl.viewport(0, 0, canvas.width, canvas.height);
     const cw = container ? Math.min(container.getBoundingClientRect().width, window.innerWidth) : window.innerWidth * .8;
     content = Math.min(1, cw / window.innerWidth);
+    layoutConst(canvas.width / canvas.height);
   };
   resize();
   window.addEventListener('resize', resize);
@@ -263,6 +315,11 @@ void main(){
     gl.uniform1f(U.uContent, content);
     gl.uniform1f(U.uPx, 1 / canvas.height);
     gl.uniform3fv(U.uBase, cur.base); gl.uniform3fv(U.uA, cur.a); gl.uniform3fv(U.uB, cur.b);
+    const max = document.documentElement.scrollHeight - window.innerHeight;
+    gl.uniform1f(U.uSun, max > 0 ? scrollS * window.innerHeight / max : 0);
+    constV = lerp(constV, constTarget(), k(constTarget() > constV ? 1.6 : 4));
+    gl.uniform1f(U.uConst, constV);
+    gl.uniform4fv(U.uEdge, edges);
     gl.drawArrays(gl.TRIANGLES, 0, 3);
   };
   requestAnimationFrame(frame);

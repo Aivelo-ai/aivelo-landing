@@ -736,7 +736,7 @@
      ------------------------------------------------------------------ */
   const LEGAL = {
     mentions: ['Mentions légales', `
-      <h3>Éditeur</h3><p>Aivelo, entreprise d'Arthur Semelier, en cours d'immatriculation (le numéro SIRET sera publié ici dès son attribution). Bordeaux, France.<br>Directeur de la publication : Arthur Semelier.</p>
+      <h3>Éditeur</h3><p>Aivelo, entreprise d'Arthur Semelier, en cours d'immatriculation (le numéro SIRET sera publié ici dès son attribution). 20 rue Louis Maydieu, Bordeaux, France.<br>Directeur de la publication : Arthur Semelier.</p>
       <h3>Contact</h3><p><a href="mailto:arthur.s@aivelo.fr">arthur.s@aivelo.fr</a> · <a href="https://wa.me/33624434801" target="_blank" rel="noreferrer">+33 6 24 43 48 01</a></p>
       <h3>Hébergement</h3><p>Vercel Inc., 440 N Barranca Ave #4133, Covina, CA 91723, États-Unis · <a href="https://vercel.com" target="_blank" rel="noreferrer">vercel.com</a></p>
       <h3>Nom de domaine</h3><p>OVH SAS, 2 rue Kellermann, 59100 Roubaix, France · <a href="https://www.ovhcloud.com" target="_blank" rel="noreferrer">ovhcloud.com</a></p>

@@ -24,9 +24,8 @@
 <link rel="icon" type="image/png" href="assets/img/aivelo-icon-64.png" />
 <link rel="apple-touch-icon" href="assets/img/aivelo-logo.png" />
 
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" />
+<link rel="preload" href="assets/fonts/plus-jakarta-sans.woff2" as="font" type="font/woff2" crossorigin />
+<link rel="preload" href="assets/fonts/instrument-serif-italic.woff2" as="font" type="font/woff2" crossorigin />
 <link rel="stylesheet" href="assets/css/main.min.css" />
 <link rel="stylesheet" href="assets/css/sections.min.css" />
 
@@ -171,6 +170,7 @@
         <span class="ls-step is-done" data-step="design"><i></i>Design</span>
         <span class="ls-step is-done" data-step="dev"><i></i>Développement</span>
         <span class="ls-step is-on" data-step="live"><i></i>En ligne</span>
+        <span class="ls-step" data-step="real"><i></i>Nos clients</span>
         <b class="ls-progress"><i id="ls-progress"></i></b>
       </div>
 
@@ -394,54 +394,47 @@
     <header class="section-head works-head">
       <p class="eyebrow eyebrow--dark" data-reveal>Réalisations</p>
       <h2 class="section-title" data-split>De vrais sites, pour de <em class="serif">vrais</em> métiers.</h2>
-      <p class="section-lead" data-reveal>Agences et maisons immobilières, immobilier de commerce, organisme de formation : chaque projet part d'un métier et d'une marque, jamais d'un modèle.</p>
+      <p class="section-lead" data-reveal>Agences et maisons immobilières, architectes du patrimoine, immobilier de commerce, organisme de formation : chaque projet part d'un métier et d'une marque, jamais d'un modèle.</p>
     </header>
 
     <ul class="works-logos" data-reveal aria-label="Clients">
       <li class="wl wl-carnot"><b>L'Avenue Carnot</b><small>Immobilier</small></li>
+      <li class="wl wl-patrimoine"><b>Architecture <em>Patrimoine</em></b><small>Monuments historiques</small></li>
       <li class="wl wl-lysim"><b>LYSIM</b><small>Real Estate</small></li>
       <li class="wl wl-vendome"><b>VENDÔME</b><small>Immobilier</small></li>
       <li class="wl wl-ekkout"><b>EKKOUT</b><small>Immobilier de commerce</small></li>
       <li class="wl wl-opsform"><b>OpsForm</b><small>Learning</small></li>
     </ul>
 
-    <!-- Featured: maquette / site livré -->
-    <article class="work work--featured" data-reveal>
-      <div class="ba" data-ba style="--pos:50%">
-        <div class="ba-bar"><i></i><i></i><i></i><span>L'Avenue Carnot</span></div>
-        <div class="ba-stage" data-cursor="Glisser">
-          <img class="ba-after" src="assets/img/real-carnot-top.webp" alt="Page d'accueil du site L'Avenue Carnot Immobilier" width="1200" height="750" loading="lazy" decoding="async" />
-          <div class="ba-before"><img src="assets/img/real-carnot-wire.webp" alt="" width="1200" height="750" loading="lazy" decoding="async" /></div>
-          <span class="ba-tag ba-tag--l">Maquette</span>
-          <span class="ba-tag ba-tag--r">Site livré</span>
-          <span class="ba-line" aria-hidden="true"><span class="ba-handle"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6-6 6 6 6M15 6l6 6-6 6"/></svg></span></span>
-          <input class="ba-range" type="range" min="0" max="100" value="50" aria-label="Comparer la maquette et le site livré" />
-        </div>
-      </div>
-      <div class="work-copy">
-        <small class="work-kind">Agence immobilière · Bordeaux &amp; Bassin d'Arcachon</small>
-        <h3>L'Avenue Carnot Immobilier</h3>
-        <p>Refonte complète : une marque éditoriale, un catalogue de biens en grandes cartes avec galeries et un atelier d'administration pour que l'agence gère seule ses biens, ses photos et son référencement.</p>
-        <ul class="work-results">
-          <li><b data-count="34">34</b><span>pages générées</span></li>
-          <li><b data-count="22">22</b><span>fiches biens avec galerie</span></li>
-          <li><b>100 %</b><span>autonome : biens, photos, SEO</span></li>
-        </ul>
-      </div>
-    </article>
-
     <div class="works-grid">
       <article class="work" data-reveal>
         <div class="work-shot" data-cursor="Survoler">
-          <div class="ws-bar"><i></i><i></i><i></i><span>Lysim Real Estate</span></div>
-          <div class="ws-screen"><img src="assets/img/real-lysim.webp" alt="Page d'accueil du site Lysim Real Estate" width="960" height="2800" loading="lazy" decoding="async" /></div>
-          <div class="ws-phone"><img src="assets/img/real-lysim-m.webp" alt="" width="390" height="2600" loading="lazy" decoding="async" /></div>
+          <div class="ws-bar"><i></i><i></i><i></i><span>Architecture Patrimoine</span></div>
+          <div class="ws-screen"><img src="assets/img/real-patrimoine.webp" alt="Page d'accueil du site Architecture Patrimoine" width="960" height="3104" loading="lazy" decoding="async" /></div>
+          <div class="ws-phone"><img src="assets/img/real-patrimoine-m.webp" alt="" width="390" height="2600" loading="lazy" decoding="async" /></div>
         </div>
         <div class="work-copy">
-          <small class="work-kind">Immobilier, construction &amp; investissement · Paris · Beverly Hills</small>
-          <h3>Lysim Real Estate</h3>
-          <p>Une maison immobilière entre la France et les États-Unis : une direction artistique éditoriale, de grandes typographies et un motion design qui accompagne chaque scroll.</p>
-          <ul class="work-tags"><li>Motion design</li><li>Éditorial</li><li>International</li></ul>
+          <small class="work-kind">Architectes du patrimoine · Bordeaux</small>
+          <h3>Architecture Patrimoine</h3>
+          <p>Trente ans de restauration de monuments historiques, de Fort Boyard au Pont de Pierre : un site éditorial à la hauteur des édifices, avec de grandes photographies, une typographie classique et les monuments mis en scène un à un.</p>
+          <ul class="work-tags"><li>Éditorial</li><li>Monuments à la une</li><li>Motion design</li></ul>
+        </div>
+      </article>
+
+      <article class="work" data-reveal>
+        <div class="work-shot" data-cursor="Survoler">
+          <div class="ws-bar"><i></i><i></i><i></i><span>L'Avenue Carnot</span></div>
+          <div class="ws-screen"><img src="assets/img/real-carnot.webp" alt="Page d'accueil du site L'Avenue Carnot Immobilier" width="960" height="2714" loading="lazy" decoding="async" /></div>
+          <div class="ws-phone"><img src="assets/img/real-carnot-m.webp" alt="" width="390" height="2600" loading="lazy" decoding="async" /></div>
+        </div>
+        <div class="work-copy">
+          <small class="work-kind">Agence immobilière · Bordeaux &amp; Bassin d'Arcachon</small>
+          <h3>L'Avenue Carnot Immobilier</h3>
+          <p>Refonte complète : une marque éditoriale, un catalogue de biens en grandes cartes avec galeries et un atelier d'administration pour que l'agence gère seule ses biens, ses photos et son référencement.</p>
+          <ul class="work-results work-results--sm">
+            <li><b data-count="34">34</b><span>pages générées</span></li>
+            <li><b data-count="22">22</b><span>fiches biens avec galerie</span></li>
+          </ul>
         </div>
       </article>
 
@@ -808,8 +801,8 @@
       </article>
       <article class="bento-card" data-tilt>
         <span class="bento-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg></span>
-        <h3>RGPD &amp; Europe</h3>
-        <p>Données hébergées en Europe, chiffrées, analytics sans cookies tiers. Vos clients sont respectés.</p>
+        <h3>RGPD &amp; confidentialité</h3>
+        <p>Données chiffrées, statistiques sans cookies, prestataires encadrés par le RGPD. Vos clients sont respectés.</p>
       </article>
       <article class="bento-card" data-tilt>
         <span class="bento-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.5 19 2c1 2 2 4.2 2 8 0 5.5-4.8 10-10 10z"/><path d="M2 21c0-3 1.9-5.4 5.2-6"/></svg></span>
@@ -861,7 +854,7 @@
 </section>
 
 <!-- ============================ TÉMOIGNAGES ============================ -->
-<section class="section quotes" id="temoignages" data-pending-validation hidden>
+<section class="section quotes" id="temoignages">
   <div class="container">
     <header class="section-head section-head--center">
       <p class="eyebrow" data-reveal>Ils en parlent</p>
@@ -1167,7 +1160,7 @@
     <div class="footer-word" aria-hidden="true" data-footer-word><img src="assets/img/aivelo-logo.png" alt="" width="192" height="192" loading="lazy" /><span>Aivelo</span></div>
     <div class="footer-bottom">
       <span>© 2026 Aivelo. Tous droits réservés.</span>
-      <span>Hébergé en Europe · Données chiffrées · Conçu à Bordeaux 🇫🇷</span>
+      <span>Conforme RGPD · Données chiffrées · Conçu à Bordeaux 🇫🇷</span>
     </div>
   </div>
 </footer>

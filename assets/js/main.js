@@ -677,6 +677,7 @@
     ].join('\n');
 
     const setPhase = (id) => {
+      if (root.classList.contains('is-real')) hideReals();   // never true before the reals are set up
       root.dataset.phase = id;
       const idx = phases.findIndex((p) => p.id === id);
       steps.forEach((s, i) => {
@@ -713,6 +714,49 @@
       t += p.d;
     });
 
+    // After « En ligne »: the window shows real client sites, each one scrolled from top to bottom
+    const REALS = [
+      ['real-carnot', 'L\u2019Avenue Carnot · immobilier'],
+      ['real-patrimoine', 'Architecture Patrimoine · monuments historiques'],
+      ['real-ekkout2', 'EKKOUT · immobilier de commerce'],
+      ['real-opsform', 'OpsForm · plateforme de formation'],
+    ];
+    const stage = $('.ls-stage', root);
+    const urlText = [...$('.ls-url', root).childNodes].find((n) => n.nodeType === 3 && n.textContent.trim());
+    const urlDefault = urlText ? urlText.textContent : '';
+    const realStep = $('.ls-step[data-step="real"]', root);
+    const reals = document.createElement('div');
+    reals.className = 'ls-reals';
+    reals.innerHTML = REALS.map(([img]) => `<img alt="" decoding="async" data-src="assets/img/${img}.webp" />`).join('');
+    stage.appendChild(reals);
+    const realImgs = $$('img', reals);
+    let realTween = null;
+    const loadReals = () => realImgs.forEach((im) => { if (!im.src) im.src = im.dataset.src; });
+    const ready = (im) => im.complete && im.naturalWidth > 0;
+    const showReal = (i) => {
+      // a capture still loading would show a white window: keep the current view instead
+      if (!ready(realImgs[i])) return;
+      root.classList.add('is-real');
+      steps.forEach((s) => { s.classList.remove('is-on'); s.classList.add('is-done'); });
+      if (realStep) { realStep.classList.remove('is-done'); realStep.classList.add('is-on'); }
+      badge.textContent = 'Réalisation';
+      if (urlText) urlText.textContent = REALS[i][1];
+      realImgs.forEach((im, k) => im.classList.toggle('is-on', k === i));
+      const im = realImgs[i];
+      if (realTween) realTween.kill();
+      gsap.set(im, { y: 0 });
+      const travel = () => Math.max(0, stage.clientWidth * (im.naturalHeight || 0) / (im.naturalWidth || 1) - stage.clientHeight);
+      realTween = gsap.to(im, { y: () => -travel(), duration: 3.1, delay: .45, ease: 'power1.inOut' });
+    };
+    const hideReals = () => {
+      root.classList.remove('is-real');
+      if (urlText) urlText.textContent = urlDefault;
+      if (realStep) realStep.classList.remove('is-on', 'is-done');
+    };
+    REALS.forEach((r, i) => { tl.call(showReal, [i], t); t += 3.8; });
+    tl.call(hideReals, null, t - .01);
+    tl.fromTo('#ls-progress', { scaleX: 0 }, { scaleX: 1, duration: REALS.length * 3.8, ease: 'none', immediateRender: false }, t - REALS.length * 3.8);
+
     // Only run while the hero is on screen
     let wanted = false;
     let visible = true;
@@ -720,7 +764,7 @@
     new IntersectionObserver(([e]) => { visible = e.isIntersecting; sync(); }).observe(root);
     document.addEventListener('visibilitychange', sync);
     let first = true;
-    return { play: () => { if (first) { first = false; tl.time(liveAt + .01); } wanted = true; sync(); } };
+    return { play: () => { if (first) { first = false; tl.time(liveAt + .01); setTimeout(loadReals, 800); } wanted = true; sync(); } };
   }
 
   /* ---------- Cursor, magnetic buttons, tilt cards ---------- */
