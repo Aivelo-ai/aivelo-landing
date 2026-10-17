@@ -346,8 +346,11 @@
 
   // Smooth anchor navigation through Lenis (native CSS smooth scroll otherwise)
   if (lenis) {
-    $$('a[href^="#"]').forEach((a) => {
-      a.addEventListener('click', (e) => {
+    // delegated, so links added later (mobile action bar) travel the same way
+    document.addEventListener('click', (e) => {
+      const a = e.target.closest && e.target.closest('a[href^="#"]');
+      if (!a || e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey) return;
+      {
         const id = a.getAttribute('href');
         if (id === '#') { e.preventDefault(); return; }
         const target = id === '#top' ? 0 : document.querySelector(id);
@@ -363,7 +366,7 @@
         };
         lenis.scrollTo(target, { duration: 1.6, easing: (t) => 1 - Math.pow(1 - t, 4), force: true, onComplete: land });
         history.replaceState(null, '', id === '#top' ? location.pathname : id);
-      });
+      }
     });
   }
 
@@ -372,6 +375,10 @@
     scaleX: 1, ease: 'none',
     scrollTrigger: { trigger: document.body, start: 'top top', end: 'bottom bottom', scrub: .3 },
   });
+
+  // reveals use toggleActions 'play none none none' rather than once:true: a once trigger kills itself,
+  // and when the page opens deep (link to #offres…) several do so inside the same refresh, which
+  // breaks ScrollTrigger's loop and leaves titles half revealed
 
   /* ---------- Preloader → hero intro ---------- */
   const heroIntro = () => {
@@ -401,6 +408,21 @@
     if (p) p.remove();
   }, 6000);
 
+  // opened on a link to a section (from another page or from Google): the browser jumps before the
+  // pinned sections add their height, so land again once the layout is final
+  function landOnHash() {
+    let target = null;
+    try { target = location.hash.length > 1 ? document.querySelector(location.hash) : null; } catch (e) { /* not a selector */ }
+    if (!target) return;
+    const go = () => {
+      ScrollTrigger.refresh();
+      if (lenis) lenis.scrollTo(target, { immediate: true, force: true }); else target.scrollIntoView();
+    };
+    setTimeout(go, 60);
+    if (document.readyState === 'complete') setTimeout(go, 700);
+    else window.addEventListener('load', () => setTimeout(go, 120), { once: true });
+  }
+
   const pre = $('#preloader');
   let seen = false;
   try { seen = sessionStorage.getItem('aivelo-intro') === '1'; sessionStorage.setItem('aivelo-intro', '1'); } catch (e) { /* storage blocked */ }
@@ -412,6 +434,7 @@
 
   fontsReady.then(() => {
     try { initScrollAnimations(); } catch (e) { console.error(e); }
+    landOnHash();
     if (!pre) return startSite();
     pre.style.animation = 'none'; // disarm CSS failsafe now that JS is in control
     const letters = $$('.preloader-word span', pre);
@@ -442,7 +465,7 @@
           gsap.set(el, { visibility: 'visible' });
           return gsap.from(self.lines, {
             yPercent: 115, rotate: 2, duration: 1.3, stagger: .1,
-            scrollTrigger: { trigger: el, start: 'top 86%', once: true },
+            scrollTrigger: { trigger: el, start: 'top 86%', toggleActions: 'play none none none' },
           });
         },
       });
@@ -491,56 +514,59 @@
        keeps a little inertia on release and speeds up with the page scroll */
     const marquee = $('.marquee');
     const track = $('.marquee-track');
-    marquee.classList.add('is-js');
-    let mx = 0;
-    let half = track.scrollWidth / 2;
-    let fling = 0;
-    let boost = 0;
-    let dragging = false;
-    let lastX = 0;
-    const setX = gsap.quickSetter(track, 'x', 'px');
-    const skew = gsap.quickTo(track, 'skewX', { duration: .6, ease: 'power3.out' });
-    const measure = () => { half = track.scrollWidth / 2; };
-    window.addEventListener('resize', measure);
-    if (document.fonts) document.fonts.ready.then(measure);
-    gsap.ticker.add((time, dt) => {
-      if (!dragging) {
-        mx += -0.045 * dt * (1 + boost) + fling;
-        fling *= 0.94;
-        boost *= 0.92;
-      }
-      if (mx <= -half) mx += half;
-      if (mx > 0) mx -= half;
-      setX(mx);
-    });
-    marquee.addEventListener('pointerdown', (e) => {
-      dragging = true;
-      lastX = e.clientX;
-      fling = 0;
-      marquee.classList.add('is-dragging');
-      marquee.setPointerCapture(e.pointerId);
-    });
-    marquee.addEventListener('pointermove', (e) => {
-      if (!dragging) return;
-      const dx = e.clientX - lastX;
-      lastX = e.clientX;
-      mx += dx;
-      fling = dx;
-    });
-    const release = () => { dragging = false; marquee.classList.remove('is-dragging'); };
-    marquee.addEventListener('pointerup', release);
-    marquee.addEventListener('pointercancel', release);
-    ScrollTrigger.create({
-      trigger: marquee, start: 'top bottom', end: 'bottom top',
-      onUpdate: (self) => {
-        const v = self.getVelocity();
-        skew(gsap.utils.clamp(-8, 8, v / -300));
-        boost = Math.min(6, Math.abs(v) / 400);
-      },
-    });
+    // pages without a marquee (local SEO pages) skip it
+    if (marquee && track) {
+      marquee.classList.add('is-js');
+      let mx = 0;
+      let half = track.scrollWidth / 2;
+      let fling = 0;
+      let boost = 0;
+      let dragging = false;
+      let lastX = 0;
+      const setX = gsap.quickSetter(track, 'x', 'px');
+      const skew = gsap.quickTo(track, 'skewX', { duration: .6, ease: 'power3.out' });
+      const measure = () => { half = track.scrollWidth / 2; };
+      window.addEventListener('resize', measure);
+      if (document.fonts) document.fonts.ready.then(measure);
+      gsap.ticker.add((time, dt) => {
+        if (!dragging) {
+          mx += -0.045 * dt * (1 + boost) + fling;
+          fling *= 0.94;
+          boost *= 0.92;
+        }
+        if (mx <= -half) mx += half;
+        if (mx > 0) mx -= half;
+        setX(mx);
+      });
+      marquee.addEventListener('pointerdown', (e) => {
+        dragging = true;
+        lastX = e.clientX;
+        fling = 0;
+        marquee.classList.add('is-dragging');
+        marquee.setPointerCapture(e.pointerId);
+      });
+      marquee.addEventListener('pointermove', (e) => {
+        if (!dragging) return;
+        const dx = e.clientX - lastX;
+        lastX = e.clientX;
+        mx += dx;
+        fling = dx;
+      });
+      const release = () => { dragging = false; marquee.classList.remove('is-dragging'); };
+      marquee.addEventListener('pointerup', release);
+      marquee.addEventListener('pointercancel', release);
+      ScrollTrigger.create({
+        trigger: marquee, start: 'top bottom', end: 'bottom top',
+        onUpdate: (self) => {
+          const v = self.getVelocity();
+          skew(gsap.utils.clamp(-8, 8, v / -300));
+          boost = Math.min(6, Math.abs(v) / 400);
+        },
+      });
+    }
 
     /* Manifesto: section eases in, words light up as you read */
-    gsap.from('.manifesto', {
+    if ($('.manifesto')) gsap.from('.manifesto', {
       scale: .94, borderRadius: 80, ease: 'none',
       scrollTrigger: { trigger: '.manifesto', start: 'top bottom', end: 'top 40%', scrub: true },
     });
@@ -556,7 +582,7 @@
 
     /* Expertises: copy slides up, visuals float in */
     $$('.stack-card').forEach((card) => {
-      const tl = gsap.timeline({ scrollTrigger: { trigger: card, start: 'top 105%', once: true } });
+      const tl = gsap.timeline({ scrollTrigger: { trigger: card, start: 'top 105%', toggleActions: 'play none none none' } });
       tl.from($$('.stack-copy > *', card), { y: 40, opacity: 0, duration: 1, stagger: .05 })
         .from($$('.stack-visual > *', card), { y: 60, opacity: 0, rotate: -2, duration: 1.1, stagger: .08 }, '-=.95');
       $$('.ticks li', card).forEach((li, i) => tl.from(li, { x: -16, opacity: 0, duration: .8 }, .35 + i * .06));
@@ -581,14 +607,14 @@
       const len = parseFloat(c.style.strokeDasharray);
       gsap.to(c, {
         strokeDashoffset: len * (1 - parseFloat(c.dataset.gauge)), duration: 2, ease: 'power3.out',
-        scrollTrigger: { trigger: c.closest('.stack-card, .bento-card') || c, start: 'top 75%', once: true },
+        scrollTrigger: { trigger: c.closest('.stack-card, .bento-card') || c, start: 'top 75%', toggleActions: 'play none none none' },
       });
     });
     $$('[data-draw]').forEach((p) => {
       const len = p.getTotalLength();
       gsap.fromTo(p, { strokeDasharray: len, strokeDashoffset: len }, {
         strokeDashoffset: 0, duration: 2.2, ease: 'power2.inOut',
-        scrollTrigger: { trigger: p, start: 'top 85%', once: true },
+        scrollTrigger: { trigger: p, start: 'top 85%', toggleActions: 'play none none none' },
       });
     });
     $$('[data-count]').forEach((el) => {
@@ -598,7 +624,7 @@
       gsap.to(obj, {
         v: target, duration: 2, ease: 'power3.out',
         onUpdate: () => { el.textContent = Math.round(obj.v); },
-        scrollTrigger: { trigger: el, start: 'top 85%', once: true },
+        scrollTrigger: { trigger: el, start: 'top 85%', toggleActions: 'play none none none' },
       });
     });
 
@@ -606,6 +632,7 @@
     mm.add('(min-width: 1024px)', () => {
       const section = $('.secteurs');
       const trackEl = $('#secteurs-track');
+      if (!section || !trackEl) return undefined;
       section.classList.add('is-pinned');
       const dist = () => Math.max(0, trackEl.scrollWidth - window.innerWidth);
       const tween = gsap.to(trackEl, {
@@ -624,7 +651,7 @@
       return () => section.classList.remove('is-pinned');
     });
     mm.add('(max-width: 1023px)', () => {
-      gsap.from('.sector', { y: 60, opacity: 0, duration: 1.2, stagger: .08, scrollTrigger: { trigger: '.secteurs-track', start: 'top 88%', once: true } });
+      if ($('.sector')) gsap.from('.sector', { y: 60, opacity: 0, duration: 1.2, stagger: .08, scrollTrigger: { trigger: '.secteurs-track', start: 'top 88%', toggleActions: 'play none none none' } });
     });
 
     /* Méthode: progress rail + active steps */
@@ -633,7 +660,7 @@
       scrollTrigger: { trigger: '.timeline', start: 'top 60%', end: 'bottom 60%', scrub: true },
     });
     $$('.step').forEach((step) => {
-      gsap.from(step.children, { y: 40, opacity: 0, duration: 1.1, stagger: .07, scrollTrigger: { trigger: step, start: 'top 85%', once: true } });
+      gsap.from(step.children, { y: 40, opacity: 0, duration: 1.1, stagger: .07, scrollTrigger: { trigger: step, start: 'top 85%', toggleActions: 'play none none none' } });
       ScrollTrigger.create({ trigger: step, start: 'top 60%', onEnter: () => step.classList.add('is-active'), onLeaveBack: () => step.classList.remove('is-active') });
     });
 
@@ -644,7 +671,7 @@
     });
 
     /* Footer brand lockup rises in */
-    gsap.from('[data-footer-word] > *', { y: 60, opacity: 0, duration: 1.4, stagger: .12, scrollTrigger: { trigger: '[data-footer-word]', start: 'top 95%', once: true } });
+    gsap.from('[data-footer-word] > *', { y: 60, opacity: 0, duration: 1.4, stagger: .12, scrollTrigger: { trigger: '[data-footer-word]', start: 'top 95%', toggleActions: 'play none none none' } });
 
     /* Pointer micro-interactions */
     if (finePointer) initPointerFx();
