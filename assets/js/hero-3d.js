@@ -177,20 +177,62 @@
     return { group, parts };
   }
 
-  /* ---------- a renderer per stage ---------- */
+  /* ---------- one renderer shared by the background and footer stages ----------
+     Shaders compile once and the page holds a single GPU context: each visible stage is drawn
+     into its corner of an off-screen buffer, then copied onto the stage's own 2D canvas. */
+  let shared = null;
+  function sharedCore(THREE) {
+    if (shared) return shared;
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: 'high-performance' });
+    if (!renderer.getContext()) throw new Error('no webgl');
+    const pr = Math.min(window.devicePixelRatio || 1, 2);
+    renderer.setPixelRatio(pr);
+    renderer.outputEncoding = THREE.sRGBEncoding;
+    renderer.toneMapping = THREE.NoToneMapping;
+    renderer.setClearColor(0x000000, 0);
+    renderer.setScissorTest(true);
+    const stages = [];
+    let bw = 0, bh = 0;
+    const loop = () => {
+      requestAnimationFrame(loop);
+      if (document.hidden) return;
+      const live = stages.filter((st) => st.visible && st.w && st.h);
+      if (!live.length) return;
+      // the buffer only ever grows, so two stages of different sizes never reallocate it every frame
+      const nw = Math.max(bw, ...live.map((st) => st.w)), nh = Math.max(bh, ...live.map((st) => st.h));
+      if (nw !== bw || nh !== bh) { bw = nw; bh = nh; renderer.setSize(bw, bh, false); }
+      const src = renderer.domElement;
+      live.forEach((st) => {
+        st.update();
+        renderer.setViewport(0, 0, st.w, st.h);
+        renderer.setScissor(0, 0, st.w, st.h);
+        renderer.render(st.scene, st.camera);
+        const { width: pw, height: ph } = st.ctx.canvas;
+        st.ctx.clearRect(0, 0, pw, ph);
+        st.ctx.drawImage(src, 0, src.height - ph, pw, ph, 0, 0, pw, ph); // GL draws from the bottom-left corner
+      });
+    };
+    loop();
+    return (shared = { renderer, pr, stages, env: studioEnvironment(THREE, renderer) });
+  }
+
+  /* ---------- a stage: its own scene and camera; the hero keeps a renderer of its own ---------- */
   function mount(THREE, stage, mode) {
     const canvas = stage.querySelector('canvas');
     const isHero = mode === 'hero';
     const isMark = mode === 'mark';
-    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: !isHero, powerPreference: 'high-performance' });
-    if (!renderer.getContext()) throw new Error('no webgl');
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
-    renderer.outputEncoding = THREE.sRGBEncoding;
-    renderer.toneMapping = THREE.NoToneMapping; // keeps the brand blues exact (ACES drifts them to violet)
-    if (!isHero) renderer.setClearColor(0x000000, 0);
+    const core = isHero ? null : sharedCore(THREE);
+    let renderer = core && core.renderer;
+    if (!core) {
+      renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false, powerPreference: 'high-performance' });
+      if (!renderer.getContext()) throw new Error('no webgl');
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+      renderer.outputEncoding = THREE.sRGBEncoding;
+      renderer.toneMapping = THREE.NoToneMapping; // keeps the brand blues exact (ACES drifts them to violet)
+    }
 
     const scene = new THREE.Scene();
-    scene.environment = studioEnvironment(THREE, renderer);
+    scene.environment = core ? core.env : studioEnvironment(THREE, renderer);
     const camera = new THREE.PerspectiveCamera(30, 1, 0.1, 100);
     camera.position.set(0, 0.1, isHero ? 17 : isMark ? 18 : 14);   // the mark keeps a margin: it never touches its canvas edge while it turns
 
@@ -230,15 +272,20 @@
     key.position.set(-4, 6, 7);
     scene.add(key);
 
+    const entry = core && { visible: true, w: 0, h: 0, ctx: canvas.getContext('2d'), scene, camera };
     const resize = () => {
       const w = stage.clientWidth, h = stage.clientHeight;
       if (!w || !h) return;
-      renderer.setSize(w, h, false);
+      if (entry) {
+        entry.w = w; entry.h = h;
+        canvas.width = Math.floor(w * core.pr); canvas.height = Math.floor(h * core.pr);
+      } else renderer.setSize(w, h, false);
       camera.aspect = w / h;
       camera.updateProjectionMatrix();
     };
     resize();
-    window.addEventListener('resize', resize);
+    if (entry) new ResizeObserver(resize).observe(stage); // the footer mark is display:none until it is ready
+    else window.addEventListener('resize', resize);
 
     // Smooth, damped motion: idle sway + pointer (hero) or scroll (background)
     const pointer = { x: 0, y: 0 };
@@ -249,13 +296,11 @@
       }, { passive: true });
     }
     let visible = true;
-    new IntersectionObserver(([e]) => { visible = e.isIntersecting; }).observe(stage);
+    new IntersectionObserver(([e]) => { visible = e.isIntersecting; if (entry) entry.visible = visible; }).observe(stage);
 
     const clock = new THREE.Clock();
     const cur = { rx: 0, ry: 0 };
-    const tick = () => {
-      requestAnimationFrame(tick);
-      if (!visible || document.hidden) return;
+    const update = () => {
       const t = reduceMotion ? 0 : clock.getElapsedTime();
       let tx, ty;
       if (isHero || isMark) {
@@ -272,9 +317,16 @@
       logo.rotation.set(cur.rx, cur.ry, 0);
       logo.position.y = Math.sin(t * 0.8) * 0.1;
       parts.star.position.y = starY + Math.sin(t * 1.4) * 0.07;
-      renderer.render(scene, camera);
     };
-    tick();
+    if (entry) { entry.update = update; core.stages.push(entry); } else {
+      const tick = () => {
+        requestAnimationFrame(tick);
+        if (!visible || document.hidden) return;
+        update();
+        renderer.render(scene, camera);
+      };
+      tick();
+    }
     stage.classList.add('is-ready');
   }
 })();
