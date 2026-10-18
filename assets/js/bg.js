@@ -8,7 +8,9 @@
    Le centre reste plus calme, là où se lit le texte.
    Sans WebGL ou avec « réduire les animations », le fond d'origine reste.
    ========================================================================== */
-(() => {
+{
+// starts once the page has loaded and the browser is idle: compiling the shaders no longer delays the first paint
+const aiveloSky = () => {
   'use strict';
 
   const html = document.documentElement;
@@ -349,4 +351,7 @@ void main(){
     try { sessionStorage.setItem('aivelo-bg', choice); } catch (err) { /* storage blocked */ }
     apply();
   });
-})();
+};
+const go = () => (window.requestIdleCallback ? window.requestIdleCallback(aiveloSky, { timeout: 1500 }) : setTimeout(aiveloSky, 200));
+if (document.readyState === 'complete') go(); else window.addEventListener('load', go, { once: true });
+}

@@ -103,12 +103,16 @@
     menuOpen = open;
     menu.classList.toggle('is-open', open);
     menu.setAttribute('aria-hidden', String(!open));
+    // keyboard focus stays inside the open menu: everything behind it is set aside
+    menu.inert = !open;
+    Array.from(document.body.children).forEach((el) => { if (el === menu || el === nav || el.tagName === 'SCRIPT') return; el.inert = el.classList.contains('m-dock') ? (open || !el.classList.contains('is-on')) : open; });
     burger.setAttribute('aria-expanded', String(open));
     burger.setAttribute('aria-label', open ? 'Fermer le menu' : 'Ouvrir le menu');
     nav.classList.remove('is-hidden');
     if (lenis) open ? lenis.stop() : lenis.start();
     else document.body.style.overflow = open ? 'hidden' : '';
   };
+  menu.inert = true;
   burger.addEventListener('click', () => setMenu(!menuOpen));
   $$('a', menu).forEach((a) => a.addEventListener('click', () => setMenu(false)));
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && menuOpen) setMenu(false); });
@@ -178,12 +182,10 @@
      ------------------------------------------------------------------ */
   const pricingData = {
     monthly: { starter: [149, '', ''], pro: [249, '', ''], agency: [499, '', ''] },
-    semi:    { starter: [124, '745€ facturés en une fois', '149'], pro: [207, '1 245€ facturés en une fois', '249'], agency: [416, '2 495€ facturés en une fois', '499'] },
     annual:  { starter: [124, '1 490€ facturés en une fois', '298'], pro: [207, '2 490€ facturés en une fois', '498'], agency: [416, '4 990€ facturés en une fois', '998'] },
   };
   const savingsMsg = {
     monthly: '',
-    semi: "✦ Économisez l'équivalent d'1 mois d'abonnement avec cet engagement",
     annual: "✦ Économisez l'équivalent de 2 mois d'abonnement avec cet engagement",
   };
 
@@ -413,14 +415,33 @@
   function landOnHash() {
     let target = null;
     try { target = location.hash.length > 1 ? document.querySelector(location.hash) : null; } catch (e) { /* not a selector */ }
-    if (!target) return;
+    if (!target) {
+      // a fresh visit without a section always starts at the top, even when the host keeps the
+      // previous page's scroll (embedded previews do); back/forward keeps the browser's restore
+      let fresh = true;
+      try { const nav = performance.getEntriesByType('navigation')[0]; fresh = !nav || nav.type === 'navigate'; } catch (e) { /* old browser */ }
+      if (fresh && window.scrollY > 0) { if (lenis) lenis.scrollTo(0, { immediate: true, force: true }); else window.scrollTo(0, 0); }
+      return;
+    }
+    // images, videos and pinned sections keep growing the page while it loads: stay on the section
+    // until the layout settles, and let go as soon as the visitor scrolls on their own
+    let mine = true;
+    const letGo = () => { mine = false; };
+    ['wheel', 'touchstart', 'keydown', 'pointerdown'].forEach((ev) => window.addEventListener(ev, letGo, { once: true, passive: true }));
     const go = () => {
+      if (!mine) return;
       ScrollTrigger.refresh();
       if (lenis) lenis.scrollTo(target, { immediate: true, force: true }); else target.scrollIntoView();
     };
     setTimeout(go, 60);
     if (document.readyState === 'complete') setTimeout(go, 700);
     else window.addEventListener('load', () => setTimeout(go, 120), { once: true });
+    if ('ResizeObserver' in window) {
+      let t = 0, n = 0;
+      const ro = new ResizeObserver(() => { if (!mine || n++ > 60) { ro.disconnect(); return; } clearTimeout(t); t = setTimeout(go, 90); });
+      ro.observe(document.body);
+      setTimeout(() => ro.disconnect(), 8000);
+    }
   }
 
   const pre = $('#preloader');
@@ -503,7 +524,7 @@
         x: gsap.quickTo(el, 'x', { duration: 1.2, ease: 'power3.out' }),
         y: gsap.quickTo(el, 'y', { duration: 1.2, ease: 'power3.out' }),
       }));
-      $('.hero').addEventListener('pointermove', (e) => {
+      $('.hero')?.addEventListener('pointermove', (e) => {
         const nx = e.clientX / window.innerWidth - .5;
         const ny = e.clientY / window.innerHeight - .5;
         layers.forEach((l) => { l.x(nx * l.d * 22); l.y(ny * l.d * 18); });
