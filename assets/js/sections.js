@@ -2024,6 +2024,176 @@
     };
     onView(fl, (v) => { visible = v; if (v) play(); }, { threshold: .3 });
   })();
+  // agence · the shopfront at dusk: listings follow one another behind the glass, requests arrive overnight,
+  // the glare follows the pointer and the clock is the visitor's own
+  (() => {
+    const v = $('#ag-vitrine');
+    if (!v) return;
+    const cards = $$('.agv-card', v), clock = $('#agv-clock'), notes = $('#agv-notes');
+    const tickClock = () => { const d = new Date(); clock.textContent = `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`; };
+    tickClock(); setInterval(tickClock, 30000);
+    const NOTES = [['22:14', 'Demande de visite', 'T3 Chartrons · jeudi 18:30'], ['23:47', "Demande d'estimation", 'Maison · Caudéran · vente sous 3 mois'],
+      ['06:52', 'Nouveau contact', 'Loft Bastide · rappel souhaité'], ['13:05', 'Demande de visite', 'Maison avec jardin · samedi 10:00']];
+    let n = 0;
+    const note = () => {
+      const [t, b, s] = NOTES[n++ % NOTES.length], el = document.createElement('div');
+      el.className = 'agv-note'; el.innerHTML = `<i></i><b>${b}</b><time>${t}</time><small>${s}</small>`;
+      $$('.agv-note', notes).forEach((x) => x.classList.add('is-old'));
+      notes.prepend(el);
+      while (notes.children.length > 2) notes.lastElementChild.remove();
+    };
+    note();
+    // the shopfront test: the posters ride on two rails, each track is doubled so the loop never shows a seam
+    $$('.ags-track', v).forEach((t) => { t.innerHTML += t.innerHTML; });
+    // the street lights up the first time the shopfront is seen; the sign's glint is SMIL, so it is frozen by hand
+    if (RM) { v.classList.add('is-lit'); $$('svg', v).forEach((s) => s.pauseAnimations?.()); return; }
+    let i = 0, vis = false, k = 0;
+    onView(v, (on) => { vis = on; if (on) v.classList.add('is-lit'); }, { threshold: .2 });
+    setInterval(() => {
+      if (!vis || document.hidden) return;
+      if (cards.length) { cards[i].classList.remove('is-on'); i = (i + 1) % cards.length; cards[i].classList.add('is-on'); }
+      if (++k % 2 === 0) note();
+    }, 3600);
+    v.addEventListener('pointermove', (e) => { const r = v.getBoundingClientRect(); v.style.setProperty('--rx', `${((e.clientX - r.left) / r.width * 100).toFixed(1)}%`); v.style.setProperty('--ry', `${((e.clientY - r.top) / r.height * 100).toFixed(1)}%`); v.style.setProperty('--mx', ((e.clientX - r.left) / r.width - .5).toFixed(3)); });
+  })();
+
+  // agence · the buyer's journey: one pinned scene, the scroll turns the phone's screens
+  (() => {
+    const agp = $('#agp');
+    if (!agp) return;
+    const steps = $$('.agp-steps li', agp), screens = $$('.agp-s', agp), q = $('#agp-q');
+    const QUERY = 'appartement 3 pièces chartrons';
+    let cur = -1;
+    const set = (p) => {
+      const k = Math.min(.9999, Math.max(0, p)) * 5, s = Math.floor(k), lp = k - s;
+      if (s !== cur) {
+        cur = s;
+        steps.forEach((li, i) => { li.classList.toggle('is-on', i === s); li.classList.toggle('is-done', i < s); });
+        screens.forEach((sc, i) => sc.classList.toggle('is-on', i === s));
+      }
+      q.textContent = QUERY.slice(0, s > 0 ? QUERY.length : Math.round(QUERY.length * Math.min(1, lp * 1.4)));
+      screens[3].classList.toggle('is-done', s > 3 || (s === 3 && lp > .55));
+    };
+    if (RM) { set(.5); return; }
+    agp.classList.add('is-scrub');
+    let raf = 0;
+    const tick = () => { raf = 0; const r = agp.getBoundingClientRect(), span = r.height - window.innerHeight; set(-r.top / Math.max(1, span)); };
+    window.addEventListener('scroll', () => { if (!raf) raf = requestAnimationFrame(tick); }, { passive: true });
+    window.addEventListener('resize', tick);
+    tick();
+  })();
+
+  // agence · the augmented listing: photos, plan, neighbourhood, budget
+  (() => {
+    const agf = $('#agf');
+    if (!agf) return;
+    const tabs = $$('[role="tab"]', agf), panels = tabs.map((t) => $('#' + t.getAttribute('aria-controls')));
+    tabset(tabs, (i) => {
+      tabs.forEach((t, k) => { t.setAttribute('aria-selected', String(k === i)); t.tabIndex = k === i ? 0 : -1; });
+      panels.forEach((p, k) => { p.hidden = k !== i; p.classList.toggle('is-in', k === i && !RM); });
+    });
+    const main = $('#agf-main');
+    $$('.agf-thumbs button', agf).forEach((b) => b.addEventListener('click', () => {
+      $$('.agf-thumbs button', agf).forEach((x) => x.classList.toggle('on', x === b));
+      main.src = b.dataset.src;
+    }));
+    const cap = $('#agf-room');
+    $$('.agf-plan .room', agf).forEach((g) => {
+      const on = () => { $$('.agf-plan .room', agf).forEach((x) => x.classList.toggle('is-hi', x === g)); cap.textContent = `${g.dataset.r} · 68 m² au total`; };
+      g.addEventListener('pointerenter', on); g.addEventListener('click', on);
+    });
+    const ap = $('#agf-apport'), du = $('#agf-duree'), out = $('#agf-mens');
+    const fmt = (n) => Math.round(n).toLocaleString('fr-FR').replace(/ | /g, ' ');
+    const calc = () => {
+      const P = Math.max(0, 380000 - +ap.value), n = +du.value * 12, r = .035 / 12;
+      $('#agf-apport-o').textContent = `${fmt(+ap.value)} €`; $('#agf-duree-o').textContent = `${du.value} ans`;
+      out.textContent = `${fmt(P ? P * r / (1 - Math.pow(1 + r, -n)) : 0)} €`;
+    };
+    ap.addEventListener('input', calc); du.addEventListener('input', calc); calc();
+    $('#agf-cta').addEventListener('click', () => { $('#agf-note').textContent = 'Démonstration : sur votre site, ce bouton ouvre vos créneaux de visite.'; });
+  })();
+
+  // agence · online valuation: the owner fills four questions, the request lands in the agency's inbox
+  (() => {
+    const form = $('#age-form');
+    if (!form) return;
+    const surf = $('#age-surf'), list = $('#age-list');
+    surf.addEventListener('input', () => { $('#age-surf-o').textContent = `${surf.value} m²`; });
+    $('#age-go').addEventListener('click', () => {
+      const type = $('input[name="age-type"]:checked', form).value, when = $('input[name="age-when"]:checked', form).value;
+      const card = document.createElement('div');
+      card.className = 'age-lead is-new';
+      card.innerHTML = `<i>✓</i><span><b>${type} · ${surf.value} m² · ${$('#age-quart').value}</b><small>Vendeur · ${when.toLowerCase()} · à l'instant${when === 'Vente sous 3 mois' ? '<em class="hot">à rappeler aujourd’hui</em>' : ''}</small></span>`;
+      $$('.age-lead.is-new', list).forEach((x) => x.classList.remove('is-new'));
+      list.prepend(card);
+      while (list.children.length > 4) list.lastElementChild.remove();
+      $('#age-empty').hidden = true; $('#age-done').hidden = false;
+    });
+  })();
+
+  // agence · AI search: the listing turns into data, an assistant answers and cites the agency
+  (() => {
+    const sc = $('#agi');
+    if (!sc) return;
+    const a = $('#agi-a'), src = $('.agi-src', sc);
+    const ANSWER = 'Votre agence, aux Chartrons, propose justement un T3 de 68 m² avec balcon, à 380 000 €. Vous pouvez réserver une visite directement sur son site.';
+    let timer = 0;
+    const play = () => {
+      clearInterval(timer);
+      sc.classList.remove('is-run'); void sc.offsetWidth; sc.classList.add('is-run');
+      src.classList.remove('is-on');
+      if (RM) { a.textContent = ANSWER; src.classList.add('is-on'); return; }
+      let n = 0; a.textContent = '';
+      setTimeout(() => {
+        timer = setInterval(() => { n += 2; a.textContent = ANSWER.slice(0, n); if (n >= ANSWER.length) { clearInterval(timer); src.classList.add('is-on'); } }, 28);
+      }, 1100);
+    };
+    onceInView(sc, play, { threshold: .4 });
+    $('#agi-replay').addEventListener('click', play);
+  })();
+
+  // agence · one listing, one page: the pages show up on Google one by one, the site map grows, the counter reaches the real figure
+  (() => {
+    const g = $('#agpg');
+    if (!g) return;
+    const items = [...$$('.agpg-r', g), ...$$('.agpg-tree span', g)], n = $('#agpg-n');
+    onceInView(g, () => {
+      if (RM) { items.forEach((t) => t.classList.add('is-on')); n.textContent = '34'; return; }
+      $$('.agpg-r', g).forEach((t, i) => setTimeout(() => t.classList.add('is-on'), 250 + 420 * i));
+      $$('.agpg-tree span', g).forEach((t, i) => setTimeout(() => t.classList.add('is-on'), 150 * i));
+      const t0 = performance.now();
+      const f = (now) => { const k = Math.min(1, (now - t0) / 2000); n.textContent = String(Math.round(34 * (1 - Math.pow(1 - k, 3)))); if (k < 1) requestAnimationFrame(f); };
+      requestAnimationFrame(f);
+    }, { threshold: .3 });
+  })();
+
+  // agence · publishing in two minutes: photos drop in, fields fill, the chrono runs, the listing goes live
+  (() => {
+    const pu = $('#agpu');
+    if (!pu) return;
+    const imgs = $$('.agpu-drop img', pu), drop = $('#agpu-drop'), fields = $$('[data-type]', pu), chrono = $('#agpu-t'), pub = $('#agpu-pub');
+    const done = () => { imgs.forEach((i) => i.classList.add('is-on')); drop.classList.add('has'); fields.forEach((f) => { f.textContent = f.dataset.type; }); chrono.textContent = '1:52'; pub.classList.add('is-on'); };
+    if (RM) { done(); return; }
+    let run = 0;
+    const play = () => {
+      const id = ++run;
+      imgs.forEach((i) => i.classList.remove('is-on')); drop.classList.remove('has'); fields.forEach((f) => { f.textContent = ''; }); pub.classList.remove('is-on');
+      const T = 6200, t0 = performance.now();
+      const f = (now) => {
+        if (id !== run) return;
+        const k = Math.min(1, (now - t0) / T), secs = Math.round(112 * k);
+        chrono.textContent = `${Math.floor(secs / 60)}:${String(secs % 60).padStart(2, '0')}`;
+        imgs.forEach((im, i) => im.classList.toggle('is-on', k > .04 + i * .05));
+        drop.classList.toggle('has', k > .04);
+        fields.forEach((fl, i) => { const a = .22 + i * .12, b = a + (i === fields.length - 1 ? .26 : .1), x = Math.max(0, Math.min(1, (k - a) / (b - a))); fl.textContent = fl.dataset.type.slice(0, Math.round(fl.dataset.type.length * x)); });
+        if (k >= 1) { pub.classList.add('is-on'); return; }
+        requestAnimationFrame(f);
+      };
+      requestAnimationFrame(f);
+    };
+    onView(pu, (on) => { if (on) play(); else run++; }, { threshold: .45 });
+  })();
+
   // case studies hub · the project you point at opens up and its site scrolls by; on touch screens, the one in view
   (() => {
     const pick = $('#ec-pick');
