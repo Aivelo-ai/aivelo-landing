@@ -238,7 +238,7 @@
 
   const layout = () => {
     const cr = canvas.getBoundingClientRect();
-    dpr = Math.min(window.devicePixelRatio || 1, 1.75);
+    dpr = Math.min(window.devicePixelRatio || 1, 1.5);
     L.W = cr.width; L.H = cr.height;
     canvas.width = Math.max(1, Math.round(L.W * dpr));
     canvas.height = Math.max(1, Math.round(L.H * dpr));
@@ -313,8 +313,11 @@
   ScrollTrigger.addEventListener('refresh', layout);
 
   let visible = false;
+  let looping = false;
   new IntersectionObserver(([e]) => {
     visible = e.isIntersecting;
+    // the loop only runs while the section is near the screen
+    if (visible && !looping) { looping = true; last = performance.now(); requestAnimationFrame(frame); }
     // water never climbs back: reset only once the section is out of view, below the screen
     if (!visible && S.started && e.boundingClientRect.top > window.innerHeight) reset();
   }, { rootMargin: '300px 0px' }).observe(timeline);
@@ -325,10 +328,11 @@
   const R_MAIN = 16;
 
   const frame = (now) => {
+    if (!visible) { looping = false; return; }
     requestAnimationFrame(frame);
     const dt = Math.min(.04, (now - last) / 1000);
     last = now;
-    if (!visible || document.hidden || !L.total) return;
+    if (document.hidden || !L.total) return;
     const t = (now - t0) / 1000;
 
     // A — the drop forms: before the scroll starts, it slowly grows
@@ -423,6 +427,5 @@
     gl.bindVertexArray(quadVao);
     gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
   };
-  requestAnimationFrame(frame);
   ScrollTrigger.refresh();
 })();

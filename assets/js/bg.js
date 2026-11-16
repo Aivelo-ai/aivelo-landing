@@ -15,6 +15,13 @@ const aiveloSky = () => {
 
   const html = document.documentElement;
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  // data-saver and very modest devices keep the original (static) background
+  const conn = navigator.connection || {};
+  if (conn.saveData || /(^|-)2g$/.test(conn.effectiveType || '')) return;
+  const cores = navigator.hardwareConcurrency || 8;
+  const mem = navigator.deviceMemory || 8;
+  if (cores <= 2 || mem <= 2) return;
+  const modest = cores <= 4 || mem <= 4;
 
   let choice = 'sky';
   try { if (sessionStorage.getItem('aivelo-bg') === 'off') choice = 'off'; } catch (e) { /* storage blocked */ }
@@ -38,6 +45,8 @@ vec2 hash2(vec2 p){ return vec2(hash(p), hash(p + 17.31)); }
 float noise(vec2 p){ vec2 i = floor(p), f = fract(p); vec2 u = f * f * (3. - 2. * f);
   return mix(mix(hash(i), hash(i + vec2(1, 0)), u.x), mix(hash(i + vec2(0, 1)), hash(i + vec2(1, 1)), u.x), u.y); }
 float fbm(vec2 p){ float v = 0., a = .5; for (int i = 0; i < 5; i++){ v += a * noise(p); p = p * 2.03 + vec2(3.1, 1.7); a *= .5; } return v; }
+// lighter version for displacements, where the fine octaves cannot be seen
+float fbm3(vec2 p){ float v = 0., a = .5; for (int i = 0; i < 3; i++){ v += a * noise(p); p = p * 2.03 + vec2(3.1, 1.7); a *= .5; } return v * 1.107; }
 
 // one layer of stars: cells of random stars, with twinkle and a soft glow
 vec3 stars(vec2 q, float scale, float density, float t, float bright){
@@ -112,7 +121,7 @@ void main(){
     for (int l = 0; l < 3; l++) {
       float fl = float(l);
       vec2 cq = q * vec2(1.25 + fl * .5, 2.1 + fl * .7) + vec2(t * (.01 + fl * .006) + fl * 4.1, -uScroll * (.12 + fl * .12));
-      vec2 w = vec2(fbm(cq * .7 + t * .008), fbm(cq * .7 - t * .006 + 3.));
+      vec2 w = vec2(fbm3(cq * .7 + t * .008), fbm3(cq * .7 - t * .006 + 3.));
       float c = fbm(cq + .6 * w);
       float c2 = fbm(cq + vec2(-.07, .1) + .6 * w);          // towards the sun: lit tops, soft shaded bellies
       float dens = smoothstep(.44 - .08 * edgeW, .72, c) * edgeW;
@@ -272,9 +281,12 @@ void main(){
   const container = document.querySelector('.container');
   let content = .8; let scale = 1; let quality = 1;
   const resize = () => {
-    // stars need a sharp canvas, but never more than ~1.3 device px per css px;
-    // 'quality' drops by itself on slower machines
-    scale = Math.min(window.devicePixelRatio || 1, 1.5) * (window.innerWidth < 760 ? .7 : .85) * quality;
+    // a fixed pixel budget: the cost of the sky no longer grows with the size of the screen
+    // (a 4K monitor used to shade 6× more pixels than a laptop); 'quality' still drops by itself
+    const small = window.innerWidth < 760;
+    const budget = (small ? 300000 : 720000) * (modest ? .6 : 1);
+    const dprCap = Math.min(window.devicePixelRatio || 1, 1.5) * (small ? .7 : .85);
+    scale = Math.min(dprCap, Math.sqrt(budget / Math.max(1, window.innerWidth * window.innerHeight))) * quality;
     canvas.width = Math.max(1, Math.round(window.innerWidth * scale));
     canvas.height = Math.max(1, Math.round(window.innerHeight * scale));
     gl.viewport(0, 0, canvas.width, canvas.height);
@@ -286,23 +298,31 @@ void main(){
   window.addEventListener('resize', resize);
 
   const mouse = [.5, .5]; const mT = [.5, .5];
-  window.addEventListener('pointermove', (e) => { mT[0] = e.clientX / window.innerWidth; mT[1] = 1 - e.clientY / window.innerHeight; }, { passive: true });
+  let busyUntil = 0;   // the sky runs at full rate while the visitor scrolls or moves the pointer, then slows down
+  window.addEventListener('pointermove', (e) => { mT[0] = e.clientX / window.innerWidth; mT[1] = 1 - e.clientY / window.innerHeight; busyUntil = performance.now() + 500; }, { passive: true });
+  window.addEventListener('scroll', () => { busyUntil = performance.now() + 400; }, { passive: true });
 
-  let running = true; let last = 0; let scrollS = 0; let avgDt = .03; let lastQ = 0; const t0 = performance.now();
+  let running = true; let last = 0; let scrollS = 0; let avgDt = 0; let lastQ = 0; const t0 = performance.now();
   const lerp = (a, b, k) => a + (b - a) * k;
   const frame = (now) => {
     if (!running) return;
     rafId = requestAnimationFrame(frame);
     if (choice === 'off') return;
-    if (now - last < 28) return;
+    const sc = targetScene();
+    // pacing: ~30 fps while something moves (scroll, pointer, day ↔ night), otherwise the slow drift of the
+    // clouds only needs ~12 fps and the twinkling night ~20 fps. Every frame saved here is also a frame
+    // where the glass panes above the sky do not have to blur it again.
+    const moving = now < busyUntil || Math.abs(cur.dark - sc.dark) > .004 || Math.abs(cur.dusk - sc.dusk) > .004;
+    const gap = moving ? 30 : (cur.dark > .5 ? 48 : 80);
+    if (now - last < gap - 4) return;
     const dt = Math.min(.1, (now - (last || now)) / 1000) || .016;
+    const late = now - last - gap;   // how far behind its own schedule the frame is
     last = now;
     const k = (rate) => 1 - Math.exp(-dt * rate);
     // adaptive resolution: keep the background smooth on any machine
-    avgDt = lerp(avgDt, dt, .05);
-    if (avgDt > .045 && quality > .5 && now - lastQ > 1200) { quality *= .85; lastQ = now; resize(); }
-    else if (avgDt < .03 && quality < 1 && now - lastQ > 4000) { quality = Math.min(1, quality * 1.1); lastQ = now; resize(); }
-    const sc = targetScene();
+    avgDt = lerp(avgDt, Math.max(0, late) / 1000, .08);
+    if (avgDt > .014 && quality > .5 && now - lastQ > 1000) { quality *= .8; lastQ = now; avgDt = 0; resize(); }
+    else if (avgDt < .006 && quality < 1 && now - lastQ > 6000) { quality = Math.min(1, quality * 1.1); lastQ = now; resize(); }
     ['base', 'a', 'b'].forEach((key) => { for (let i = 0; i < 3; i++) cur[key][i] = lerp(cur[key][i], sc[key][i], k(2.4)); });
     cur.dark = lerp(cur.dark, sc.dark, k(2.4));
     cur.dusk = lerp(cur.dusk, sc.dusk, k(2.4));
@@ -319,7 +339,8 @@ void main(){
     gl.uniform3fv(U.uBase, cur.base); gl.uniform3fv(U.uA, cur.a); gl.uniform3fv(U.uB, cur.b);
     const max = document.documentElement.scrollHeight - window.innerHeight;
     gl.uniform1f(U.uSun, max > 0 ? scrollS * window.innerHeight / max : 0);
-    constV = lerp(constV, constTarget(), k(constTarget() > constV ? 1.6 : 4));
+    const cT = cur.dark > .01 ? constTarget() : 0;
+    constV = lerp(constV, cT, k(cT > constV ? 1.6 : 4));
     gl.uniform1f(U.uConst, constV);
     gl.uniform4fv(U.uEdge, edges);
     gl.drawArrays(gl.TRIANGLES, 0, 3);
