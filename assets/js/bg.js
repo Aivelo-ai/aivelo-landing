@@ -24,13 +24,21 @@ const aiveloSky = () => {
   const modest = cores <= 4 || mem <= 4;
 
   let choice = 'sky';
+  try { if (sessionStorage.getItem('aivelo-bg-slow') === '1') return; } catch (e) { /* storage blocked */ }
   try { if (sessionStorage.getItem('aivelo-bg') === 'off') choice = 'off'; } catch (e) { /* storage blocked */ }
 
   const canvas = document.createElement('canvas');
   canvas.className = 'bgfx';
   canvas.setAttribute('aria-hidden', 'true');
-  const gl = canvas.getContext('webgl', { antialias: false, alpha: false, powerPreference: 'low-power' });
+  // no hardware acceleration (software WebGL) = a sky drawn by the processor, far too slow: keep the plain background
+  const gl = canvas.getContext('webgl', { antialias: false, alpha: false, powerPreference: 'low-power', failIfMajorPerformanceCaveat: true });
   if (!gl) return;
+  // a software renderer (no graphics card, or acceleration switched off in the browser) cannot draw this sky fast enough
+  try {
+    const dbg = gl.getExtension('WEBGL_debug_renderer_info');
+    const who = dbg ? String(gl.getParameter(dbg.UNMASKED_RENDERER_WEBGL)) : '';
+    if (/swiftshader|llvmpipe|software|basic render|microsoft basic/i.test(who)) return;
+  } catch (e) { /* extension blocked: the timing check below decides */ }
 
   const VERT = 'attribute vec2 p;void main(){gl_Position=vec4(p,0.,1.);}';
   const FRAG = `
@@ -279,7 +287,7 @@ void main(){
   let constV = 0;
 
   const container = document.querySelector('.container');
-  let content = .8; let scale = 1; let quality = 1;
+  let content = .8; let scale = 1; const quality = 1;
   const resize = () => {
     // a fixed pixel budget: the cost of the sky no longer grows with the size of the screen
     // (a 4K monitor used to shade 6× more pixels than a laptop); 'quality' still drops by itself
@@ -297,62 +305,75 @@ void main(){
   resize();
   window.addEventListener('resize', resize);
 
-  const mouse = [.5, .5]; const mT = [.5, .5];
-  let busyUntil = 0;   // the sky runs at full rate while the visitor scrolls or moves the pointer, then slows down
-  window.addEventListener('pointermove', (e) => { mT[0] = e.clientX / window.innerWidth; mT[1] = 1 - e.clientY / window.innerHeight; busyUntil = performance.now() + 500; }, { passive: true });
-  window.addEventListener('scroll', () => { busyUntil = performance.now() + 400; }, { passive: true });
-
-  let running = true; let last = 0; let scrollS = 0; let avgDt = 0; let lastQ = 0; const t0 = performance.now();
+  /* ---------- a still sky, redrawn only when it has to change ----------
+     The sky used to be animated all the time (drifting clouds, twinkling stars, parallax), which made the
+     graphics card and every glass pane above it work on each frame, for the whole visit. It is now a
+     picture: one frame when the page opens, a short burst while day turns to night (or back), and one
+     frame each time the sun has moved a little down the page. Idle cost: zero. */
   const lerp = (a, b, k) => a + (b - a) * k;
-  const frame = (now) => {
-    if (!running) return;
-    rafId = requestAnimationFrame(frame);
-    if (choice === 'off') return;
-    const sc = targetScene();
-    // pacing: ~30 fps while something moves (scroll, pointer, day ↔ night), otherwise the slow drift of the
-    // clouds only needs ~12 fps and the twinkling night ~20 fps. Every frame saved here is also a frame
-    // where the glass panes above the sky do not have to blur it again.
-    const moving = now < busyUntil || Math.abs(cur.dark - sc.dark) > .004 || Math.abs(cur.dusk - sc.dusk) > .004;
-    const gap = moving ? 30 : (cur.dark > .5 ? 48 : 80);
-    if (now - last < gap - 4) return;
+  let probes = 0; let slow = 0; const probePx = new Uint8Array(4);
+  const giveUp = () => {
+    choice = 'off';
+    html.classList.remove('has-bgfx');
+    canvas.remove();
+    const sw = document.querySelector('.bgfx-switch'); if (sw) sw.remove();
+    try { sessionStorage.setItem('aivelo-bg-slow', '1'); } catch (e) { /* storage blocked */ }
+  };
+  let rafId = 0; let last = 0; let sunDrawn = -1; let dirty = true;
+  const sunNow = () => { const max = document.documentElement.scrollHeight - window.innerHeight; return max > 0 ? Math.min(1, Math.max(0, window.scrollY / max)) : 0; };
+  const draw = (now) => {
+    rafId = 0;
+    if (choice === 'off' || document.hidden) return;
     const dt = Math.min(.1, (now - (last || now)) / 1000) || .016;
-    const late = now - last - gap;   // how far behind its own schedule the frame is
     last = now;
     const k = (rate) => 1 - Math.exp(-dt * rate);
-    // adaptive resolution: keep the background smooth on any machine
-    avgDt = lerp(avgDt, Math.max(0, late) / 1000, .08);
-    if (avgDt > .014 && quality > .5 && now - lastQ > 1000) { quality *= .8; lastQ = now; avgDt = 0; resize(); }
-    else if (avgDt < .006 && quality < 1 && now - lastQ > 6000) { quality = Math.min(1, quality * 1.1); lastQ = now; resize(); }
-    ['base', 'a', 'b'].forEach((key) => { for (let i = 0; i < 3; i++) cur[key][i] = lerp(cur[key][i], sc[key][i], k(2.4)); });
-    cur.dark = lerp(cur.dark, sc.dark, k(2.4));
-    cur.dusk = lerp(cur.dusk, sc.dusk, k(2.4));
-    scrollS = lerp(scrollS, window.scrollY / window.innerHeight, k(5));
-    mouse[0] = lerp(mouse[0], mT[0], k(3)); mouse[1] = lerp(mouse[1], mT[1], k(3));
+    const sc = targetScene();
+    ['base', 'a', 'b'].forEach((key) => { for (let i = 0; i < 3; i++) cur[key][i] = lerp(cur[key][i], sc[key][i], k(3)); });
+    cur.dark = lerp(cur.dark, sc.dark, k(3));
+    cur.dusk = lerp(cur.dusk, sc.dusk, k(3));
+    const cT = cur.dark > .01 ? constTarget() : 0;
+    constV = lerp(constV, cT, k(cT > constV ? 1.6 : 4));
+    const sun = sunNow();
+    sunDrawn = sun;
     gl.uniform2f(U.uRes, canvas.width, canvas.height);
-    gl.uniform2f(U.uMouse, mouse[0], mouse[1]);
-    gl.uniform1f(U.uTime, (now - t0) / 1000);
-    gl.uniform1f(U.uScroll, scrollS);
+    gl.uniform2f(U.uMouse, .5, .5);
+    gl.uniform1f(U.uTime, 0);
+    gl.uniform1f(U.uScroll, 0);
     gl.uniform1f(U.uDark, cur.dark);
     gl.uniform1f(U.uDusk, cur.dusk);
     gl.uniform1f(U.uContent, content);
     gl.uniform1f(U.uPx, 1 / canvas.height);
     gl.uniform3fv(U.uBase, cur.base); gl.uniform3fv(U.uA, cur.a); gl.uniform3fv(U.uB, cur.b);
-    const max = document.documentElement.scrollHeight - window.innerHeight;
-    gl.uniform1f(U.uSun, max > 0 ? scrollS * window.innerHeight / max : 0);
-    const cT = cur.dark > .01 ? constTarget() : 0;
-    constV = lerp(constV, cT, k(cT > constV ? 1.6 : 4));
+    gl.uniform1f(U.uSun, sun);
     gl.uniform1f(U.uConst, constV);
     gl.uniform4fv(U.uEdge, edges);
+    const t0 = performance.now();
     gl.drawArrays(gl.TRIANGLES, 0, 3);
+    // measured for real: readPixels waits for the frame. Two slow frames and the sky steps aside for good,
+    // the page keeps its plain background (and stays smooth).
+    if (probes < 3) {
+      gl.readPixels(0, 0, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, probePx);
+      probes++;
+      if (performance.now() - t0 > 40 && ++slow >= 2) { giveUp(); return; }
+    }
+    dirty = false;
+    // keep going only while the scene is still changing
+    const moving = Math.abs(cur.dark - sc.dark) > .004 || Math.abs(cur.dusk - sc.dusk) > .004 || Math.abs(constV - cT) > .01;
+    if (moving) schedule(); else { cur.dark = sc.dark; cur.dusk = sc.dusk; }
   };
-  requestAnimationFrame(frame);
-  // one loop only: coming back to the tab must not stack a second requestAnimationFrame chain
-  let rafId = 0;
-  document.addEventListener('visibilitychange', () => {
-    running = !document.hidden;
-    cancelAnimationFrame(rafId);
-    if (running) rafId = requestAnimationFrame(frame);
-  });
+  const schedule = () => { if (!rafId) rafId = requestAnimationFrame((now) => { if (now - last < 30 && !dirty) { rafId = 0; schedule(); return; } draw(now); }); };
+  let scrollT = 0;
+  window.addEventListener('scroll', () => {
+    // checked at most ~8 times a second: has the scene changed, or the sun moved by more than 1.5 % of the page?
+    const now = performance.now();
+    if (now - scrollT < 120) return;
+    scrollT = now;
+    const sc = targetScene();
+    if (Math.abs(sc.dark - cur.dark) > .004 || Math.abs(sc.dusk - cur.dusk) > .004 || Math.abs(sunNow() - sunDrawn) > .015 || (cur.dark > .5 && Math.abs(constTarget() - constV) > .02)) { last = 0; schedule(); }
+  }, { passive: true });
+  window.addEventListener('resize', () => { dirty = true; last = 0; schedule(); });
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) { dirty = true; last = 0; schedule(); } });
+  schedule();
 
   /* ---------- on / off (Lab: compare with the original background) ---------- */
   const sw = document.createElement('div');
@@ -371,6 +392,7 @@ void main(){
     choice = b.dataset.bgMode;
     try { sessionStorage.setItem('aivelo-bg', choice); } catch (err) { /* storage blocked */ }
     apply();
+    dirty = true; schedule();
   });
 };
 const go = () => (window.requestIdleCallback ? window.requestIdleCallback(aiveloSky, { timeout: 1500 }) : setTimeout(aiveloSky, 200));

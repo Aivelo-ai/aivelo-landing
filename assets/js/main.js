@@ -476,15 +476,7 @@
       onEnter: (batch) => gsap.to(batch, { opacity: 1, y: 0, duration: 1.3, stagger: .08, overwrite: true }),
     });
 
-    /* Hero parallax on scroll */
-    gsap.to('.hero-copy', {
-      yPercent: -18, opacity: .2, ease: 'none',
-      scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true },
-    });
-    gsap.to('.hero-visual', {
-      yPercent: -10, ease: 'none',
-      scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true },
-    });
+    // (the hero used to fade and drift while scrolling; on slow machines the text stayed half transparent)
 
     /* Hero pointer parallax */
     if (finePointer) {
