@@ -64,7 +64,7 @@ Rendu WebGL2 en deux passes (metaballs dans une texture flottante, puis ombrage 
 
 ## Conversion, simulateur et réservation
 
-- **Fichiers minifiés** : la page charge les `.min.js` / `.min.css`. Après toute modification d'un fichier source, régénérer son `.min` avec esbuild, par exemple `npx esbuild assets/js/sections.js --minify --target=es2019 --outfile=assets/js/sections.min.js`.
+- **Fichiers minifiés** : la page charge les `.min.js` / `.min.css`. Après toute modification d'un fichier source, régénérer son `.min` avec esbuild, par exemple `npx esbuild@0.25.0 assets/js/sections.js --minify --target=es2019 --outfile=assets/js/sections.min.js`. **Garder la version 0.25.0** : les versions récentes d'esbuild compactent les requêtes média (`@media(hover:hover)and (pointer:fine)`), une forme que certains navigateurs n'appliquent pas, ce qui coupe le curseur de verre et les effets de survol.
 - **Simulateur** (`#estimation`) : tarifs, options et délais dans l'objet `PRICING` de `assets/js/sections.js`. Les inclusions Signature / Académie suivent les cartes d'offres.
 - **Réservation** : tous les boutons `[data-book]` ouvrent l'atelier Calendly dans une fenêtre du site (constante `BOOKING`). Depuis le simulateur, le nom, l'e-mail, le téléphone et l'estimation pré-remplissent la réservation (questions 1 et 2 de l'événement Calendly).
 - **Mobile** : barre d'action fixe (WhatsApp, Estimer, Réserver) ; expertises en carrousel.
