@@ -2279,3 +2279,16 @@ html.motion .ob-ping { animation: obPing 2.4s ease-out infinite; }
 .footer-metiers { margin-bottom: 26px; }
 .sector-more { display: inline-block; margin-top: 10px; font-size: .86rem; color: var(--text-dim); text-decoration: underline; text-underline-offset: 3px; text-decoration-color: rgba(11,13,23,.25); }
 .sector-more:hover { color: var(--text); }
+
+/* ==========================================================================
+   PERFORMANCE, 2e passe : plus aucun flou en direct dans la page
+   Sur les machines sans accélération graphique, chaque vitre floutée était
+   recalculée à chaque image du défilement. Seuls la barre de navigation, le
+   menu mobile et la barre d'action mobile gardent leur flou ; les cartes
+   deviennent un verre dépoli plus opaque (même reflet, même liseré).
+   ========================================================================== */
+:root { --glass: linear-gradient(160deg, rgba(255,255,255,.9) 0%, rgba(255,255,255,.74) 100%); }
+body *:not(.nav-links):not(.nav):not(.mobile-menu):not(.m-dock),
+body *::before, body *::after { -webkit-backdrop-filter: none !important; backdrop-filter: none !important; }
+/* the plain background (no WebGL): still, no drifting blurred orbs */
+.aurora i { animation: none !important; will-change: auto; }

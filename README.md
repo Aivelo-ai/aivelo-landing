@@ -99,3 +99,10 @@ python3 tools/build_pages.py
 ```
 
 Ajouter une page : une entrée dans `PAGES` (et dans `RELATED` pour le pied de page), puis relancer le script. Ne pas modifier les pages générées à la main : elles sont réécrites à chaque lancement. `llms.txt` présente le studio aux moteurs de réponse IA ; le compléter quand une page est ajoutée.
+
+## Performance, 2e passe (machines sans accélération graphique)
+
+- **Ciel** (`bg.js`) : c'est désormais une image fixe, redessinée seulement quand la scène change (jour ↔ nuit) ou que le soleil a bougé. S'il n'y a pas de carte graphique, ou si une image met plus de 40 ms à se dessiner, le ciel est retiré et le fond simple reste.
+- **Flous** : plus aucun `backdrop-filter` dans la page, hors barre de navigation, menu mobile et barre d'action mobile. Les cartes sont en verre dépoli plus opaque.
+- **Retirés de l'accueil** : logo en verre 3D (three.js) et goutte d'eau de la méthode (`hero-3d.js`, `water.js` ne sont plus chargés ; la ligne classique de la méthode s'affiche).
+- **Hero** : plus de fondu ni de glissement du texte au défilement ; la lentille de verre n'est préparée qu'au premier survol.

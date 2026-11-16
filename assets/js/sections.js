@@ -669,35 +669,42 @@
   const lens = $('#ls-lens');
   const win = $('.ls-window');
   if (lens && win && finePointer && !reduceMotion) {
-    const size = 150;
-    // displacement map: magnifies the centre, bends hard near the rim like a glass bead
-    const cv = document.createElement('canvas');
-    cv.width = cv.height = size;
-    const ctx = cv.getContext('2d');
-    const img = ctx.createImageData(size, size);
-    const R = size / 2; const S = 38; // must match feDisplacementMap scale
-    for (let y = 0; y < size; y++) {
-      for (let x = 0; x < size; x++) {
-        const dx = x + .5 - R; const dy = y + .5 - R;
-        const r = Math.hypot(dx, dy) / R;
-        let ox = 0; let oy = 0;
-        if (r < 1) {
-          const t = Math.max(0, (r - .62) / .38);
-          const k = .2 + .55 * t * t * (3 - 2 * t); // centre magnification, stronger rim
-          ox = -dx * k; oy = -dy * k;
-        }
-        const i = (y * size + x) * 4;
-        img.data[i] = Math.max(0, Math.min(255, 128 + (ox / S) * 255));
-        img.data[i + 1] = Math.max(0, Math.min(255, 128 + (oy / S) * 255));
-        img.data[i + 2] = 128;
-        img.data[i + 3] = 255;
-      }
-    }
-    ctx.putImageData(img, 0, 0);
+    const size = 150; const S = 38; // S must match feDisplacementMap scale
     const fe = $('#fx-lens-map');
     const disp = $('#fx-lens-disp');
-    fe.setAttribute('href', cv.toDataURL());
-    fe.setAttribute('width', size); fe.setAttribute('height', size);
+    // the displacement map is only built the first time the pointer enters the window:
+    // on a machine without graphics acceleration it used to block the page for over a second at load
+    let built = false;
+    const build = () => {
+      if (built) return;
+      built = true;
+      // displacement map: magnifies the centre, bends hard near the rim like a glass bead
+      const cv = document.createElement('canvas');
+      cv.width = cv.height = size;
+      const ctx = cv.getContext('2d');
+      const img = ctx.createImageData(size, size);
+      const R = size / 2;
+      for (let y = 0; y < size; y++) {
+        for (let x = 0; x < size; x++) {
+          const dx = x + .5 - R; const dy = y + .5 - R;
+          const r = Math.hypot(dx, dy) / R;
+          let ox = 0; let oy = 0;
+          if (r < 1) {
+            const t = Math.max(0, (r - .62) / .38);
+            const k = .2 + .55 * t * t * (3 - 2 * t); // centre magnification, stronger rim
+            ox = -dx * k; oy = -dy * k;
+          }
+          const i = (y * size + x) * 4;
+          img.data[i] = Math.max(0, Math.min(255, 128 + (ox / S) * 255));
+          img.data[i + 1] = Math.max(0, Math.min(255, 128 + (oy / S) * 255));
+          img.data[i + 2] = 128;
+          img.data[i + 3] = 255;
+        }
+      }
+      ctx.putImageData(img, 0, 0);
+      fe.setAttribute('href', cv.toDataURL());
+      fe.setAttribute('width', size); fe.setAttribute('height', size);
+    };
     // the site itself goes through the SVG filter (works in every browser);
     // the lens element on top only draws the glass rim and its highlight
     const root = win.parentElement;
@@ -718,6 +725,7 @@
     };
     const kick = () => { if (!raf) raf = requestAnimationFrame(tick); };
     win.addEventListener('pointerenter', (e) => {
+      build();
       if (!pos.s) { pos.x = e.clientX; pos.y = e.clientY; }
       pos.tx = e.clientX; pos.ty = e.clientY; pos.ts = 1;
       root.classList.add('is-lens', 'lens-on'); win.classList.add('is-lens');
