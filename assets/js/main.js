@@ -1,6 +1,6 @@
 /* ==========================================================================
    AIVELO — interactions & motion
-   Stack : GSAP 3.13 (ScrollTrigger, SplitText) + Lenis smooth scroll.
+   Stack : GSAP 3.13 (ScrollTrigger, SplitText), défilement natif du navigateur.
    Everything degrades gracefully: without the libraries (or with
    prefers-reduced-motion) the page stays fully readable and usable.
    ========================================================================== */
@@ -23,7 +23,6 @@
     if (pre) pre.remove();
   }
 
-  let lenis = null;
 
   /* ------------------------------------------------------------------
      1. Text roll — wrap labels so they can roll on hover
@@ -109,8 +108,7 @@
     burger.setAttribute('aria-expanded', String(open));
     burger.setAttribute('aria-label', open ? 'Fermer le menu' : 'Ouvrir le menu');
     nav.classList.remove('is-hidden');
-    if (lenis) open ? lenis.stop() : lenis.start();
-    else document.body.style.overflow = open ? 'hidden' : '';
+    html.classList.toggle('menu-open', open);   // locks the page behind the menu
   };
   menu.inert = true;
   burger.addEventListener('click', () => setMenu(!menuOpen));
@@ -294,7 +292,7 @@
   if (moreBtn) moreBtn.addEventListener('click', () => {
     folded = !folded;
     runFilter('all');
-    if (folded && lenis) lenis.scrollTo('#addons', { duration: 1.2 });
+    if (folded) { const ad = document.getElementById('addons'); if (ad) ad.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
   });
 
   /* ------------------------------------------------------------------
@@ -336,41 +334,12 @@
   gsap.registerPlugin(ScrollTrigger, SplitText);
   gsap.defaults({ ease: 'expo.out', duration: 1.1 });
 
-  /* ---------- Lenis smooth scroll ---------- */
-  if (window.Lenis) {
-    lenis = new Lenis({ lerp: 0.09, smoothWheel: true, wheelMultiplier: 1 });
-    lenis.on('scroll', (e) => { ScrollTrigger.update(); onScrollNav(e.scroll); });
-    gsap.ticker.add((t) => lenis.raf(t * 1000));
-    gsap.ticker.lagSmoothing(0);
-  } else {
-    window.addEventListener('scroll', () => onScrollNav(window.scrollY), { passive: true });
-  }
-
-  // Smooth anchor navigation through Lenis (native CSS smooth scroll otherwise)
-  if (lenis) {
-    // delegated, so links added later (mobile action bar) travel the same way
-    document.addEventListener('click', (e) => {
-      const a = e.target.closest && e.target.closest('a[href^="#"]');
-      if (!a || e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey) return;
-      {
-        const id = a.getAttribute('href');
-        if (id === '#') { e.preventDefault(); return; }
-        const target = id === '#top' ? 0 : document.querySelector(id);
-        if (target === null) return;
-        e.preventDefault();
-        // images loading and pinned sections can move the target while we travel:
-        // when the scroll lands, check where the section really is and finish the move
-        let tries = 0;
-        const land = () => {
-          if (target === 0 || tries++ > 2) return;
-          const off = target.getBoundingClientRect().top;
-          if (Math.abs(off) > 6) lenis.scrollTo(target, { duration: .5, easing: (t) => 1 - Math.pow(1 - t, 3), force: true, onComplete: land });
-        };
-        lenis.scrollTo(target, { duration: 1.6, easing: (t) => 1 - Math.pow(1 - t, 4), force: true, onComplete: land });
-        history.replaceState(null, '', id === '#top' ? location.pathname : id);
-      }
-    });
-  }
+  /* ---------- Scroll ----------
+     Native scrolling only. The page used to scroll through Lenis (smooth scroll driven from JavaScript):
+     every frame the main thread was late, the scroll itself stuttered. The browser now scrolls on its own
+     thread, so it stays fluid whatever the animations are doing. Anchors use CSS `scroll-behavior: smooth`. */
+  window.addEventListener('scroll', () => onScrollNav(window.scrollY), { passive: true });
+  ScrollTrigger.config({ ignoreMobileResize: true });
 
   /* ---------- Scroll progress ---------- */
   gsap.to('#scroll-progress', {
@@ -400,7 +369,6 @@
     if (started) return;
     started = true;
     html.classList.add('motion-ready');
-    if (lenis) lenis.start();
     try { heroIntro(); } catch (e) { console.error(e); }
   };
   // Never leave the page locked behind the intro, whatever happens above
@@ -420,7 +388,7 @@
       // previous page's scroll (embedded previews do); back/forward keeps the browser's restore
       let fresh = true;
       try { const nav = performance.getEntriesByType('navigation')[0]; fresh = !nav || nav.type === 'navigate'; } catch (e) { /* old browser */ }
-      if (fresh && window.scrollY > 0) { if (lenis) lenis.scrollTo(0, { immediate: true, force: true }); else window.scrollTo(0, 0); }
+      if (fresh && window.scrollY > 0) { window.scrollTo({ top: 0, behavior: 'instant' }); }
       return;
     }
     // images, videos and pinned sections keep growing the page while it loads: stay on the section
@@ -431,7 +399,7 @@
     const go = () => {
       if (!mine) return;
       ScrollTrigger.refresh();
-      if (lenis) lenis.scrollTo(target, { immediate: true, force: true }); else target.scrollIntoView();
+      target.scrollIntoView({ behavior: 'instant', block: 'start' });
     };
     setTimeout(go, 60);
     if (document.readyState === 'complete') setTimeout(go, 700);
@@ -464,11 +432,12 @@
       tl.to(pre, { opacity: 0, duration: .5, ease: 'power2.out', onStart: startSite });
       return;
     }
-    tl.from('.preloader .logo-img', { scale: 0, rotate: -90, duration: .9, ease: 'back.out(1.6)' })
-      .from(letters, { yPercent: 110, duration: .9, stagger: .05 }, '-=.6')
-      .to('#preloader-bar', { scaleX: 1, duration: .9, ease: 'power2.inOut' }, '-=.5')
-      .to(['.preloader-inner'], { y: -40, opacity: 0, duration: .6, ease: 'power3.in' }, '+=.1')
-      .to(pre, { clipPath: 'inset(0 0 100% 0)', duration: 1, ease: 'expo.inOut', onStart: () => setTimeout(startSite, 350) }, '-=.2');
+    // a short signature (≈1.2 s), not a wait: the page is already there behind it
+    tl.from('.preloader .logo-img', { scale: 0, rotate: -90, duration: .5, ease: 'back.out(1.6)' })
+      .from(letters, { yPercent: 110, duration: .5, stagger: .03 }, '-=.35')
+      .to('#preloader-bar', { scaleX: 1, duration: .4, ease: 'power2.inOut' }, '-=.4')
+      .to(['.preloader-inner'], { y: -30, opacity: 0, duration: .25, ease: 'power3.in' })
+      .to(pre, { clipPath: 'inset(0 0 100% 0)', duration: .6, ease: 'expo.inOut', onStart: startSite }, '-=.1');
   });
 
   /* ---------- All ScrollTrigger-driven animations ---------- */

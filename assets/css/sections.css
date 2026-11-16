@@ -2240,3 +2240,28 @@ html.motion .ob-ping { animation: obPing 2.4s ease-out infinite; }
 .cs-jr i.ob-tile { background: #EEF2FB; } .cs-jr i.ob-tile svg { width: 32px; height: 32px; }
 .cs-jr li.is-on i.ob-tile { background: linear-gradient(135deg, #3A67EC, #7B5CFF); }
 .bgfx-switch { display: none !important; }
+
+/* ==========================================================================
+   PERFORMANCE — verre : moins de flous en direct
+   Chaque `backdrop-filter` oblige le navigateur à re-flouter ce qu'il y a
+   derrière à chaque image du fond animé. La page en comptait plus de 100,
+   dont beaucoup de petites pastilles posées sur des cartes déjà en verre
+   (un flou dans un flou, invisible mais payé deux fois).
+   Les grandes vitres gardent leur flou ; les petites pièces gardent leur
+   reflet (dégradé, liseré, ombre) sans flou en direct.
+   ========================================================================== */
+.eyebrow, .own-pills span, .live-pill, .perf-metrics li, .tags span, .work-tags li, .plan-badge, .tab-opt,
+.quote-sample, .dp-stamp, .btn-ghost, .burger, .ls-chip, .ls-score, .ls-tag, .ls-steps, .sector-idx, .filter,
+.billing, .g3-chip, .ba-tag, .bmap-badge, .sky-clock, .sky-pulse, .ec-chip, .agv-open, .xp-steps li,
+.ec-steps li, .day-events li, .lb-cell, .zone, .local-tile {
+  -webkit-backdrop-filter: none !important; backdrop-filter: none !important;
+}
+/* a pane inside a pane: the outer one already blurs the sky */
+.stack-card .vx-ease, .stack-card .vl-quiz, .sim-panel .sim-peek {
+  -webkit-backdrop-filter: none !important; backdrop-filter: none !important;
+}
+/* phones: a lighter blur on the large panes (cost grows with the radius) */
+@media (max-width: 760px), (pointer: coarse) {
+  :root { --glass-blur: blur(12px) saturate(170%); }
+  .demo-panel, .sim-panel { -webkit-backdrop-filter: blur(12px) saturate(150%) !important; backdrop-filter: blur(12px) saturate(150%) !important; }
+}
