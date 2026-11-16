@@ -11,10 +11,10 @@ assets/js/bg.js          fond animé jour / nuit (WebGL)
 assets/js/sections.js    interactions de ces sections (curseur avant/après, démo, compteurs, lentille…)
 ```
 
-## Librairies (CDN, versions figées)
+## Librairies (versions figées)
 
-- **GSAP 3.13** : ScrollTrigger (animations au scroll, pin horizontal), SplitText (titres en slide-up ligne par ligne)
-- **Lenis 1.1** : smooth scroll
+- **GSAP 3.13** (ScrollTrigger, SplitText), hébergé dans `assets/js/vendor/` : plus aucun script chargé depuis un CDN, hors three.js à la demande
+- Défilement natif du navigateur (Lenis a été retiré : il faisait saccader le scroll dès qu'une animation prenait du retard)
 
 Si les CDN ne répondent pas, ou si le visiteur a activé « réduire les animations », le site reste entièrement lisible et utilisable : la classe `motion` est retirée et tout s'affiche sans animation.
 
@@ -83,3 +83,19 @@ Rendu WebGL2 en deux passes (metaballs dans une texture flottante, puis ombrage 
 - **Données structurées** : une seule entité `ProfessionalService` (`@id https://aivelo.fr/#studio`), identique sur toutes les pages.
 - **`vercel.json`** : URLs sans `.html`, cache long sur les polices et images.
 - **`sitemap.xml`** : une ligne par page, avec `lastmod`.
+
+## Performance (novembre 2026)
+
+- **Fond jour / nuit** (`bg.js`) : budget de pixels fixe, ~12 images/s au repos le jour, ~20 la nuit, 30 pendant le défilement ; désactivé en économie de données et sur les appareils très modestes.
+- **Verre** : garder les `backdrop-filter` pour les grandes vitres seulement. Les pastilles, boutons et verres imbriqués n'ont plus de flou en direct (bloc « PERFORMANCE » en fin de `sections.css`). Ne pas en rajouter sur de petits éléments.
+- **Intro** : ~1,2 s à la première visite, fondu ensuite.
+
+## Pages SEO nationales
+
+`tools/build_pages.py` génère les pages par métier et par intention (`creation-site-internet`, `prix-creation-site-internet`, `refonte-site-internet`, `site-internet-*`) à partir du gabarit `creation-site-web-bordeaux.html` et du contenu de `tools/pages_data.py`. Il met aussi à jour `sitemap.xml` et la rangée « Sites par métier & guides » du pied de toutes les pages.
+
+```
+python3 tools/build_pages.py
+```
+
+Ajouter une page : une entrée dans `PAGES` (et dans `RELATED` pour le pied de page), puis relancer le script. Ne pas modifier les pages générées à la main : elles sont réécrites à chaque lancement. `llms.txt` présente le studio aux moteurs de réponse IA ; le compléter quand une page est ajoutée.

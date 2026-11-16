@@ -2265,3 +2265,17 @@ html.motion .ob-ping { animation: obPing 2.4s ease-out infinite; }
   :root { --glass-blur: blur(12px) saturate(170%); }
   .demo-panel, .sim-panel { -webkit-backdrop-filter: blur(12px) saturate(150%) !important; backdrop-filter: blur(12px) saturate(150%) !important; }
 }
+
+/* ==========================================================================
+   PAGES SEO NATIONALES (tools/build_pages.py)
+   ========================================================================== */
+.seo-visual { position: relative; margin: 0; align-self: center; aspect-ratio: 4 / 3; border-radius: 24px; overflow: hidden; background: #fff; border: 1px solid var(--glass-edge); box-shadow: var(--glass-shadow), 0 40px 80px -40px rgba(30,45,110,.45); }
+.seo-visual img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: center; }
+.seo-visual--page img { object-position: top center; }
+@media (max-width: 900px) { .seo-visual { aspect-ratio: 16 / 10; margin-top: 28px; } }
+.footer-metiers { margin-top: clamp(28px, 4vw, 44px); padding-top: clamp(20px, 3vw, 28px); border-top: 1px solid rgba(11,13,23,.08); }
+.footer-metiers ul { display: flex; flex-wrap: wrap; gap: 8px 22px; margin: 10px 0 0; padding: 0; list-style: none; }
+.footer-metiers a { font-size: .92rem; }
+.footer-metiers { margin-bottom: 26px; }
+.sector-more { display: inline-block; margin-top: 10px; font-size: .86rem; color: var(--text-dim); text-decoration: underline; text-underline-offset: 3px; text-decoration-color: rgba(11,13,23,.25); }
+.sector-more:hover { color: var(--text); }
